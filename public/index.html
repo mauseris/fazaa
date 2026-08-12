@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فزعة — وكيل ريادة الذكي</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --navy-950:#080c1c;
+  --navy-900:#0c1330;
+  --navy-800:#131c42;
+  --navy-700:#1c2a5e;
+  --navy-600:#2a3b7a;
+  --line:#25315f;
+  --gold:#d1a34a;
+  --gold-soft:#e8c988;
+  --teal:#33c9b0;
+  --coral:#e8735c;
+  --text:#f3f0e6;
+  --text-dim:#a7b0d6;
+  --text-faint:#6c76a3;
+  --good:#4fd18b;
+  --warn:#e8b23c;
+  --user-bubble-1:#2a3b7a;
+  --user-bubble-2:#223066;
+  --shadow:0 10px 26px rgba(0,0,0,.35);
+  --shadow-sm:0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #1a2454 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #16204a 0%, transparent 55%),
+    var(--navy-950);
+  color:var(--text);
+  font-family:'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+  min-height:100vh;
+}
+.mono{font-family:'IBM Plex Mono', monospace; letter-spacing:.02em;}
+.display{font-family:'Cairo', 'Tajawal', sans-serif;}
+
+html[lang="en"] body{ font-family:'Inter', 'Segoe UI', sans-serif; }
+html[lang="en"] .display{ font-family:'Inter', sans-serif; font-weight:800; }
+html[lang="en"] .mono{ font-family:'IBM Plex Mono', monospace; }
+html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, html[lang="en"] .logo-sub{ letter-spacing:0; }
+
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-thumb{background:var(--navy-600); border-radius:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+@keyframes msgIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+.msg{animation:msgIn .28s ease both;}
+
+.pattern-accent{
+  height:3px; width:100%;
+  background:repeating-linear-gradient(135deg, var(--gold) 0 10px, var(--coral) 10px 20px, transparent 20px 30px, transparent 30px 40px);
+  opacity:.55;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 22px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(19,28,66,.6), transparent);
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand .mark{
+  width:44px; height:44px; border-radius:10px;
+  background:linear-gradient(135deg, var(--gold), var(--coral));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cairo'; font-weight:800; color:#1a1204; font-size:16px;
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+.brand .mark img{width:100%; height:100%; object-fit:cover; display:block;}
+.brand .name{font-family:'Cairo'; font-weight:800; font-size:19px;}
+.brand .tag{font-size:11px; color:var(--text-faint); margin-top:-2px;}
+.top-actions{display:flex; gap:10px; align-items:center;}
+.pill{
+  font-size:12px; padding:6px 12px; border-radius:999px;
+  border:1px solid var(--line); color:var(--text-dim); background:var(--navy-800);
+  display:flex; align-items:center; gap:6px;
+}
+.dot{width:7px;height:7px;border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good);} 
+.btn-reset{
+  font-size:12px; padding:7px 14px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--line); background:transparent; color:var(--text-dim);
+  font-family:'Tajawal';
+}
+.btn-reset:hover{border-color:var(--coral); color:var(--coral);}
+
+/* Palm theme (logo-inspired) — toggled via body.palm-theme */
+.palm-theme{
+  --gold:#d9c49c;      /* robot-body tan */
+  --gold-soft:#f2e6c8;
+  --coral:#b1552a;     /* terracotta/rust — CTA pop, echoes the dark outline's warmth */
+  --teal:#587433;      /* palm-leaf olive green, deepened for contrast on cream */
+  --navy-950:#f7f0e2;  /* cream background */
+  --navy-900:#f0e4cb;
+  --navy-800:#e8d9b6;
+  --navy-700:#d3bd8c;
+  --navy-600:#a9895a;
+  --line:rgba(94,58,26,.18);
+  --text:#241a10;      /* near-black warm brown, like the logo linework */
+  --text-dim:#5c4f36;
+  --text-faint:#8a7c5c;
+  --good:#3f7a3e;
+  --warn:#a8681c;
+  --user-bubble-1:#f2e6c8;
+  --user-bubble-2:#d9c49c;
+  --shadow:0 10px 26px rgba(94,58,26,.10);
+  --shadow-sm:0 4px 14px rgba(94,58,26,.08);
+}
+body.palm-theme{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #f2e6c8 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #e4d3ae 0%, transparent 55%),
+    var(--navy-950);
+}
+.palm-theme .topbar{ background:linear-gradient(180deg, rgba(232,217,182,.7), transparent); }
+.palm-theme .composer{ background:linear-gradient(0deg, rgba(232,217,182,.6), transparent); }
+.palm-theme aside.rail{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 160'%3E%3Cg fill='%23587433' fill-opacity='0.14'%3E%3Cpath d='M100 160 C95 100 70 70 20 40 C55 55 90 75 100 120 Z'/%3E%3Cpath d='M100 160 C90 95 55 60 10 55 C50 60 90 85 100 130 Z'/%3E%3Cpath d='M100 160 C100 90 95 55 90 10 C100 50 105 90 100 140 Z'/%3E%3Cpath d='M100 160 C110 95 145 60 190 55 C150 60 110 85 100 130 Z'/%3E%3Cpath d='M100 160 C105 100 130 70 180 40 C145 55 110 75 100 120 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:bottom -6px center;
+  background-size:230px 190px;
+}
+.palm-theme .pattern-accent{
+  height:9px; opacity:.9;
+  background-image:
+    linear-gradient(135deg, var(--gold) 25%, transparent 25%),
+    linear-gradient(225deg, var(--gold) 25%, transparent 25%),
+    linear-gradient(315deg, var(--teal) 25%, transparent 25%),
+    linear-gradient(45deg,  var(--teal) 25%, transparent 25%);
+  background-position: 9px 0, 9px 0, 0 0, 0 0;
+  background-size: 18px 18px;
+  background-repeat: repeat-x;
+}
+
+/* ---------- layout ---------- */
+.app{
+  display:grid;
+  grid-template-columns: 1fr 380px;
+  gap:0;
+  min-height:calc(100vh - 71px);
+}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;}
+  aside.rail{order:-1; border-left:none; border-bottom:1px solid var(--line);}
+}
+
+/* ---------- chat column ---------- */
+main.chatcol{
+  display:flex; flex-direction:column; height:calc(100vh - 71px);
+}
+.stage-strip{
+  display:flex; gap:0; padding:14px 22px 0 22px; overflow-x:auto;
+}
+.stage-item{
+  display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-faint);
+  padding:7px 12px; white-space:nowrap;
+}
+.stage-item .n{
+  width:18px;height:18px;border-radius:50%; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-size:10px;
+}
+.stage-item.active{color:var(--gold-soft);}
+.stage-item.active .n{background:var(--gold); border-color:var(--gold); color:#1a1204; font-weight:700;}
+.stage-item.done .n{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.stage-item.done{color:var(--teal);}
+.stage-sep{width:22px; height:1px; background:var(--line); align-self:center; margin:0 -4px;}
+
+.resume-banner{
+  margin:14px 22px 0 22px; padding:12px 16px; border-radius:12px;
+  background:linear-gradient(90deg, color-mix(in srgb, var(--teal) 12%, transparent), color-mix(in srgb, var(--teal) 3%, transparent));
+  border:1px solid color-mix(in srgb, var(--teal) 35%, transparent); font-size:13px; color:var(--text-dim);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.resume-banner b{color:var(--teal);}
+.resume-banner .rb-actions{display:flex; gap:8px;}
+.resume-banner button{
+  font-size:12px; padding:6px 12px; border-radius:7px; cursor:pointer; font-family:'Tajawal'; font-weight:700;
+  border:1px solid var(--teal); background:transparent; color:var(--teal);
+}
+.resume-banner button.primary{background:var(--teal); color:#04241d;}
+
+.messages{
+  flex:1; overflow-y:auto; padding:20px 22px; display:flex; flex-direction:column; gap:14px;
+}
+.msg{display:flex; gap:10px; max-width:82%;}
+.msg.agent{align-self:flex-start;}
+.msg.user{align-self:flex-end; flex-direction:row-reverse;}
+.avatar{
+  width:30px;height:30px;border-radius:9px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:14px; margin-top:2px;
+}
+.msg.agent .avatar{background:linear-gradient(135deg,var(--gold),var(--coral)); color:#1a1204;}
+.msg.user .avatar{background:var(--navy-700); border:1px solid var(--line);}
+.bubble{
+  padding:12px 15px; border-radius:14px; font-size:14.5px; line-height:1.85;
+}
+.msg.agent .bubble{background:var(--navy-800); border:1px solid var(--line); border-top-right-radius:4px; box-shadow:var(--shadow-sm);}
+.msg.user .bubble{background:linear-gradient(135deg, var(--user-bubble-1), var(--user-bubble-2)); border-top-left-radius:4px; box-shadow:var(--shadow-sm);}
+.bubble p{margin:0 0 8px 0;}
+.bubble p:last-child{margin-bottom:0;}
+.bubble ul{margin:6px 0; padding-inline-start:18px;}
+.bubble li{margin-bottom:4px;}
+.bubble .src{
+  display:inline-block; margin-top:8px; font-size:11px; padding:3px 9px; border-radius:999px;
+  background:color-mix(in srgb, var(--teal) 10%, transparent); border:1px solid color-mix(in srgb, var(--teal) 30%, transparent); color:var(--teal);
+}
+@keyframes blink{0%,80%,100%{opacity:.25} 40%{opacity:1}}
+
+.live-status{
+  display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--text-faint);
+  margin-bottom:6px; min-height:16px;
+}
+.live-status .spin{width:7px;height:7px;border-radius:50%; background:var(--gold); animation:blink 1s infinite; flex:none;}
+.live-status.empty{display:none;}
+.live-text{white-space:pre-wrap; line-height:1.85; font-size:14.5px;}
+.live-text:empty{display:none;}
+
+.citations{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
+.citation-card{
+  background:var(--navy-900); border:1px solid var(--line); border-radius:10px;
+  padding:9px 11px; font-size:12px;
+}
+.citation-snip{color:var(--text-dim); line-height:1.6; margin-bottom:6px;}
+.citation-link{
+  display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:700;
+  color:var(--teal); text-decoration:none;
+}
+.citation-link:hover{text-decoration:underline;}
+.citation-link.muted{color:var(--text-faint); font-weight:500; cursor:default;}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; padding:0 22px 14px 22px;}
+.chip{
+  padding:9px 15px; border-radius:10px; border:1px solid var(--line); background:var(--navy-800);
+  color:var(--text); font-size:13.5px; cursor:pointer; font-family:'Tajawal'; transition:.15s;
+}
+.chip:hover{border-color:var(--gold); color:var(--text); background:color-mix(in srgb, var(--gold) 20%, var(--navy-800)); transform:translateY(-1px); box-shadow:var(--shadow-sm);}
+.chip.slider-wrap{cursor:default; display:flex; flex-direction:column; gap:6px; width:100%; padding:12px 16px;}
+
+.composer{
+  display:flex; gap:10px; padding:16px 22px 20px 22px; border-top:1px solid var(--line);
+  background:linear-gradient(0deg, rgba(19,28,66,.5), transparent);
+}
+.composer input{
+  flex:1; background:var(--navy-800); border:1px solid var(--line); border-radius:12px;
+  padding:13px 16px; color:var(--text); font-family:'Tajawal'; font-size:14px; outline:none;
+}
+.composer input:focus{border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 25%, transparent);}
+.composer button{
+  width:46px; height:46px; border-radius:12px; border:none; cursor:pointer;
+  background:linear-gradient(135deg, var(--gold), var(--coral)); color:#1a1204; font-size:17px;
+  display:flex; align-items:center; justify-content:center; flex:none;
+  box-shadow:var(--shadow-sm);
+}
+.composer button:disabled{opacity:.4; cursor:not-allowed;}
+
+.mic-btn{
+  width:46px; height:46px; border-radius:12px; cursor:pointer; flex:none;
+  border:1px solid var(--line); background:var(--navy-800); color:var(--text);
+  font-size:17px; display:flex; align-items:center; justify-content:center;
+  transition:.15s; position:relative;
+}
+.mic-btn:hover:not(:disabled){border-color:var(--gold); color:var(--gold-soft); background:color-mix(in srgb, var(--gold) 16%, var(--navy-800));}
+.mic-btn:disabled{opacity:.45; cursor:not-allowed;}
+@keyframes micPulse{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--coral) 55%, transparent);}
+  70%{box-shadow:0 0 0 10px color-mix(in srgb, var(--coral) 0%, transparent);}
+  100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--coral) 0%, transparent);}
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.mic-btn.recording{
+  background:var(--coral); border-color:var(--coral); color:#fff;
+  animation:micPulse 1.4s infinite;
+}
+.mic-btn.processing{ color:var(--gold); }
+.mic-btn.processing .mic-ic{ display:inline-block; animation:spin 0.9s linear infinite; }
+.voice-status{
+  font-size:12px; color:var(--text-faint); padding:0 22px 8px 22px; min-height:16px;
+  display:flex; align-items:center; gap:6px;
+}
+.voice-status:empty{display:none;}
+.voice-status .vs-dot{width:6px; height:6px; border-radius:50%; background:var(--coral); flex:none; animation:blink 1s infinite;}
+
+/* ---------- right rail ---------- */
+aside.rail{
+  border-inline-start:1px solid var(--line);
+  padding:20px 18px; overflow-y:auto; height:calc(100vh - 71px);
+  display:flex; flex-direction:column; gap:16px;
+}
+.card{
+  background:var(--navy-800); border:1px solid var(--line); border-radius:14px; padding:16px;
+  box-shadow:var(--shadow-sm);
+}
+.card h3{
+  font-family:'Cairo'; font-size:13.5px; margin:0 0 12px 0; display:flex; align-items:center; gap:8px;
+  color:var(--text);
+}
+.card h3 .ic{font-size:14px;}
+.badge-stage{
+  font-family:'Cairo'; font-weight:700; font-size:12px; padding:5px 12px; border-radius:999px;
+  background:color-mix(in srgb, var(--gold) 20%, transparent); border:1px solid color-mix(in srgb, var(--gold) 45%, transparent); color:var(--text);
+  display:inline-block;
+}
+.logo-preview{display:flex; align-items:center; gap:12px; margin-top:12px;}
+.logo-preview svg{border-radius:12px;}
+.logo-name{font-family:'Cairo'; font-weight:800; font-size:14px;}
+.logo-sub{font-size:11px; color:var(--text-faint);}
+
+.row-between{display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; color:var(--text-dim); margin-bottom:6px;}
+.row-between b{color:var(--text); font-family:'IBM Plex Mono';}
+
+.donut-wrap{display:flex; align-items:center; gap:16px;}
+.legend{display:flex; flex-direction:column; gap:7px; font-size:12px;}
+.legend .li{display:flex; align-items:center; gap:7px;}
+.legend .sw{width:9px;height:9px;border-radius:3px;}
+.legend .v{margin-inline-start:auto; font-family:'IBM Plex Mono'; color:var(--text-dim); font-size:11.5px;}
+
+.total-line{
+  margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.total-line .lbl{font-size:12px; color:var(--text-faint);}
+.total-line .val{font-family:'Cairo'; font-weight:800; font-size:19px; color:var(--gold-soft);}
+
+.slider-row{margin-top:4px;}
+.slider-row input[type=range]{width:100%; accent-color:var(--gold);}
+.slider-labels{display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-faint);}
+
+.gauge-track{width:100%; height:9px; border-radius:999px; background:var(--navy-900); overflow:hidden; margin:10px 0 8px 0;}
+.gauge-fill{height:100%; border-radius:999px; transition:width .3s;}
+.gauge-fill.good{background:linear-gradient(90deg,#2fa370,var(--good));}
+.gauge-fill.warn{background:linear-gradient(90deg,#b3860f,var(--warn));}
+.gauge-fill.bad{background:linear-gradient(90deg,#a33d2f,var(--coral));}
+.verdict-badge{
+  font-family:'Cairo'; font-weight:700; font-size:12.5px; padding:8px 12px; border-radius:9px;
+  display:flex; align-items:center; gap:8px; margin-top:2px;
+}
+.verdict-badge.good{background:color-mix(in srgb, var(--good) 14%, transparent); border:1px solid color-mix(in srgb, var(--good) 40%, transparent); color:var(--good);}
+.verdict-badge.warn{background:color-mix(in srgb, var(--warn) 14%, transparent); border:1px solid color-mix(in srgb, var(--warn) 40%, transparent); color:var(--warn);}
+.verdict-badge.bad{background:color-mix(in srgb, var(--coral) 14%, transparent); border:1px solid color-mix(in srgb, var(--coral) 40%, transparent); color:var(--coral);}
+.fund-hint{margin-top:10px; font-size:11.5px; color:var(--text-dim); line-height:1.7; padding:9px 11px; background:var(--navy-900); border-radius:9px; border:1px solid var(--line);}
+.fund-hint b{color:var(--gold-soft);}
+
+.bodies{display:flex; flex-direction:column; gap:8px;}
+.body-item{
+  display:flex; align-items:flex-start; gap:9px; font-size:12.5px; padding:9px 10px;
+  background:var(--navy-900); border:1px solid var(--line); border-radius:9px; transition:.15s;
+}
+.body-item:hover{border-color:var(--gold); background:var(--navy-800);}
+.body-item .bi{width:6px;height:6px;border-radius:50%; background:var(--teal); flex:none; margin-top:6px;}
+
+.checklist{display:flex; flex-direction:column; gap:9px;}
+.check-item{display:flex; gap:9px; font-size:12.5px; align-items:flex-start;}
+.check-item .box{
+  width:16px;height:16px;border-radius:5px; border:1px solid var(--line); flex:none; margin-top:1px;
+  display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;
+}
+.check-item.on .box{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.check-item.on span.txt{color:var(--text-faint); text-decoration:line-through;}
+
+.report-btn{
+  width:100%; padding:13px; border-radius:11px; border:none; cursor:pointer; margin-top:4px;
+  background:linear-gradient(135deg, var(--gold), var(--coral)); color:#1a1204;
+  font-family:'Cairo'; font-weight:800; font-size:13.5px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:var(--shadow-sm);
+}
+.report-btn:disabled{opacity:.35; cursor:not-allowed;}
+.hint{font-size:11px; color:var(--text-faint); margin-top:8px; line-height:1.6;}
+
+/* ---------- report overlay ---------- */
+.overlay{
+  position:fixed; inset:0; background:rgba(4,6,16,.75); backdrop-filter:blur(4px);
+  display:none; align-items:flex-start; justify-content:center; z-index:50; padding:34px 16px; overflow-y:auto;
+}
+.overlay.show{display:flex;}
+.report-sheet{
+  width:100%; max-width:760px; background:#fbfaf6; color:#171a2c; border-radius:14px;
+  padding:44px 46px; font-family:'Tajawal';
+}
+.report-sheet h1{font-family:'Cairo'; font-size:24px; margin:0 0 2px 0;}
+.report-sheet .rsub{color:#666; font-size:12.5px; margin-bottom:26px;}
+.report-sheet h2{
+  font-family:'Cairo'; font-size:15px; margin:26px 0 10px 0; padding-bottom:8px;
+  border-bottom:2px solid #d1a34a; color:#1a1f3d;
+}
+.report-sheet p{line-height:1.9; font-size:13.5px; color:#2b2f45;}
+.report-sheet a{color:#8a5a1e; text-decoration:underline; text-underline-offset:2px;}
+.report-sheet li a{font-weight:600;}
+.report-sheet table{width:100%; border-collapse:collapse; font-size:13px; margin-top:6px;}
+.report-sheet td, .report-sheet th{padding:8px 10px; border-bottom:1px solid #e5e1d4; text-align:right;}
+.report-sheet th{color:#8a7a4f; font-weight:700; font-size:11.5px;}
+.report-sheet td.num, .report-sheet th.num{font-family:'IBM Plex Mono'; text-align:left;}
+.report-sheet .tot td{font-weight:800; border-top:2px solid #1a1f3d; border-bottom:none;}
+.report-sheet ul{padding-inline-start:20px; font-size:13.5px; color:#2b2f45; line-height:1.9;}
+.report-sheet .disc{
+  margin-top:30px; padding:14px 16px; background:#f3ede0; border-radius:10px; font-size:11.5px; color:#7a6c46;
+  border:1px solid #e6dcc0;
+}
+.report-close-bar{
+  display:flex; justify-content:space-between; align-items:center; max-width:760px; width:100%;
+  margin:0 auto 12px auto; padding:0 4px;
+}
+.report-close-bar .lbl{color:var(--text-dim); font-size:13px;}
+.report-close-bar .acts{display:flex; gap:8px;}
+.report-close-bar button{
+  padding:9px 16px; border-radius:9px; cursor:pointer; font-family:'Tajawal'; font-weight:700; font-size:12.5px;
+  border:1px solid var(--line); background:var(--navy-800); color:var(--text);
+}
+.report-close-bar button.primary{background:linear-gradient(135deg,var(--gold),var(--coral)); border:none; color:#1a1204;}
+
+@media print{
+  body *{visibility:hidden;}
+  .report-sheet, .report-sheet *{visibility:visible;}
+  .report-sheet{position:absolute; inset:0; width:100%; max-width:none; border-radius:0;}
+  .overlay{position:absolute; padding:0; background:none;}
+  .report-close-bar{display:none;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
+  // Whisper speech-to-text, running fully client-side via transformers.js (Xenova/whisper-tiny,
+  // ~39MB, multilingual). No API key, no server round-trip — the model is cached by the browser
+  // after first download. Exposed on window so the classic <script> below (voice input UI) can use it.
+  import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
+  env.allowLocalModels = false;
+  window.__hfPipeline = pipeline;
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="mark"><img id="logoImg" src="/logo.png" alt="logo" style="display:none"><span class="mark-fallback">ف</span></div>
+    <div>
+      <div class="name">فزعة <span style="color:var(--text-faint); font-weight:500; font-size:13px;" data-t="brandSub">— وكيل ريادة الذكي</span></div>
+      <div class="tag" data-t="brandTag">من الفكرة إلى السجل التجاري، خطوة بخطوة</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="btn-reset" id="langToggle" onclick="toggleLang()" style="font-family:'IBM Plex Mono';">EN / عربي</button>
+    <button class="btn-reset" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌴</button>
+    <div class="pill"><span class="dot"></span> <span data-t="connectedPill">متصل — بيانات تجريبية (Mock)</span></div>
+    <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
+  </div>
+</div>
+<div class="pattern-accent"></div>
+
+<div class="app">
+  <main class="chatcol">
+    <div class="stage-strip" id="stageStrip"></div>
+    <div id="resumeBanner"></div>
+    <div class="messages" id="messages"></div>
+    <div class="chips" id="chips"></div>
+    <div class="voice-status" id="voiceStatus"></div>
+    <div class="composer">
+      <input id="textInput" type="text" data-t-ph="composerPh" placeholder="اكتب سؤالك أو فكرتك هنا…" onkeydown="if(event.key==='Enter')sendFree()">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="تسجيل صوتي"><span class="mic-ic">🎤</span></button>
+      <button onclick="sendFree()" id="sendBtn">↩</button>
+    </div>
+  </main>
+
+  <aside class="rail">
+    <div class="card">
+      <h3><span class="ic">📍</span> <span data-t="statusHeader">حالة المشروع</span></h3>
+      <span class="badge-stage" id="stageBadge">صياغة الفكرة</span>
+      <div class="logo-preview" id="logoPreview" style="display:none;">
+        <svg width="46" height="46" viewBox="0 0 46 46" id="logoSvg"></svg>
+        <div>
+          <div class="logo-name" id="logoName"></div>
+          <div class="logo-sub" data-t="logoSub">شعار مبدئي تلقائي — مؤقت</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="costCard" style="display:none;">
+      <h3><span class="ic">💰</span> <span data-t="costHeader">حاسبة التكلفة التقديرية</span></h3>
+      <div class="donut-wrap">
+        <svg width="104" height="104" viewBox="0 0 104 104" id="donutSvg"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="total-line">
+        <span class="lbl" data-t="totalLbl">إجمالي التأسيس التقديري</span>
+        <span class="val mono" id="totalVal">— ر.ع</span>
+      </div>
+      <div class="slider-row">
+        <div class="row-between"><span data-t="scenarioLbl">سيناريو الميزانية</span><b id="budgetLbl">متوسط</b></div>
+        <input type="range" id="budgetSlider" min="0" max="100" value="50" oninput="onBudgetChange()">
+        <div class="slider-labels"><span data-t="econLbl">اقتصادي</span><span data-t="expandLbl">موسّع</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="feasibilityCard" style="display:none;">
+      <h3><span class="ic">⚖️</span> <span data-t="financeHeader">القرار المالي</span></h3>
+      <div id="feasibilityBody"></div>
+    </div>
+
+    <div class="card" id="bodiesCard" style="display:none;">
+      <h3><span class="ic">🏛️</span> <span data-t="bodiesHeader">الجهات الحكومية الموصى بها</span></h3>
+      <div class="bodies" id="bodiesList"></div>
+    </div>
+
+    <div class="card" id="checklistCard" style="display:none;">
+      <h3><span class="ic">✅</span> <span data-t="checklistHeader">خطوات التسجيل القادمة</span></h3>
+      <div class="checklist" id="checklistList"></div>
+    </div>
+
+    <button class="report-btn" id="reportBtn" onclick="openReport()" disabled>📄 <span data-t="reportBtnLbl">توليد تقرير الجدوى الكامل</span></button>
+    <div class="hint" data-t="reportHint">التقرير يُبنى من إجاباتك + جدول تكاليف عُمانية تقريبي (بيانات تجريبية للعرض فقط) ويمكن تصديره PDF مباشرة من نافذة الطباعة.</div>
+  </aside>
+</div>
+
+<div class="overlay" id="reportOverlay">
+  <div style="width:100%; max-width:760px; margin:0 auto;">
+    <div class="report-close-bar">
+      <span class="lbl" data-t="reportPreviewLbl">معاينة تقرير الجدوى — جاهز للتصدير</span>
+      <div class="acts">
+        <button onclick="downloadPdf()" id="downloadPdfBtn" data-t="downloadPdf">⬇ تنزيل PDF</button>
+        <button class="primary" onclick="closeReport()" data-t="closeBtn">إغلاق</button>
+      </div>
+    </div>
+    <div class="report-sheet" id="reportSheet"></div>
+  </div>
+</div>
+
+<script>
+/* ======================= LANGUAGE / i18n ======================= */
+let LANG = (localStorage.getItem('mirshid_lang')) || 'ar';
+
+const UI = {
+  ar: {
+    brandSub:"— وكيل ريادة الذكي", brandTag:"من الفكرة إلى السجل التجاري، خطوة بخطوة",
+    connectedPill:"متصل — جهات رسمية موثّقة + تكاليف تقديرية", newSession:"جلسة جديدة ↺",
+    composerPh:"اكتب سؤالك أو فكرتك هنا…",
+    statusHeader:"حالة المشروع", logoSub:"شعار مبدئي تلقائي — مؤقت",
+    costHeader:"حاسبة التكلفة التقديرية", totalLbl:"إجمالي التأسيس التقديري",
+    scenarioLbl:"سيناريو الميزانية", econLbl:"اقتصادي", expandLbl:"موسّع",
+    financeHeader:"القرار المالي", bodiesHeader:"الجهات الحكومية الموصى بها",
+    checklistHeader:"خطوات التسجيل القادمة", reportBtnLbl:"توليد تقرير الجدوى الكامل",
+    reportHint:"التقرير يُبنى من إجاباتك + جدول تكاليف عُمانية تقريبي (بيانات تجريبية للعرض فقط) ويمكن تصديره PDF مباشرة من نافذة الطباعة.",
+    reportPreviewLbl:"معاينة تقرير الجدوى — جاهز للتصدير", downloadPdf:"⬇ تنزيل PDF", closeBtn:"إغلاق",
+    downloadPdfBusy:"⏳ يتم التجهيز…", downloadPdfError:"⚠️ تعذّر إنشاء الملف — جرّب لاحقاً",
+    stepLabels:{ idea:"الفكرة", sector:"القطاع", city:"الموقع", team:"الفريق", budget:"الميزانية", review:"دراسة الجدوى" },
+    stageBadge:{ idea:"صياغة الفكرة", collect:"جمع بيانات المشروع", review:"دراسة الجدوى جاهزة", done:"جاهز للتسجيل" },
+    reChooseHint:"تقدر تجاوبني بكلامك العادي أو تختار من القائمة تحت 👇",
+    micTitleIdle:"تسجيل صوتي", micTitleRecording:"إيقاف التسجيل", micTitleProcessing:"جاري المعالجة…",
+    voiceLoadingModel:"جارٍ تحميل نموذج التعرف على الصوت (أول مرة فقط)…",
+    voiceListening:"🎙️ يستمع… اضغط على الميكروفون للإيقاف",
+    voiceTranscribing:"⏳ جاري تحويل الصوت إلى نص…",
+    voiceNoSpeech:"⚠️ لم يتم التقاط أي كلام — حاول مرة أخرى",
+    voiceMicDenied:"⚠️ تعذّر الوصول للميكروفون — تأكد من إعطاء الإذن للمتصفح",
+    voiceNotSupported:"⚠️ التسجيل الصوتي غير مدعوم في هذا المتصفح",
+    voiceModelError:"⚠️ تعذّر تحميل نموذج الصوت — تحقق من الاتصال بالإنترنت",
+  },
+  en: {
+    brandSub:"— Riyada AI Agent", brandTag:"From idea to commercial registration, step by step",
+    connectedPill:"Connected — Verified bodies + estimated costs", newSession:"New session ↺",
+    composerPh:"Type your question or idea here…",
+    statusHeader:"Project status", logoSub:"Auto-generated placeholder logo",
+    costHeader:"Estimated cost calculator", totalLbl:"Estimated total setup cost",
+    scenarioLbl:"Budget scenario", econLbl:"Lean", expandLbl:"Expanded",
+    financeHeader:"Financial decision", bodiesHeader:"Recommended government bodies",
+    checklistHeader:"Upcoming registration steps", reportBtnLbl:"Generate full feasibility report",
+    reportHint:"The report is built from your answers + an approximate Omani cost table (demo data only) and can be exported as PDF from the print window.",
+    reportPreviewLbl:"Feasibility report preview — ready to export", downloadPdf:"⬇ Download PDF", closeBtn:"Close",
+    downloadPdfBusy:"⏳ Preparing…", downloadPdfError:"⚠️ Could not create the file — try again",
+    stepLabels:{ idea:"Idea", sector:"Sector", city:"Location", team:"Team", budget:"Budget", review:"Feasibility" },
+    stageBadge:{ idea:"Shaping the idea", collect:"Collecting project data", review:"Feasibility study ready", done:"Ready to register" },
+    reChooseHint:"You can reply in your own words, or pick from the list below 👇",
+    micTitleIdle:"Voice input", micTitleRecording:"Stop recording", micTitleProcessing:"Processing…",
+    voiceLoadingModel:"Loading speech recognition model (first time only)…",
+    voiceListening:"🎙️ Listening… click the mic to stop",
+    voiceTranscribing:"⏳ Transcribing your voice…",
+    voiceNoSpeech:"⚠️ No speech detected — try again",
+    voiceMicDenied:"⚠️ Could not access the microphone — check your browser permission",
+    voiceNotSupported:"⚠️ Voice recording is not supported in this browser",
+    voiceModelError:"⚠️ Could not load the speech model — check your internet connection",
+  }
+};
+function t(key){ return UI[LANG][key]; }
+
+function applyStaticTranslations(){
+  document.documentElement.lang = (LANG==='ar' ? 'ar' : 'en');
+  document.documentElement.dir = (LANG==='ar' ? 'rtl' : 'ltr');
+  document.querySelectorAll('[data-t]').forEach(elm=>{
+    const key = elm.getAttribute('data-t');
+    if(UI[LANG][key] !== undefined) elm.textContent = UI[LANG][key];
+  });
+  document.querySelectorAll('[data-t-ph]').forEach(elm=>{
+    const key = elm.getAttribute('data-t-ph');
+    if(UI[LANG][key] !== undefined) elm.setAttribute('placeholder', UI[LANG][key]);
+  });
+}
+
+function toggleLang(){
+  LANG = (LANG === 'ar') ? 'en' : 'ar';
+  localStorage.setItem('mirshid_lang', LANG);
+  applyStaticTranslations();
+  renderStageStrip();
+  refreshBadge();
+  if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
+  if(["review","done"].includes(state.step)){
+    const costs = calcCosts();
+    if(costs) drawDonut(costs);
+    document.getElementById('budgetLbl').innerText = budgetLabel();
+    renderFeasibility(); renderBodies(); renderChecklist();
+  } else if(["sector","city","team","budget"].includes(state.step)){
+    showStepChips(state.step);
+  }
+  if(typeof setMicState === 'function' && micState !== MIC_STATE.RECORDING) setMicState(micState);
+}
+
+/* ======================= MOCK DATA LAYER (تحاكي مصادر ريادة/تجارة الرسمية) ======================= */
+
+function L(obj){ return LANG==='ar' ? obj.label : obj.label_en; }
+
+// ==== جهات حكومية حقيقية موثّقة (روابط تم التحقق منها عبر بحث ويب مباشر) ====
+// ملاحظة: أرقام الرسوم أدناه تقديرية توضيحية (لا تتوفر لها تسعيرة موحدة معلنة بحسب النشاط)
+// وهذا مذكور صراحة في التقرير المُصدَّر. أما الروابط والأسماء والحقائق المؤسسية فحقيقية ومُتحقَّق منها.
+const GOV_LINKS = {
+  riyada:  { name:"هيئة تنمية المؤسسات الصغيرة والمتوسطة (ريادة)", name_en:"SME Development Authority (Riyada)", url:"https://www.sme.gov.om/" },
+  invest:  { name:"بوابة استثمر بسهولة (Invest Easy)", name_en:"Invest Easy Portal", url:"https://investeasy.gov.om" },
+  tejarah: { name:"وزارة التجارة والصناعة وترويج الاستثمار", name_en:"Ministry of Commerce, Industry & Investment Promotion", url:"https://tejarah.gov.om" },
+  occi:    { name:"غرفة تجارة وصناعة عُمان (OCCI)", name_en:"Oman Chamber of Commerce & Industry (OCCI)", url:"https://www.omanchamber.om" },
+  madayn:  { name:"المؤسسة العامة للمناطق الصناعية (مدائن)", name_en:"Public Establishment for Industrial Estates (Madayn)", url:"https://madayn.om" },
+  opaz:    { name:"الهيئة العامة للمناطق الاقتصادية الخاصة والمناطق الحرة (أوبال)", name_en:"Public Authority for Special Economic Zones & Free Zones (OPAZ)", url:"https://www.opaz.gov.om" },
+  odb:     { name:"بنك التنمية العُماني", name_en:"Oman Development Bank", url:"https://db.om" },
+  mht:     { name:"وزارة التراث والسياحة", name_en:"Ministry of Heritage & Tourism", url:"https://mht.gov.om" },
+  maf:     { name:"وزارة الثروة الزراعية والسمكية وموارد المياه", name_en:"Ministry of Agricultural & Fisheries Wealth and Water Resources", url:"https://www.maf.gov.om" },
+  moh:     { name:"وزارة الصحة", name_en:"Ministry of Health", url:"https://www.moh.gov.om" },
+  mtcit:   { name:"وزارة النقل والاتصالات وتقنية المعلومات", name_en:"Ministry of Transport, Communications & IT", url:"https://www.mtcit.gov.om" },
+  moe:     { name:"وزارة التربية والتعليم", name_en:"Ministry of Education", url:"https://home.moe.gov.om" },
+  ea:      { name:"هيئة البيئة", name_en:"Environment Authority", url:"https://www.ea.gov.om" },
+};
+
+const SECTORS = {
+  tech:      { label:"تقنية / تطبيق رقمي",     label_en:"Tech / digital app",        icon:"💻", registration:22, municipal:35,  chamber:20, rentFactor:0.6, equipmentMid:900,  extraBodyKey:"mtcit" },
+  retail:    { label:"تجارة تجزئة / متجر",      label_en:"Retail / shop",             icon:"🛍️", registration:22, municipal:90,  chamber:35, rentFactor:1.0, equipmentMid:2200, extraBodyKey:"opaz" },
+  food:      { label:"مطعم / مقهى",             label_en:"Restaurant / café",         icon:"🍽️", registration:22, municipal:160, chamber:45, rentFactor:1.2, equipmentMid:5200, extraBodyKey:"moh" },
+  ecommerce: { label:"متجر إلكتروني",           label_en:"Online store",              icon:"📦", registration:22, municipal:30,  chamber:20, rentFactor:0.15,equipmentMid:650,  extraBodyKey:"mtcit" },
+  services:  { label:"خدمات استشارية / حرفية",  label_en:"Consulting / craft services",icon:"🧰", registration:22, municipal:55,  chamber:25, rentFactor:0.5, equipmentMid:700,  extraBodyKey:"mht" },
+  manufact:  { label:"تصنيع / إنتاج صغير",       label_en:"Small manufacturing",        icon:"🏭", registration:22, municipal:210, chamber:60, rentFactor:1.4, equipmentMid:7800, extraBodyKey:"madayn" },
+  agro:      { label:"زراعة / ثروة سمكية",      label_en:"Agriculture / fisheries",   icon:"🌾", registration:22, municipal:70,  chamber:30, rentFactor:0.4, equipmentMid:3100, extraBodyKey:"maf" },
+  education: { label:"تعليم / تدريب",           label_en:"Education / training",      icon:"🎓", registration:22, municipal:45,  chamber:25, rentFactor:0.55,equipmentMid:1400, extraBodyKey:"moe" },
+  beauty:    { label:"تجميل / صالون",           label_en:"Beauty / salon",            icon:"💇", registration:22, municipal:120, chamber:30, rentFactor:0.8, equipmentMid:2600, extraBodyKey:"moh" },
+  health:    { label:"عيادة / خدمات صحية",       label_en:"Clinic / health services",  icon:"🩺", registration:22, municipal:180, chamber:40, rentFactor:1.1, equipmentMid:6500, extraBodyKey:"moh" },
+  logistics: { label:"نقل / خدمات لوجستية",      label_en:"Transport / logistics",     icon:"🚚", registration:22, municipal:95,  chamber:35, rentFactor:0.7, equipmentMid:3800, extraBodyKey:"mtcit" },
+};
+
+const CITIES = {
+  muscat: { label:"مسقط", label_en:"Muscat", rentBase:520, tier:"مرتفع", tier_en:"High" },
+  sohar:  { label:"صحار", label_en:"Sohar", rentBase:300, tier:"متوسط", tier_en:"Medium" },
+  nizwa:  { label:"نزوى", label_en:"Nizwa", rentBase:260, tier:"متوسط", tier_en:"Medium" },
+  sur:    { label:"صور",  label_en:"Sur", rentBase:190, tier:"منخفض", tier_en:"Low" },
+  salalah:{ label:"صلالة",label_en:"Salalah", rentBase:270, tier:"متوسط", tier_en:"Medium" },
+  ibri:   { label:"عبري", label_en:"Ibri", rentBase:170, tier:"منخفض", tier_en:"Low" },
+  soham:  { label:"صحم",  label_en:"Suhar/Soham", rentBase:230, tier:"متوسط", tier_en:"Medium" },
+  rustaq: { label:"الرستاق", label_en:"Rustaq", rentBase:180, tier:"منخفض", tier_en:"Low" },
+  buraimi:{ label:"البريمي", label_en:"Buraimi", rentBase:210, tier:"متوسط", tier_en:"Medium" },
+  duqm:   { label:"الدقم", label_en:"Duqm", rentBase:240, tier:"متوسط", tier_en:"Medium" },
+};
+
+const TEAM_SIZES = {
+  solo:  { label:"فردي (أنا فقط)", label_en:"Solo (just me)", factor:1.0 },
+  small: { label:"2–4 أشخاص",      label_en:"2–4 people",     factor:1.35 },
+  mid:   { label:"5–10 أشخاص",     label_en:"5–10 people",    factor:1.8 },
+};
+
+// ملاحظة تصحيحية مهمة: بموجب المرسوم السلطاني رقم 107/2020، تم دمج "صندوق الرفد" ضمن
+// "هيئة تنمية المؤسسات الصغيرة والمتوسطة" (ريادة) — فلم تعد جهة منفصلة، وهذا مطبّق أدناه.
+const BASE_BODIES = [
+  { ...GOV_LINKS.tejarah, noteAr:"إصدار السجل التجاري عبر بوابة Invest Easy", noteEn:"Commercial registration via the Invest Easy portal" },
+  { ...GOV_LINKS.riyada, noteAr:"الدعم والتمويل والاستشارات للمؤسسات الصغيرة والمتوسطة (يشمل برنامج الرفد سابقاً)", noteEn:"Support, financing & consulting for SMEs (includes the former Al Rafd Fund)" },
+];
+
+const REG_STEPS = [
+  { ar:"تحديد النشاط التجاري بدقة عبر تصنيف وزارة التجارة", en:"Precisely define your business activity per the Ministry of Commerce classification" },
+  { ar:"حجز الاسم التجاري وإصدار الترخيص إلكترونياً عبر بوابة Invest Easy", en:"Reserve the trade name and issue the license online via the Invest Easy portal" },
+  { ar:"استخراج السجل التجاري", en:"Issue the commercial registration" },
+  { ar:"الحصول على التراخيص القطاعية اللازمة (بلدية / دفاع مدني / صحة حسب النشاط)", en:"Obtain required sector licenses (municipal / civil defense / health as applicable)" },
+  { ar:"الانضمام لعضوية غرفة تجارة وصناعة عُمان (OCCI)", en:"Join Oman Chamber of Commerce & Industry (OCCI) membership" },
+  { ar:"فتح حساب بنكي تجاري باسم المنشأة", en:"Open a business bank account under the company name" },
+  { ar:"التسجيل في التأمينات الاجتماعية عند توظيف أول موظف", en:"Register for social insurance once you hire your first employee" },
+];
+
+// شروط بنك التنمية العُماني الحقيقية (تم التحقق منها): قروض بدون فائدة حتى 15,000 ر.ع بتمويل يصل
+// 90% لأصحاب المشاريع المتفرغين، وقروض بفائدة 3% حتى 15,000 ر.ع بتمويل 80% لغير المتفرغين،
+// وقروض تنموية أكبر بفائدة 3% حتى مليون ر.ع لأصحاب المشاريع الأكبر.
+const FUNDING_SOURCES = [
+  { name:"برنامج الرفد (ضمن هيئة ريادة)", name_en:"Al Rafd Programme (part of Riyada)", url:GOV_LINKS.riyada.url,
+    desc:"دعم وتمويل للمشاريع الشبابية الصغيرة ضمن هيئة تنمية المؤسسات الصغيرة والمتوسطة — يناسب فجوات تمويل محدودة",
+    desc_en:"Support and financing for small youth projects, now part of the SME Development Authority — suits smaller funding gaps", fitsGapUnder:1500 },
+  { name:"بنك التنمية العُماني — قرض بدون فائدة", name_en:"Oman Development Bank — interest-free loan", url:GOV_LINKS.odb.url,
+    desc:"حتى 15,000 ر.ع بتمويل يصل 90% من التكلفة لأصحاب المشاريع المتفرغين بالكامل لإدارتها",
+    desc_en:"Up to 15,000 OMR, financing up to 90% of cost, for entrepreneurs fully dedicated to managing their project", fitsGapUnder:8000 },
+  { name:"بنك التنمية العُماني — قرض تنموي بفائدة 3%", name_en:"Oman Development Bank — 3% development loan", url:GOV_LINKS.odb.url,
+    desc:"تمويل أكبر حتى مليون ر.ع بفائدة 3% وفترة سماح مناسبة، يناسب فجوات التمويل الأكبر",
+    desc_en:"Larger financing up to 1,000,000 OMR at 3% interest with a suitable grace period — suits bigger funding gaps", fitsGapUnder:Infinity },
+];
+function recommendFunding(gap){
+  if(gap <= 0) return null;
+  return FUNDING_SOURCES.find(f=>gap <= f.fitsGapUnder) || FUNDING_SOURCES[FUNDING_SOURCES.length-1];
+}
+
+// KNOWLEDGE base — يحاكي طبقة الاسترجاع (RAG) الموضّحة في المعمارية (search_riyada)
+// كل حقيقة هنا تم التحقق منها عبر بحث ويب مباشر بتاريخ إعداد هذا الوكيل، وتتضمن رابط المصدر الرسمي.
+const KNOWLEDGE = [
+  { id:1, kw:["ريادة","دعم","تمويل مبتدئ","مبادرة","رفد","riyada","support","funding","rafd"], url:GOV_LINKS.riyada.url,
+    ar:"هيئة تنمية المؤسسات الصغيرة والمتوسطة (ريادة) هي الجهة الحكومية الرسمية لدعم رواد الأعمال في عُمان، وتضم منذ المرسوم السلطاني 107/2020 ما كان يُعرف سابقاً بـ«صندوق الرفد» ضمن هيكلها.",
+    en:"Riyada (SME Development Authority) is the official government body supporting entrepreneurs in Oman, and since Royal Decree 107/2020 it incorporates what was formerly the separate 'Al Rafd Fund'." },
+  { id:2, kw:["سجل تجاري","تسجيل","invest easy","تجارة","registration","commercial"], url:GOV_LINKS.invest.url,
+    ar:"يتم إصدار السجل التجاري إلكترونياً عبر بوابة Invest Easy (استثمر بسهولة) التابعة لوزارة التجارة والصناعة وترويج الاستثمار، وتشمل حجز الاسم ثم إصدار الترخيص.",
+    en:"Commercial registration is issued electronically via the Invest Easy portal (Ministry of Commerce, Industry & Investment Promotion), including name reservation then license issuance." },
+  { id:3, kw:["غرفة تجارة","occi","عضوية","chamber","membership"], url:GOV_LINKS.occi.url,
+    ar:"الانضمام لغرفة تجارة وصناعة عُمان (OCCI) إلزامي لمعظم الأنشطة التجارية، وتتوفر خدمات التسجيل والتجديد إلكترونياً عبر موقعها.",
+    en:"Joining the Oman Chamber of Commerce & Industry (OCCI) is mandatory for most commercial activities; registration and renewal services are available online." },
+  { id:4, kw:["منطقة حرة","أوبال","اقتصادية","free zone","opaz"], url:GOV_LINKS.opaz.url,
+    ar:"الهيئة العامة للمناطق الاقتصادية الخاصة والمناطق الحرة (أوبال) تدير مناطق استثمارية كبرى وتناسب المشاريع التصديرية والصناعية الكبيرة.",
+    en:"OPAZ manages major investment zones and suits export-oriented and large industrial projects." },
+  { id:5, kw:["مدائن","صناعي","مصنع","madayn","industrial","factory"], url:GOV_LINKS.madayn.url,
+    ar:"المؤسسة العامة للمناطق الصناعية (مدائن)، تأسست 1993، توفر أراضٍ ومرافق صناعية مجهزة للمصانع الصغيرة والمتوسطة في مواقع متعددة حول عُمان.",
+    en:"Madayn (Public Establishment for Industrial Estates), founded 1993, provides equipped industrial land and facilities for small and medium factories across multiple sites in Oman." },
+  { id:6, kw:["تمويل","قرض","بنك التنمية","صندوق الرفد","funding","loan","finance"], url:GOV_LINKS.odb.url,
+    ar:"بنك التنمية العُماني يقدّم قروضاً بدون فائدة حتى 15,000 ر.ع (تمويل 90%) لأصحاب المشاريع المتفرغين، وقروضاً تنموية أكبر بفائدة 3% حتى مليون ر.ع.",
+    en:"Oman Development Bank offers interest-free loans up to 15,000 OMR (90% financing) for full-time entrepreneurs, and larger development loans at 3% interest up to 1,000,000 OMR." },
+  { id:7, kw:["بلدية","رخصة نشاط","لافتة","municipal","license"], url:null,
+    ar:"رخصة النشاط البلدي مطلوبة لأي نشاط له موقع فعلي، وتصدر الآن غالباً بشكل تلقائي عبر بوابة Invest Easy ضمن خطوات الترخيص.",
+    en:"A municipal activity license is required for any activity with a physical location, and is now often issued automatically through the Invest Easy portal as part of licensing." },
+  { id:8, kw:["بيئة","تصريح بيئي","environment","permit"], url:GOV_LINKS.ea.url,
+    ar:"هيئة البيئة تشترط تصريحاً بيئياً على الأنشطة الصناعية أو التي قد يكون لها أثر بيئي مثل المطاعم الكبيرة والمصانع.",
+    en:"The Environment Authority requires an environmental permit for industrial activities or those with potential environmental impact, such as large restaurants and factories." },
+  { id:9, kw:["سياحة","تراث","حرف","tourism","heritage","craft"], url:GOV_LINKS.mht.url,
+    ar:"وزارة التراث والسياحة تدعم وترخّص المشاريع السياحية والحرفية، وتتيح برامج تدريب وتطوير للحرفيين والمنشآت السياحية الجديدة.",
+    en:"The Ministry of Heritage & Tourism supports and licenses tourism and craft projects, and offers training and development programs for new artisans and tourism establishments." },
+  { id:10, kw:["زراعة","صيد","أسماك","agriculture","fishing","fisheries"], url:GOV_LINKS.maf.url,
+    ar:"وزارة الثروة الزراعية والسمكية وموارد المياه (اسمها الحالي منذ 2020) تقدّم تراخيص ودعماً فنياً لمشاريع الزراعة وتربية الأحياء المائية والصيد التجاري.",
+    en:"The Ministry of Agricultural & Fisheries Wealth and Water Resources (renamed in 2020) provides licenses and technical support for agriculture, aquaculture, and commercial fishing projects." },
+  { id:11, kw:["اتصالات","تقنية المعلومات","تطبيق","telecom","it","app"], url:GOV_LINKS.mtcit.url,
+    ar:"وزارة النقل والاتصالات وتقنية المعلومات تشرف على تنظيم الخدمات الرقمية والاتصالات والنقل للمشاريع التقنية واللوجستية.",
+    en:"The Ministry of Transport, Communications & IT oversees the regulation of digital services, telecom, and transport for tech and logistics projects." },
+  { id:12, kw:["صحة","عيادة","تجميل","health","clinic","beauty"], url:GOV_LINKS.moh.url,
+    ar:"وزارة الصحة هي الجهة المسؤولة عن ترخيص واعتماد العيادات الخاصة ومراكز التجميل والمنشآت الصحية في عُمان.",
+    en:"The Ministry of Health is responsible for licensing and accrediting private clinics, beauty centers, and health facilities in Oman." },
+  { id:13, kw:["تعليم","تدريب","مدرسة","education","training","school"], url:GOV_LINKS.moe.url,
+    ar:"وزارة التربية والتعليم تشرف على تراخيص مراكز التدريب والمؤسسات التعليمية الخاصة في عُمان.",
+    en:"The Ministry of Education oversees licensing of training centers and private educational institutions in Oman." },
+];
+
+function retrieve(query, lang){
+  const q = (query||"").toLowerCase();
+  const useLang = lang || LANG;
+  const scored = KNOWLEDGE.map(k=>{
+    let score=0;
+    k.kw.forEach(w=>{ if(q.includes(w.toLowerCase())) score+=1; });
+    return {...k, score};
+  }).filter(k=>k.score>0).sort((a,b)=>b.score-a.score);
+  return scored.slice(0,2).map(k=>({...k, text: useLang==='ar' ? k.ar : k.en}));
+}
+
+/* ======================= APP STATE ======================= */
+
+let state = {
+  step: "idea",           // idea -> sector -> city -> team -> budget -> review -> done
+  idea: "",
+  sector: null,
+  city: null,
+  budgetLevel: 50,
+  team: null,
+  userBudget: null,       // الميزانية الفعلية المتاحة لدى رائد الأعمال (ر.ع) — لاتخاذ القرار المالي
+  messages: [],
+  checklist: [],
+  chatHistory: [],        // {role:'user'|'assistant', content:string} — لذاكرة المحادثة متعددة الأدوار
+};
+
+const STEPS_ORDER = ["idea","sector","city","team","budget","review"];
+
+const BUDGET_RANGES = [
+  { key:"r1", label:"أقل من ٥٠٠ ر.ع", label_en:"Under 500 OMR", value:350 },
+  { key:"r2", label:"٥٠٠ – ١٥٠٠ ر.ع", label_en:"500 – 1,500 OMR", value:1000 },
+  { key:"r3", label:"١٥٠٠ – ٣٠٠٠ ر.ع", label_en:"1,500 – 3,000 OMR", value:2250 },
+  { key:"r4", label:"أكثر من ٣٠٠٠ ر.ع", label_en:"Over 3,000 OMR", value:4000 },
+];
+
+/* ======================= PERSISTENCE ======================= */
+
+
+let storageDisabled = false;
+let storageWarned = false;
+
+function getSessionId(){
+  try{
+    let id = localStorage.getItem('fazaa_session_id');
+    if(!id){
+      id = 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem('fazaa_session_id', id);
+    }
+    return id;
+  }catch(e){
+    return 'sess_temp_' + Date.now().toString(36);
+  }
+}
+const SESSION_ID = getSessionId();
+
+function showStorageNotice(){
+  if(storageWarned) return;
+  storageWarned = true;
+  const bar = document.getElementById('resumeBanner');
+  const isAr = LANG==='ar';
+  const note = el(`
+    <div class="resume-banner" style="border-color:color-mix(in srgb, var(--warn) 35%, transparent); background:linear-gradient(90deg, color-mix(in srgb, var(--warn) 10%, transparent), color-mix(in srgb, var(--warn) 2%, transparent));">
+      <span>⚠️ ${isAr?'تعذّر الاتصال بسيرفر الحفظ':'Could not reach the save server'} (/api/state) — ${isAr?'الجلسة ستعمل بشكل طبيعي لكن التقدم':'the session will work normally but progress'} <b style="color:var(--warn);">${isAr?'لن يُحفظ':'will not be saved'}</b> ${isAr?'إذا أغلقت الصفحة. تأكد إن السيرفر (npm start) شغّال.':'if you close the page. Make sure the server (npm start) is running.'}</span>
+      <div class="rb-actions"><button id="dismissStorageWarn">${isAr?'حسناً':'OK'}</button></div>
+    </div>`);
+  bar.appendChild(note);
+  const btn = document.getElementById('dismissStorageWarn');
+  if(btn) btn.onclick = ()=> note.remove();
+}
+
+async function saveState(){
+  if(storageDisabled) return;
+  try{
+    const resp = await fetch(`/api/state/${SESSION_ID}`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ value: state })
+    });
+    if(!resp.ok) throw new Error('save failed: ' + resp.status);
+  }catch(e){
+    storageDisabled = true;
+    showStorageNotice();
+  }
+}
+async function loadState(){
+  try{
+    const resp = await fetch(`/api/state/${SESSION_ID}`);
+    if(resp.status === 404) return null;
+    if(!resp.ok) return null;
+    const data = await resp.json();
+    return data.value || null;
+  }catch(e){
+    return null;
+  }
+}
+async function clearState(){
+  if(storageDisabled) return;
+  try{ await fetch(`/api/state/${SESSION_ID}`, { method:'DELETE' }); }catch(e){}
+}
+
+function resetSession(){
+  clearState();
+  state = { step:"idea", idea:"", sector:null, city:null, budgetLevel:50, team:null, userBudget:null, messages:[], checklist:[], chatHistory:[] };
+  document.getElementById('messages').innerHTML = "";
+  document.getElementById('resumeBanner').innerHTML = "";
+  document.getElementById('costCard').style.display = "none";
+  document.getElementById('feasibilityCard').style.display = "none";
+  document.getElementById('bodiesCard').style.display = "none";
+  document.getElementById('checklistCard').style.display = "none";
+  document.getElementById('logoPreview').style.display = "none";
+  document.getElementById('reportBtn').disabled = true;
+  clearChips();
+  boot(true);
+}
+
+/* ======================= UI HELPERS ======================= */
+
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstChild;
+}
+
+function scrollDown(){
+  const m = document.getElementById('messages');
+  m.scrollTop = m.scrollHeight + 200;
+}
+
+function stripHtml(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").replace(/\s+/g,' ').trim();
+}
+
+function addMessage(role, html, opts={}){
+  let wrap = opts.existingWrap;
+  if(wrap){
+    wrap.querySelector('.bubble').innerHTML = `${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}`;
+  } else {
+    wrap = el(`
+      <div class="msg ${role}">
+        <div class="avatar">${role==='agent' ? '🧭' : '🙂'}</div>
+        <div class="bubble">${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}</div>
+      </div>`);
+    document.getElementById('messages').appendChild(wrap);
+  }
+  scrollDown();
+  state.messages.push({role, html, src: opts.src || null});
+  if(!opts.skipHistory){
+    state.chatHistory.push({ role: role==='agent' ? 'assistant' : 'user', content: stripHtml(html) });
+    if(state.chatHistory.length > 20) state.chatHistory = state.chatHistory.slice(-20);
+  }
+  if(!opts.skipSave) saveState();
+}
+
+function hideTyping(){
+  const t = document.getElementById('typingRow');
+  if(t) t.remove();
+}
+
+function setChips(items){
+  const c = document.getElementById('chips');
+  c.innerHTML = "";
+  items.forEach(it=>{
+    const chip = el(`<div class="chip">${it.label}</div>`);
+    chip.onclick = it.onClick;
+    c.appendChild(chip);
+  });
+}
+function clearChips(){ document.getElementById('chips').innerHTML = ""; }
+
+function renderStageStrip(){
+  const strip = document.getElementById('stageStrip');
+  strip.innerHTML = "";
+  const currentIdx = STEPS_ORDER.indexOf(state.step);
+  STEPS_ORDER.forEach((s, i)=>{
+    const done = i < currentIdx || state.step==="done";
+    const active = i === currentIdx && state.step!=="done";
+    const item = el(`<div class="stage-item ${done?'done':''} ${active?'active':''}">
+      <span class="n">${done?'✓':i+1}</span><span>${UI[LANG].stepLabels[s]}</span>
+    </div>`);
+    strip.appendChild(item);
+    if(i < STEPS_ORDER.length-1) strip.appendChild(el(`<div class="stage-sep"></div>`));
+  });
+}
+
+function isGreetingOrTooShort(text){
+  const t = text.trim().toLowerCase().replace(/[!.؟?]/g,'');
+  if(t.length < 2) return true;
+  const greetings = ['hi','hello','hey','yo','sup','howdy','مرحبا','مرحباً','هلا','هلو','هاي','السلام عليكم','سلام','صباح الخير','مساء الخير','اهلين','أهلين','اهلا','أهلا','مرحبتين','هلابك'];
+  if(greetings.includes(t)) return true;
+  const words = t.split(/\s+/).filter(Boolean);
+  const hasArabicOrLatinWord = /[a-zA-Zء-ي]{4,}/.test(t);
+  if(words.length <= 2 && !hasArabicOrLatinWord) return true;
+  return false;
+}
+
+// يحاول يربط نص حر كتبه المستخدم (بأي لغة) بأحد الخيارات الجاهزة للمرحلة الحالية،
+// عشان "أي برومبت مخصص" يشتغل زي ما يشتغل الضغط على الأزرار بالضبط.
+function matchOption(text, step){
+  const t = text.trim().toLowerCase();
+  if(step === 'sector'){
+    for(const [key,s] of Object.entries(SECTORS)){
+      const words = [...s.label.toLowerCase().split(/[\s\/،]+/), ...s.label_en.toLowerCase().split(/[\s\/]+/)].filter(w=>w.length>1);
+      if(words.some(w=> t.includes(w))) return key;
+    }
+    const aliases = {
+      tech:['tech','app','software','برمجة','تطبيق','تقني'],
+      retail:['shop','store','بيع','بضاعة','retail'],
+      food:['restaurant','cafe','مطعم','قهوة','كوفي','مقهى','اكل','coffee'],
+      ecommerce:['online','اونلاين','أونلاين','انترنت','إنترنت','e-commerce','ecommerce'],
+      services:['consult','استشار','خدمة','حرفة','حرفي','service'],
+      manufact:['factory','مصنع','تصنيع','إنتاج','manufactur'],
+      agro:['farm','مزرعة','زراعة','سمك','صيد','agri','fish'],
+      education:['school','تعليم','تدريب','دورة','دورات','training','course'],
+      beauty:['صالون','تجميل','مكياج','حلاقة','salon','beauty','makeup'],
+      health:['clinic','عيادة','صحة','طبي','health','medical'],
+      logistics:['نقل','شحن','توصيل','لوجستي','logistic','delivery','transport'],
+    };
+    for(const [key,words] of Object.entries(aliases)){
+      if(words.some(w=> t.includes(w))) return key;
+    }
+    return null;
+  }
+  if(step === 'city'){
+    for(const [key,c] of Object.entries(CITIES)){
+      if(t.includes(c.label.toLowerCase()) || t.includes(c.label_en.toLowerCase())) return key;
+    }
+    return null;
+  }
+  if(step === 'team'){
+    if(/فردي|وحدي|لحالي|نفسي|بروحي|solo|alone|شخص واحد|just me|\b1\b/.test(t)) return 'solo';
+    if(/اثنين|ثلاث|أربع|ثلاثة|أربعة|صغير|small|\b2\b|\b3\b|\b4\b/.test(t)) return 'small';
+    if(/خمس|ست|سبع|ثمان|تسع|عشر|فريق كبير|team|كبير|large|\b(5|6|7|8|9|10)\b/.test(t)) return 'mid';
+    return null;
+  }
+  if(step === 'budget'){
+    const nums = t.match(/\d+/g);
+    if(nums){
+      const n = parseInt(nums[0],10);
+      if(n < 500) return BUDGET_RANGES[0];
+      if(n < 1500) return BUDGET_RANGES[1];
+      if(n < 3000) return BUDGET_RANGES[2];
+      return BUDGET_RANGES[3];
+    }
+    if(/قليل|بسيط|محدود|ماعندي|ما عندي|little|limited|low/.test(t)) return BUDGET_RANGES[0];
+    if(/متوسط|medium|moderate/.test(t)) return BUDGET_RANGES[1];
+    if(/كبير|واسع|مرتاح|large|comfortable/.test(t)) return BUDGET_RANGES[2];
+    if(/كثير جدا|كثير جداً|مرتاح جدا|فلوس كثير|plenty|a lot/.test(t)) return BUDGET_RANGES[3];
+    return null;
+  }
+  return null;
+}
+
+function showStepChips(step){
+  if(step==='sector') setChips(Object.entries(SECTORS).map(([key,s])=>({ label:`${s.icon} ${L(s)}`, onClick:()=>chooseSector(key) })));
+  else if(step==='city') setChips(Object.entries(CITIES).map(([key,c])=>({ label:`${L(c)} · ${LANG==='ar'?'إيجار':'Rent'} ${LANG==='ar'?c.tier:c.tier_en}`, onClick:()=>chooseCity(key) })));
+  else if(step==='team') setChips(Object.entries(TEAM_SIZES).map(([key,tm])=>({ label:L(tm), onClick:()=>chooseTeam(key) })));
+  else if(step==='budget') setChips(BUDGET_RANGES.map(r=>({ label:L(r), onClick:()=>chooseBudget(r) })));
+  else if(step==='review') setChips([{ label: LANG==='ar'?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() }]);
+}
+
+function stageBadgeText(){
+  if(state.step==="idea") return UI[LANG].stageBadge.idea;
+  if(["sector","city","team","budget"].includes(state.step)) return UI[LANG].stageBadge.collect;
+  if(state.step==="review") return UI[LANG].stageBadge.review;
+  return UI[LANG].stageBadge.done;
+}
+function refreshBadge(){ document.getElementById('stageBadge').innerText = stageBadgeText(); }
+
+/* ======================= LOGO GENERATOR (mock creative service) ======================= */
+
+function isPalmTheme(){ return document.body.classList.contains('palm-theme'); }
+
+const LOGO_PALETTES = [
+  ["#d1a34a","#e8735c"], ["#33c9b0","#1c2a5e"], ["#e8b23c","#2a3b7a"], ["#e8735c","#131c42"]
+];
+const LOGO_PALETTES_PALM = [
+  ["#d9c49c","#7a5c3a"], ["#6f8f47","#4a4020"], ["#b9a273","#3f3a26"], ["#8a7148","#241f14"]
+];
+function initialsOf(name){
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if(parts.length===0) return "؟";
+  if(parts.length===1) return parts[0].slice(0,1);
+  return parts[0].slice(0,1) + parts[1].slice(0,1);
+}
+function renderLogo(name){
+  const box = document.getElementById('logoPreview');
+  const svg = document.getElementById('logoSvg');
+  const hash = [...name].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const palettes = isPalmTheme() ? LOGO_PALETTES_PALM : LOGO_PALETTES;
+  const [c1,c2] = palettes[hash % palettes.length];
+  const gid = "g"+hash;
+  svg.innerHTML = `
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
+    </linearGradient></defs>
+    <rect width="46" height="46" rx="12" fill="url(#${gid})"/>
+    <text x="23" y="29" font-family="Cairo" font-weight="800" font-size="17" fill="#fff" text-anchor="middle">${initialsOf(name)}</text>
+  `;
+  document.getElementById('logoName').innerText = name;
+  box.style.display = "flex";
+}
+
+/* ======================= COST ENGINE ======================= */
+
+function budgetFactor(){
+  // 0..100 -> 0.55x .. 1.9x
+  return 0.55 + (state.budgetLevel/100) * 1.35;
+}
+function budgetLabel(){
+  const isAr = LANG==='ar';
+  if(state.budgetLevel < 33) return isAr?"اقتصادي":"Lean";
+  if(state.budgetLevel < 66) return isAr?"متوسط":"Moderate";
+  return isAr?"موسّع":"Expanded";
+}
+
+function calcCosts(){
+  if(!state.sector || !state.city) return null;
+  const s = SECTORS[state.sector];
+  const c = CITIES[state.city];
+  const teamF = state.team ? TEAM_SIZES[state.team].factor : 1;
+  const bf = budgetFactor();
+
+  const registration = s.registration;
+  const municipal = s.municipal;
+  const chamber = s.chamber;
+  const rentMonthly = Math.round(s.rentFactor * c.rentBase);
+  const rentInit = Math.round(rentMonthly * 3); // شهرين تأمين + شهر تشغيل
+  const equipment = Math.round(s.equipmentMid * bf * teamF);
+  const subtotal = registration+municipal+chamber+rentInit+equipment;
+  const marketing = Math.round(subtotal*0.08);
+  const total = subtotal+marketing;
+
+  return { registration, municipal, chamber, rentMonthly, rentInit, equipment, marketing, total };
+}
+
+function feasibility(){
+  const costs = calcCosts();
+  if(!costs || state.userBudget==null) return null;
+  const gap = costs.total - state.userBudget;
+  const ratio = state.userBudget / costs.total;
+  let verdict, tone;
+  if(ratio >= 1.1){ verdict = LANG==='ar' ? "المشروع قابل للتنفيذ مالياً" : "The project is financially viable"; tone = "good"; }
+  else if(ratio >= 0.8){ verdict = LANG==='ar' ? "جدوى محدودة — فجوة تمويلية بسيطة" : "Limited feasibility — a small funding gap"; tone = "warn"; }
+  else { verdict = LANG==='ar' ? "فجوة تمويلية كبيرة — يُنصح بالتمويل قبل الإطلاق" : "Large funding gap — financing is recommended before launch"; tone = "bad"; }
+  const score = Math.max(0, Math.min(100, Math.round(ratio*100)));
+  const source = gap>0 ? recommendFunding(gap) : null;
+  return { costs, gap, ratio, verdict, tone, score, source };
+}
+
+const COST_COLORS = { registration:"#d1a34a", municipal:"#e8735c", chamber:"#e8b23c", rentInit:"#33c9b0", equipment:"#7ea6ff", marketing:"#a78bfa" };
+const COST_COLORS_PALM = { registration:"#7a5c3a", municipal:"#b0522f", chamber:"#b78636", rentInit:"#6f8f47", equipment:"#8a9e6f", marketing:"#4a4020" };
+function costColors(){ return isPalmTheme() ? COST_COLORS_PALM : COST_COLORS; }
+const COST_LABELS_AR = { registration:"رسوم السجل التجاري", municipal:"رسوم بلدية", chamber:"غرفة تجارة عُمان", rentInit:"إيجار أولي (٣ أشهر)", equipment:"تجهيزات/معدات", marketing:"تسويق إطلاق" };
+const COST_LABELS_EN = { registration:"Commercial registration fee", municipal:"Municipal fees", chamber:"Oman Chamber of Commerce", rentInit:"Initial rent (3 months)", equipment:"Equipment / setup", marketing:"Launch marketing" };
+function costLabels(){ return LANG==='ar' ? COST_LABELS_AR : COST_LABELS_EN; }
+
+function drawDonut(costs){
+  const svg = document.getElementById('donutSvg');
+  const legend = document.getElementById('legend');
+  const keys = ["registration","municipal","chamber","rentInit","equipment","marketing"];
+  const total = costs.total;
+  let angle = -90;
+  const r = 40, cx=52, cy=52, sw=15;
+  let paths = "";
+  const colors = costColors();
+  const cs = getComputedStyle(document.body);
+  const ringColor = cs.getPropertyValue('--navy-700').trim();
+  const dimColor = cs.getPropertyValue('--text-faint').trim();
+  const textColor = cs.getPropertyValue('--text').trim();
+  keys.forEach(k=>{
+    const val = costs[k];
+    const frac = val/total;
+    const deg = frac*360;
+    const large = deg>180?1:0;
+    const a1 = angle*Math.PI/180, a2=(angle+deg)*Math.PI/180;
+    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    const x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+    paths += `<path d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}" stroke="${colors[k]}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
+    angle += deg;
+  });
+  svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ringColor}" stroke-width="${sw}"/>${paths}
+    <text x="${cx}" y="${cy-3}" text-anchor="middle" fill="${dimColor}" font-size="8" font-family="Tajawal">الإجمالي</text>
+    <text x="${cx}" y="${cy+11}" text-anchor="middle" fill="${textColor}" font-size="11" font-family="IBM Plex Mono" font-weight="700">${total}</text>`;
+
+  legend.innerHTML = keys.map(k=>`
+    <div class="li"><span class="sw" style="background:${colors[k]}"></span>${costLabels()[k]}<span class="v">${costs[k]}</span></div>
+  `).join("");
+
+  document.getElementById('totalVal').innerText = total + " ر.ع تقريباً";
+}
+
+function drawScenarioBars(){
+  // small inline compare not rendered separately; slider already recalcs donut live.
+}
+
+function onBudgetChange(){
+  state.budgetLevel = parseInt(document.getElementById('budgetSlider').value,10);
+  document.getElementById('budgetLbl').innerText = budgetLabel();
+  const costs = calcCosts();
+  if(costs){ drawDonut(costs); renderFeasibility(); saveState(); }
+}
+
+function renderFeasibility(){
+  const f = feasibility();
+  if(!f) return;
+  const body = document.getElementById('feasibilityBody');
+  const isAr = LANG==='ar';
+  body.innerHTML = `
+    <div class="row-between"><span>${isAr?'الميزانية المتاحة':'Available budget'}</span><b>${state.userBudget} ${isAr?'ر.ع':'OMR'}</b></div>
+    <div class="row-between"><span>${isAr?'التكلفة التقديرية':'Estimated cost'}</span><b>${f.costs.total} ${isAr?'ر.ع':'OMR'}</b></div>
+    <div class="gauge-track"><div class="gauge-fill ${f.tone}" style="width:${f.score}%"></div></div>
+    <div class="verdict-badge ${f.tone}">${f.tone==='good'?'✅':f.tone==='warn'?'⚠️':'❌'} ${f.verdict}</div>
+    ${f.gap>0 ? `<div class="fund-hint">${isAr?'فجوة تمويلية':'Funding gap'}: <b>${f.gap} ${isAr?'ر.ع':'OMR'}</b>${f.source? ` — ${isAr?'الأنسب':'Best fit'}: <a href="${f.source.url}" target="_blank" rel="noopener" style="color:var(--gold-soft); font-weight:700;">${isAr?f.source.name:f.source.name_en} ↗</a>. ${isAr?f.source.desc:f.source.desc_en}`:''}</div>` : `<div class="fund-hint">${isAr?'ميزانيتك تغطي التكلفة التقديرية بالكامل مع هامش أمان 👍':'Your budget fully covers the estimated cost with a safety margin 👍'}</div>`}
+  `;
+  document.getElementById('feasibilityCard').style.display = "block";
+}
+
+/* ======================= GOV BODIES + CHECKLIST ======================= */
+
+function renderBodies(){
+  const list = document.getElementById('bodiesList');
+  const isAr = LANG==='ar';
+  const items = BASE_BODIES.map(b=>({ name: isAr?b.name:b.name_en, note: isAr?b.noteAr:b.noteEn, url: b.url }));
+  if(state.sector){
+    const extra = GOV_LINKS[SECTORS[state.sector].extraBodyKey];
+    items.push({ name: isAr?extra.name:extra.name_en, note: isAr?"جهة قطاعية إضافية حسب نوع النشاط":"Additional sector-specific body", url: extra.url });
+  }
+  list.innerHTML = items.map(b=>`
+    <a class="body-item" href="${b.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; cursor:pointer;">
+      <span class="bi"></span>
+      <span>
+        <div style="font-weight:600;">${b.name} <span style="opacity:.55; font-size:11px;">↗</span></div>
+        <div style="font-size:11px; color:var(--text-faint); margin-top:2px;">${b.note}</div>
+      </span>
+    </a>`).join("");
+  document.getElementById('bodiesCard').style.display = "block";
+}
+
+function renderChecklist(){
+  const isAr = LANG==='ar';
+  if(state.checklist.length===0){
+    state.checklist = REG_STEPS.map((s,i)=>({text: isAr?s.ar:s.en, done:false}));
+  } else {
+    // إعادة ترجمة النصوص عند تبديل اللغة مع الحفاظ على حالة الإنجاز
+    state.checklist = state.checklist.map((c,i)=>({ text: isAr?REG_STEPS[i].ar:REG_STEPS[i].en, done:c.done }));
+  }
+  const list = document.getElementById('checklistList');
+  list.innerHTML = "";
+  state.checklist.forEach((c,i)=>{
+    const item = el(`<div class="check-item ${c.done?'on':''}">
+      <div class="box">${c.done?'✓':''}</div><span class="txt">${c.text}</span>
+    </div>`);
+    item.onclick = ()=>{ state.checklist[i].done = !state.checklist[i].done; renderChecklist(); saveState(); };
+    list.appendChild(item);
+  });
+  document.getElementById('checklistCard').style.display = "block";
+}
+
+/* ======================= LLM (Anthropic API) with local fallback ======================= */
+
+// يكتشف لغة النص الذي كتبه المستخدم (عربي/إنجليزي) بالاعتماد على نسبة الأحرف،
+// عشان الوكيل "يردّ تلقائياً بلغة المستخدم" بغض النظر عن لغة واجهة التطبيق الحالية.
+function detectLang(text){
+  const arabicChars = (text.match(/[\u0600-\u06FF]/g)||[]).length;
+  const latinChars = (text.match(/[a-zA-Z]/g)||[]).length;
+  if(arabicChars === 0 && latinChars === 0) return LANG; // لا توجد إشارة كافية — استخدم لغة الواجهة
+  return arabicChars >= latinChars ? 'ar' : 'en';
+}
+
+function langInstruction(forLang){
+  const lang = forLang || LANG;
+  return lang==='ar'
+    ? "أجب دائماً بالعربية الفصحى البسيطة (يمكن استخدام لهجة خليجية مبسّطة عند الترحيب)، بغض النظر عن أي تعليمات لغة أخرى، لأن هذه هي اللغة التي كتب بها المستخدم فعلياً."
+    : "Always respond in clear, professional English regardless of any other language instruction, because this is the language the user actually wrote in.";
+}
+
+let lastToolsUsed = []; // آخر الأدوات التي استدعاها الوكيل فعلياً (لعرضها كدليل على tool-calling حقيقي)
+
+function toolNameLabel(name){
+  const map = {
+    search_knowledge: LANG==='ar' ? 'بحث في قاعدة المعرفة' : 'searched knowledge base',
+    calculate_cost: LANG==='ar' ? 'حساب التكلفة' : 'calculated cost',
+    identify_stage: LANG==='ar' ? 'تصنيف المرحلة' : 'identified stage',
+  };
+  return map[name] || name;
+}
+function toolsUsedBadge(){
+  if(!lastToolsUsed || !lastToolsUsed.length) return null;
+  const names = lastToolsUsed.map(t=>toolNameLabel(t.name));
+  return (LANG==='ar' ? '🔧 استخدم الوكيل: ' : '🔧 Agent used: ') + names.join('، ');
+}
+// حالة حيّة (وقت تنفيذ الأداة فعلياً) — تُعرض قبل توفر الرد النهائي
+function toolStatusLabel(name){
+  const map = {
+    search_knowledge: LANG==='ar' ? 'يبحث في قاعدة المعرفة الرسمية…' : 'Searching official knowledge base…',
+    calculate_cost: LANG==='ar' ? 'يحسب التكلفة التقديرية…' : 'Calculating estimated cost…',
+    identify_stage: LANG==='ar' ? 'يصنّف مرحلتك الريادية…' : 'Identifying your stage…',
+  };
+  return map[name] || (LANG==='ar' ? `يستخدم أداة: ${name}…` : `Using tool: ${name}…`);
+}
+
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/**
+ * citationsHtml — يبني بطاقات استشهاد فعلية (المقطع المسترجَع + رابط المصدر) من نتائج
+ * أداة search_knowledge الحقيقية، بدل شارة عامة فقط، كدليل مرئي على أن الرد مبني على
+ * استرجاع حقيقي (RAG) لا تخمين.
+ */
+function citationsHtml(citations){
+  if(!citations || !citations.length) return "";
+  const isAr = LANG==='ar';
+  const seen = new Set();
+  const uniq = citations.filter(c=>{
+    const key = (c.url||'') + '|' + c.text;
+    if(seen.has(key)) return false;
+    seen.add(key); return true;
+  }).slice(0, 3);
+  if(!uniq.length) return "";
+  const cards = uniq.map(c => `
+    <div class="citation-card">
+      <div class="citation-snip">${escapeHtml(c.text)}</div>
+      ${c.url
+        ? `<a class="citation-link" href="${c.url}" target="_blank" rel="noopener">🔗 ${isAr?'المصدر الرسمي':'Official source'} ↗</a>`
+        : `<span class="citation-link muted">📄 ${isAr?'مصدر داخلي موثّق':'Internal verified source'}</span>`}
+    </div>`).join("");
+  return `<div class="citations">${cards}</div>`;
+}
+
+function createLiveBubble(){
+  const wrap = el(`
+    <div class="msg agent">
+      <div class="avatar">🧭</div>
+      <div class="bubble">
+        <div class="live-status empty"></div>
+        <div class="live-text"></div>
+      </div>
+    </div>`);
+  document.getElementById('messages').appendChild(wrap);
+  scrollDown();
+  return { wrap, statusEl: wrap.querySelector('.live-status'), textEl: wrap.querySelector('.live-text') };
+}
+
+function setLiveStatus(statusEl, label){
+  if(!label){ statusEl.className = 'live-status empty'; statusEl.innerHTML = ''; return; }
+  statusEl.className = 'live-status';
+  statusEl.innerHTML = `<span class="spin"></span><span>🔧 ${label}</span>`;
+}
+
+/**
+ * typewriterReveal — يكشف النص تدريجياً (تأثير بث حي) بمدة إجمالية محدودة بغض النظر
+ * عن طول الرد، عشان يبقى الإحساس "حي" دون تأخير مزعج على الردود الطويلة.
+ */
+function typewriterReveal(el, fullText){
+  return new Promise(resolve=>{
+    const chars = Array.from(fullText);
+    if(!chars.length){ resolve(); return; }
+    const tickMs = 16;
+    const targetMs = Math.min(1800, Math.max(400, chars.length * 9));
+    const ticks = Math.max(1, Math.round(targetMs / tickMs));
+    const perTick = Math.max(1, Math.ceil(chars.length / ticks));
+    let i = 0;
+    (function step(){
+      i = Math.min(i + perTick, chars.length);
+      el.textContent = chars.slice(0, i).join('');
+      scrollDown();
+      if(i < chars.length) setTimeout(step, tickMs); else resolve();
+    })();
+  });
+}
+
+/**
+ * askLLMStream — يستدعي /api/chat/stream ويبثّ الأحداث لحظياً في فقاعة حيّة:
+ * حالة الأداة وقت تنفيذها الفعلي، ثم كشف النص النهائي تدريجياً، مع جمع نتائج
+ * search_knowledge كاستشهادات حقيقية. يدعم ذاكرة محادثة متعددة الأدوار ومحاولة
+ * إعادة واحدة عند فشل مؤقت قبل الرجوع للرد الاحتياطي المحلي (caller يتولى ذلك).
+ * يُعيد { text, citations, wrap } عند النجاح، أو null عند الفشل بعد المحاولتين.
+ */
+async function askLLMStream(systemPrompt, userText, opts={}){
+  const timeoutMs = opts.timeoutMs || 20000;
+  const history = (opts.history || []).slice(-10);
+  const messages = [...history, { role:"user", content:userText }];
+  lastToolsUsed = [];
+
+  for(let attempt=0; attempt<2; attempt++){
+    hideTyping();
+    const live = createLiveBubble();
+    const controller = new AbortController();
+    const timer = setTimeout(()=>controller.abort(), timeoutMs);
+    const toolLog = [];
+    const citations = [];
+    let finalText = null;
+
+    try{
+      const resp = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          system: systemPrompt + "\n\n" + langInstruction(opts.replyLang),
+          messages
+        })
+      });
+      if(!resp.ok || !resp.body) throw new Error("stream request failed: " + resp.status);
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while(true){
+        const { value, done } = await reader.read();
+        if(done) break;
+        buf += decoder.decode(value, { stream:true });
+        let idx;
+        while((idx = buf.indexOf("\n\n")) >= 0){
+          const raw = buf.slice(0, idx);
+          buf = buf.slice(idx + 2);
+          const dataLine = raw.split("\n").find(l=>l.startsWith("data:"));
+          if(!dataLine) continue;
+          let evt;
+          try{ evt = JSON.parse(dataLine.slice(5).trim()); }catch(e){ continue; }
+
+          if(evt.type === 'tool_start'){
+            setLiveStatus(live.statusEl, toolStatusLabel(evt.name));
+          } else if(evt.type === 'tool_result'){
+            toolLog.push(evt);
+            if(evt.name === 'search_knowledge' && Array.isArray(evt.result)){
+              evt.result.forEach(r=>{ if(r && r.text) citations.push(r); });
+            }
+          } else if(evt.type === 'text'){
+            setLiveStatus(live.statusEl, null);
+            finalText = (evt.text || "").trim();
+            await typewriterReveal(live.textEl, finalText);
+          } else if(evt.type === 'done'){
+            lastToolsUsed = evt.tools || toolLog;
+          } else if(evt.type === 'error'){
+            throw new Error(evt.error || "stream error");
+          }
+        }
+      }
+      clearTimeout(timer);
+      if(!finalText) throw new Error("empty stream response");
+      return { text: finalText, citations, wrap: live.wrap };
+    }catch(e){
+      clearTimeout(timer);
+      live.wrap.remove();
+      if(attempt===0) await new Promise(r=>setTimeout(r, 600)); // محاولة ثانية سريعة
+    }
+  }
+  return null; // caller supplies fallback
+}
+
+// يبني تاريخ محادثة صالح لواجهة Anthropic (أدوار متبادلة user/assistant) —
+// يستبعد آخر دور "user" إذا كان قد أُضيف للتو كفقاعة، لأن askLLM يضيفه من جديد كسؤال الحالي.
+function historyForCall(){
+  const h = state.chatHistory;
+  if(h.length && h[h.length-1].role === 'user') return h.slice(0,-1);
+  return h.slice();
+}
+
+/* ======================= CONVERSATION FLOW ======================= */
+
+function boot(fresh){
+  renderStageStrip();
+  refreshBadge();
+  if(fresh){
+    setTimeout(()=>{
+      const greet = LANG==='ar'
+        ? `<p>مرحباً بك 👋 أنا <b>فزعة</b>، وكيلك الذكي لتحويل فكرة مشروعك في عُمان إلى مشروع مسجّل رسمياً.</p><p>خلّني أفهم فكرتك أولاً — إيش فكرة مشروعك؟ اكتبها بجملة أو جملتين وأنا أتولى الباقي.</p>`
+        : `<p>Welcome 👋 I'm <b>Fazaa</b>, your AI agent for turning a business idea in Oman into an officially registered venture.</p><p>Let's start with your idea — what's your business idea? Describe it in a sentence or two and I'll handle the rest.</p>`;
+      addMessage('agent', greet);
+      clearChips();
+    }, 300);
+  }
+}
+
+async function handleIdea(text){
+  const rl = detectLang(text); // اللغة الفعلية التي كتب بها المستخدم — الرد يتبعها تلقائياً
+  if(isGreetingOrTooShort(text)){
+    const msg = rl==='ar'
+      ? `<p>أهلاً فيك 👋 قبل ما نبدأ، احكيلي عن فكرة مشروعك بجملة أو جملتين — مثلاً "أبي أفتح مقهى صغير في صور" أو "فكرة تطبيق لتوصيل الطلبات". اكتبها هنا وأنا أتكفل بالباقي.</p>`
+      : `<p>Hi there 👋 Before we start, tell me about your business idea in a sentence or two — e.g. "I want to open a small café in Sur" or "an idea for a delivery app". Type it here and I'll take it from there.</p>`;
+    addMessage('agent', msg, {skipHistory:true});
+    return;
+  }
+  state.idea = text;
+  state.step = "sector";
+  renderLogo(text.split(/\s+/).slice(0,2).join(" ") || (LANG==='ar'?"مشروعي":"My Project"));
+  renderStageStrip(); refreshBadge();
+
+  const sys = rl==='ar'
+    ? `أنت وكيل عُماني اسمه "فزعة" يساعد رواد أعمال مبتدئين في عُمان. رحّب بفكرة المستخدم بجملتين فقط بالعربية الفصحى البسيطة (لهجة خليجية مقبولة)، بدون رموز تعبيرية كثيرة، ثم اسأله عن قطاع نشاطه. لا تذكر أرقاماً أو تكاليف الآن.`
+    : `You are an Omani AI agent named "Fazaa" helping first-time entrepreneurs in Oman. Welcome the user's idea in two sentences only, in clear professional English, then ask about their business sector. Do not mention any numbers or costs yet.`;
+  const streamed = await askLLMStream(sys, rl==='ar'?`فكرة المستخدم: "${text}"`:`User's idea: "${text}"`, {history: historyForCall(), replyLang: rl});
+  hideTyping();
+
+  const fallback = rl==='ar'
+    ? `<p>فكرة حلوة! "${text}" — واضح إنك بديت تفكر فيها بجدية.</p><p>عشان أقدر أحسب لك التكلفة التقريبية والخطوات الصح، وش قطاع نشاطك الأقرب؟</p>`
+    : `<p>Nice idea! "${text}" — sounds like you're already thinking about it seriously.</p><p>So I can estimate the right cost and steps for you, which sector best fits your business?</p>`;
+  const finalHtml = streamed
+    ? `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml(streamed.citations)}`
+    : fallback;
+  addMessage('agent', finalHtml, { existingWrap: streamed ? streamed.wrap : undefined, src: streamed ? null : toolsUsedBadge() });
+
+  setChips(Object.entries(SECTORS).map(([key,s])=>({
+    label: `${s.icon} ${L(s)}`,
+    onClick: ()=> chooseSector(key)
+  })));
+}
+
+function chooseSector(key, opts={}){
+  clearChips();
+  if(!opts.skipUserMsg) addMessage('user', SECTORS[key].icon + " " + L(SECTORS[key]));
+  state.sector = key;
+  state.step = "city";
+  renderStageStrip(); refreshBadge();
+  addMessage('agent', `<p>${LANG==='ar'?'تمام. وين موقع مشروعك تقريباً؟ (هذا يأثر على تقدير الإيجار)':"Great. Roughly where will your business be located? (This affects the rent estimate)"}</p>`);
+  setChips(Object.entries(CITIES).map(([key,c])=>({
+    label: `${L(c)} · ${LANG==='ar'?'إيجار':'Rent'} ${LANG==='ar'?c.tier:c.tier_en}`,
+    onClick: ()=> chooseCity(key)
+  })));
+}
+
+function chooseCity(key, opts={}){
+  clearChips();
+  if(!opts.skipUserMsg) addMessage('user', L(CITIES[key]));
+  state.city = key;
+  state.step = "team";
+  renderStageStrip(); refreshBadge();
+  addMessage('agent', `<p>${LANG==='ar'?'آخر سؤال قبل ما أطلع لك دراسة الجدوى — كم حجم فريقك المتوقع بالبداية؟':"One last question before I put together the feasibility study — how big is your expected team at the start?"}</p>`);
+  setChips(Object.entries(TEAM_SIZES).map(([key,tm])=>({
+    label: L(tm),
+    onClick: ()=> chooseTeam(key)
+  })));
+}
+
+function chooseTeam(key, opts={}){
+  clearChips();
+  if(!opts.skipUserMsg) addMessage('user', L(TEAM_SIZES[key]));
+  state.team = key;
+  state.step = "budget";
+  renderStageStrip(); refreshBadge();
+  addMessage('agent', `<p>${LANG==='ar'?'وحتى أقدر أعطيك قرار مالي واضح — كم الميزانية المتوفرة لديك تقريباً لإطلاق المشروع؟':"And so I can give you a clear financial decision — roughly how much budget do you have available to launch?"}</p>`);
+  setChips(BUDGET_RANGES.map(r=>({
+    label: L(r),
+    onClick: ()=> chooseBudget(r)
+  })));
+}
+
+async function chooseBudget(range, opts={}){
+  clearChips();
+  if(!opts.skipUserMsg) addMessage('user', L(range));
+  state.userBudget = range.value;
+  state.step = "review";
+  renderStageStrip(); refreshBadge();
+
+  document.getElementById('costCard').style.display = "block";
+  const costs = calcCosts();
+  drawDonut(costs);
+  renderFeasibility();
+  renderBodies();
+  renderChecklist();
+  document.getElementById('reportBtn').disabled = false;
+
+  const f = feasibility();
+  const snippets = retrieve(L(SECTORS[state.sector]) + " " + state.idea);
+  const isAr = LANG==='ar';
+  const sys = isAr
+    ? `أنت وكيل عُماني اسمه "فزعة". لخّص للمستخدم دراسة جدوى أولية مختصرة (٤-٥ أسطر) بالعربية، بناءً على: الفكرة="${state.idea}"، القطاع="${L(SECTORS[state.sector])}"، المدينة="${L(CITIES[state.city])}"، حجم الفريق="${L(TEAM_SIZES[state.team])}"، التكلفة التقديرية الإجمالية للتأسيس="${costs.total} ريال عُماني"، الميزانية المتاحة لدى المستخدم="${state.userBudget} ريال عُماني"، القرار المالي="${f.verdict}". اذكر أن الأرقام تقديرية ومبنية على بيانات تجريبية، واذكر القرار المالي بوضوح ولطف. لا تخترع أرقاماً أخرى. اربط ملاحظة قصيرة بالمعلومة التالية إن كانت مناسبة: "${snippets.map(s=>s.text).join(' | ')}"`
+    : `You are an Omani AI agent named "Fazaa". Summarize a concise initial feasibility study (4-5 lines) in English, based on: idea="${state.idea}", sector="${L(SECTORS[state.sector])}", city="${L(CITIES[state.city])}", team size="${L(TEAM_SIZES[state.team])}", total estimated setup cost="${costs.total} OMR", user's available budget="${state.userBudget} OMR", financial decision="${f.verdict}". Mention the numbers are estimates from demo data, and state the financial decision clearly and kindly. Don't invent other numbers. Weave in a brief note from this info if relevant: "${snippets.map(s=>s.text).join(' | ')}"`;
+  const streamed = await askLLMStream(sys, LANG==="ar"?"أعطني ملخص دراسة الجدوى والقرار المالي الآن.":"Give me the feasibility summary and financial decision now.", {history: historyForCall()});
+  hideTyping();
+
+  const gapLine = f.gap>0
+    ? (isAr ? `توجد فجوة تمويلية تقديرية <b>${f.gap} ر.ع</b>${f.source? `، وأنسب مصدر تمويل لك هو <b>${f.source.name}</b>.`:'.'}` : `There's an estimated funding gap of <b>${f.gap} OMR</b>${f.source? `, and the best-fit funding source for you is <b>${f.source.name_en}</b>.`:'.'}`)
+    : (isAr ? `ميزانيتك تغطي التكلفة التقديرية بالكامل 👍` : `Your budget fully covers the estimated cost 👍`);
+  const fallback = isAr
+    ? `<p>ممتاز، جمعت كل ما أحتاجه ✅</p><p>مشروعك في قطاع <b>${L(SECTORS[state.sector])}</b> بمدينة <b>${L(CITIES[state.city])}</b> يحتاج تكلفة تأسيس تقديرية حوالي <b>${costs.total} ر.ع</b> (بيانات تجريبية توضيحية). ${gapLine}</p><p>تقدر تعدّل سيناريو الميزانية من الشريط على اليمين وتشوف كيف تتغير التكلفة، وبعدها اضغط "توليد تقرير الجدوى الكامل" عشان تصدّره PDF.</p>`
+    : `<p>Great, I've got everything I need ✅</p><p>Your <b>${L(SECTORS[state.sector])}</b> project in <b>${L(CITIES[state.city])}</b> needs an estimated setup cost of about <b>${costs.total} OMR</b> (demo data). ${gapLine}</p><p>You can adjust the budget scenario slider on the right to see how the cost changes, then click "Generate full feasibility report" to export it as PDF.</p>`;
+  const srcParts1 = [!streamed && snippets.length? (isAr?"معلومات مؤسسية موثّقة":"Verified institutional information"): null, !streamed? toolsUsedBadge(): null].filter(Boolean);
+  const finalHtml = streamed
+    ? `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml([...streamed.citations, ...snippets])}`
+    : fallback;
+  addMessage('agent', finalHtml, { existingWrap: streamed ? streamed.wrap : undefined, src: srcParts1.length? srcParts1.join(' · '): null });
+
+  setChips([
+    { label: isAr?"📊 وضّح لي تفاصيل التكلفة":"📊 Break down the cost for me", onClick: ()=> explainCosts() },
+    { label: isAr?"🏛️ الجهات الحكومية المناسبة لي؟":"🏛️ Which government bodies fit me?", onClick: ()=> explainBodies() },
+    { label: isAr?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() },
+  ]);
+}
+
+function explainCosts(){
+  clearChips();
+  const isAr = LANG==='ar';
+  addMessage('user', isAr?"وضّح لي تفاصيل التكلفة":"Break down the cost for me");
+  const c = calcCosts();
+  const rows = Object.keys(costLabels()).map(k=>`<li>${costLabels()[k]}: <b>${c[k]}</b> ${isAr?'ر.ع':'OMR'}</li>`).join("");
+  addMessage('agent', isAr
+    ? `<p>هذا تفصيل التكلفة التقديرية (بيانات تجريبية):</p><ul>${rows}</ul><p>الإيجار الشهري وحده يُقدَّر بـ <b>${c.rentMonthly}</b> ر.ع. حرّك شريط "سيناريو الميزانية" على اليمين لترى كيف تتغير الأرقام لو وسّعت أو قلّصت ميزانيتك.</p>`
+    : `<p>Here's the estimated cost breakdown (demo data):</p><ul>${rows}</ul><p>Monthly rent alone is estimated at <b>${c.rentMonthly}</b> OMR. Move the "Budget scenario" slider on the right to see how the numbers change as you expand or shrink your budget.</p>`);
+  setChips([{ label: isAr?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() }]);
+}
+
+function explainBodies(){
+  clearChips();
+  const isAr = LANG==='ar';
+  addMessage('user', isAr?"الجهات الحكومية المناسبة لي؟":"Which government bodies fit me?");
+  const extra = GOV_LINKS[SECTORS[state.sector].extraBodyKey];
+  const linkOf = (b)=>`<a href="${b.url}" target="_blank" rel="noopener" style="color:var(--gold-soft);">${isAr?b.name:b.name_en} ↗</a>`;
+  addMessage('agent', isAr
+    ? `<p>بناءً على قطاعك، أنصحك بالتواصل مع:</p><ul>
+    <li>${linkOf(GOV_LINKS.tejarah)} — لإصدار السجل التجاري عبر Invest Easy</li>
+    <li>${linkOf(GOV_LINKS.riyada)} — للدعم والتمويل والاستشارات</li>
+    <li>${linkOf(extra)} — جهة مختصة بقطاعك تحديداً</li>
+  </ul>`
+    : `<p>Based on your sector, I'd recommend contacting:</p><ul>
+    <li>${linkOf(GOV_LINKS.tejarah)} — commercial registration via Invest Easy</li>
+    <li>${linkOf(GOV_LINKS.riyada)} — support, financing & consulting</li>
+    <li>${linkOf(extra)} — a body specific to your sector</li>
+  </ul>`, {src: isAr?"روابط رسمية تم التحقق منها":"Verified official links"});
+  setChips([{ label: isAr?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() }]);
+}
+
+async function sendFree(){
+  const input = document.getElementById('textInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = "";
+
+  if(state.step === "idea"){
+    addMessage('user', text);
+    await handleIdea(text);
+    return;
+  }
+
+  addMessage('user', text);
+  clearChips();
+
+  if(["sector","city","team","budget"].includes(state.step)){
+    const matched = matchOption(text, state.step);
+    if(matched){
+      if(state.step === 'sector') { chooseSector(matched, {skipUserMsg:true}); return; }
+      if(state.step === 'city')   { chooseCity(matched, {skipUserMsg:true}); return; }
+      if(state.step === 'team')   { chooseTeam(matched, {skipUserMsg:true}); return; }
+      if(state.step === 'budget') { chooseBudget(matched, {skipUserMsg:true}); return; }
+    }
+  }
+
+  const isAr = LANG==='ar';       // لغة الواجهة (للأزرار وإعادة عرض الخيارات)
+  const rl = detectLang(text);     // اللغة الفعلية التي كتب بها المستخدم — الرد يتبعها تلقائياً
+  const rlAr = rl==='ar';
+  const snippets = retrieve(text, rl);
+  const contextStr = snippets.map(s=>s.text).join(" | ");
+  const sys = rlAr
+    ? `أنت وكيل عُماني اسمه "فزعة" يساعد رائد أعمال في مشروع من نوع "${state.sector?L(SECTORS[state.sector]):'غير محدد'}". أجب بإيجاز (٣-٤ أسطر) بالعربية على سؤاله. إن توفرت معلومات ذات صلة استخدمها: "${contextStr || 'لا يوجد'}". إن لم تكن متأكداً من معلومة رسمية دقيقة، انصح بمراجعة الجهة الرسمية مباشرة صراحة بدل اختلاق رقم.`
+    : `You are an Omani AI agent named "Fazaa" helping an entrepreneur with a "${state.sector?L(SECTORS[state.sector]):'unspecified'}" project. Answer concisely (3-4 lines) in English. If relevant info is available, use it: "${contextStr || 'none'}". If you're unsure of an exact official fact, explicitly recommend checking the official body directly instead of inventing a number.`;
+  const streamed = await askLLMStream(sys, text, {history: historyForCall(), replyLang: rl});
+  hideTyping();
+
+  const srcLabel = rlAr?"معلومات مؤسسية موثّقة":"Verified institutional information";
+  if(streamed){
+    const finalHtml = `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml([...streamed.citations, ...snippets])}`;
+    addMessage('agent', finalHtml, { existingWrap: streamed.wrap });
+  } else if(snippets.length){
+    addMessage('agent', rlAr
+      ? `<p>ما عندي اتصال حالياً بالنموذج الكامل، بس من مصادري المتوفرة:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`
+      : `<p>I don't have a live connection to the full model right now, but from my available sources:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`, {src:srcLabel});
+  } else {
+    addMessage('agent', rlAr
+      ? `<p>ما عندي معلومات كافية عن هذا تحديداً من مصادري المتوفرة حالياً — أنصحك تراجع الجهة الرسمية المعنية مباشرة. تقدر تكمل معي خطوات دراسة الجدوى بدل ذلك؟</p>`
+      : `<p>I don't have enough information on this specific point from my available sources right now — I'd recommend checking the relevant official body directly. Want to continue with the feasibility study steps instead?</p>`);
+  }
+
+  if(["sector","city","team","budget","review"].includes(state.step)){
+    if(["sector","city","team","budget"].includes(state.step)){
+      addMessage('agent', `<p>${t('reChooseHint')}</p>`, {skipSave:true, skipHistory:true});
+    }
+    showStepChips(state.step);
+  }
+}
+
+/* ======================= VOICE INPUT (Whisper via transformers.js) =======================
+   Fully client-side speech-to-text: records mic audio, resamples it to the 16kHz mono format
+   Whisper expects, then runs real ONNX inference in the browser (Xenova/whisper-tiny, ~39MB,
+   multilingual — cached after the first download). No API key, no server round-trip. */
+
+const MIC_STATE = { IDLE:'idle', RECORDING:'recording', PROCESSING:'processing' };
+let micState = MIC_STATE.IDLE;
+let mediaRecorder = null;
+let recordedChunks = [];
+let transcriberPromise = null;
+
+function setVoiceStatus(html){
+  document.getElementById('voiceStatus').innerHTML = html ? `<span class="vs-dot"></span>${html}` : '';
+}
+
+function setMicState(next){
+  micState = next;
+  const btn = document.getElementById('micBtn');
+  if(!btn) return;
+  btn.classList.remove('recording','processing');
+  btn.disabled = false;
+  if(next === MIC_STATE.RECORDING){
+    btn.classList.add('recording');
+    btn.title = t('micTitleRecording');
+    setVoiceStatus(t('voiceListening'));
+  } else if(next === MIC_STATE.PROCESSING){
+    btn.classList.add('processing');
+    btn.disabled = true;
+    btn.title = t('micTitleProcessing');
+  } else {
+    btn.title = t('micTitleIdle');
+    setVoiceStatus('');
+  }
+}
+
+// Lazily loads the Whisper pipeline on first use — nothing downloads until the user actually
+// records something, keeping normal (typed) usage of the app completely unaffected.
+function getTranscriber(){
+  if(!transcriberPromise){
+    transcriberPromise = window.__hfPipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+      progress_callback: (p)=>{
+        if(p && p.status === 'progress' && typeof p.progress === 'number'){
+          setVoiceStatus(`${t('voiceLoadingModel')} ${Math.round(p.progress)}%`);
+        } else if(p && p.status === 'progress'){
+          setVoiceStatus(t('voiceLoadingModel'));
+        }
+      }
+    });
+  }
+  return transcriberPromise;
+}
+
+async function toggleVoiceInput(){
+  if(micState === MIC_STATE.RECORDING){
+    if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    return;
+  }
+  if(micState !== MIC_STATE.IDLE) return;
+
+  if(!window.__hfPipeline){
+    setVoiceStatus(t('voiceModelError'));
+    return;
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
+    setVoiceStatus(t('voiceNotSupported'));
+    return;
+  }
+
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+  }catch(e){
+    setVoiceStatus(t('voiceMicDenied'));
+    return;
+  }
+
+  recordedChunks = [];
+  try{
+    mediaRecorder = new MediaRecorder(stream);
+  }catch(e){
+    stream.getTracks().forEach(tr=>tr.stop());
+    setVoiceStatus(t('voiceNotSupported'));
+    return;
+  }
+  mediaRecorder.ondataavailable = (e)=>{ if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = async ()=>{
+    stream.getTracks().forEach(tr=>tr.stop());
+    const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+    await transcribeBlob(blob);
+  };
+  mediaRecorder.start();
+  setMicState(MIC_STATE.RECORDING);
+}
+
+async function decodeToMono16k(blob){
+  const arrayBuffer = await blob.arrayBuffer();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const probeCtx = new AudioCtx();
+  const decoded = await probeCtx.decodeAudioData(arrayBuffer);
+  probeCtx.close();
+  const targetRate = 16000;
+  const offlineCtx = new OfflineAudioContext(1, Math.ceil(decoded.duration * targetRate), targetRate);
+  const source = offlineCtx.createBufferSource();
+  source.buffer = decoded;
+  source.connect(offlineCtx.destination);
+  source.start(0);
+  const rendered = await offlineCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+async function transcribeBlob(blob){
+  setMicState(MIC_STATE.PROCESSING);
+  setVoiceStatus(t('voiceTranscribing'));
+  try{
+    const audioData = await decodeToMono16k(blob);
+    const transcriber = await getTranscriber();
+    setVoiceStatus(t('voiceTranscribing'));
+    // Let Whisper auto-detect the spoken language instead of forcing the UI language —
+    // the two aren't the same thing (UI defaults to Arabic, but people pitch in either language).
+    const result = await transcriber(audioData, { task:'transcribe' });
+    const text = (result && result.text || '').trim();
+    setMicState(MIC_STATE.IDLE);
+    if(!text){
+      setVoiceStatus(t('voiceNoSpeech'));
+      return;
+    }
+    const input = document.getElementById('textInput');
+    input.value = text;
+    sendFree();
+  }catch(e){
+    console.error('Voice transcription failed:', e);
+    setMicState(MIC_STATE.IDLE);
+    setVoiceStatus(t('voiceModelError'));
+  }
+}
+
+/* ======================= REPORT (exportable) ======================= */
+
+function buildReportHTML(){
+  const isAr = LANG==='ar';
+  const c = calcCosts();
+  const f = feasibility();
+  const s = SECTORS[state.sector], city = CITIES[state.city], team = TEAM_SIZES[state.team];
+  const doneCount = state.checklist.filter(x=>x.done).length;
+  const rows = Object.keys(costLabels()).map(k=>`<tr><td>${costLabels()[k]}</td><td class="num">${c[k]}</td></tr>`).join("");
+  const stepsHtml = REG_STEPS.map(step=>`<li>${isAr?step.ar:step.en}</li>`).join("");
+  const extra = GOV_LINKS[s.extraBodyKey];
+  const dateStr = new Date().toLocaleDateString(isAr?'ar-OM':'en-GB', {year:'numeric', month:'long', day:'numeric'});
+  const linkOf = (b)=>`<a href="${b.url}" style="color:#8a5a1e;">${isAr?b.name:b.name_en}</a>`;
+
+  const maxBar = Math.max(c.total, state.userBudget||0) || 1;
+  const budgetPct = Math.round(((state.userBudget||0)/maxBar)*100);
+  const costPct = Math.round((c.total/maxBar)*100);
+  const verdictColor = f ? (f.tone==='good'?'#2fa370':f.tone==='warn'?'#b3860f':'#a33d2f') : '#999';
+
+  const financeSection = f ? (isAr ? `
+    <h2>٦. القرار المالي</h2>
+    <p>بمقارنة ميزانيتك المتاحة (<b>${state.userBudget} ر.ع</b>) بالتكلفة التقديرية للتأسيس (<b>${c.total} ر.ع</b>)، التقييم الآلي للجدوى المالية هو:</p>
+    <p style="font-weight:800; color:${verdictColor};">${f.tone==='good'?'✅':f.tone==='warn'?'⚠️':'❌'} ${f.verdict}</p>
+    <table style="margin-bottom:4px;">
+      <tr><td style="width:110px;">الميزانية المتاحة</td><td style="padding:6px 0;"><div style="background:#e5e1d4; border-radius:6px; height:14px; width:100%;"><div style="background:#33c9b0; height:14px; border-radius:6px; width:${budgetPct}%;"></div></div></td><td class="num" style="width:70px;">${state.userBudget}</td></tr>
+      <tr><td>التكلفة التقديرية</td><td style="padding:6px 0;"><div style="background:#e5e1d4; border-radius:6px; height:14px; width:100%;"><div style="background:#d1a34a; height:14px; border-radius:6px; width:${costPct}%;"></div></div></td><td class="num">${c.total}</td></tr>
+    </table>
+    ${f.gap>0 ? `<p>الفجوة التمويلية التقديرية: <b>${f.gap} ر.ع</b>. المصدر الأنسب حسب حجم الفجوة: ${linkOf(f.source)} — ${f.source.desc}.</p>` : `<p>ميزانيتك تغطي التكلفة التقديرية مع هامش أمان، ما يسمح بالبدء دون الحاجة لتمويل خارجي فوري.</p>`}
+  ` : `
+    <h2>6. Financial decision</h2>
+    <p>Comparing your available budget (<b>${state.userBudget} OMR</b>) against the estimated setup cost (<b>${c.total} OMR</b>), the automated feasibility assessment is:</p>
+    <p style="font-weight:800; color:${verdictColor};">${f.tone==='good'?'✅':f.tone==='warn'?'⚠️':'❌'} ${f.verdict}</p>
+    <table style="margin-bottom:4px;">
+      <tr><td style="width:110px;">Available budget</td><td style="padding:6px 0;"><div style="background:#e5e1d4; border-radius:6px; height:14px; width:100%;"><div style="background:#33c9b0; height:14px; border-radius:6px; width:${budgetPct}%;"></div></div></td><td class="num" style="width:70px;">${state.userBudget}</td></tr>
+      <tr><td>Estimated cost</td><td style="padding:6px 0;"><div style="background:#e5e1d4; border-radius:6px; height:14px; width:100%;"><div style="background:#d1a34a; height:14px; border-radius:6px; width:${costPct}%;"></div></div></td><td class="num">${c.total}</td></tr>
+    </table>
+    ${f.gap>0 ? `<p>Estimated funding gap: <b>${f.gap} OMR</b>. Best-fit source for this gap size: ${linkOf(f.source)} — ${f.source.desc_en}.</p>` : `<p>Your budget covers the estimated cost with a safety margin, allowing you to start without needing immediate outside financing.</p>`}
+  `) : '';
+
+  if(isAr){
+    return `
+      <h1>تقرير دراسة الجدوى الأولية</h1>
+      <div class="rsub">مُولَّد بواسطة وكيل "فزعة" · ${dateStr} · تحدي AI Agent MVP Challenge</div>
+
+      <h2>١. ملخص تنفيذي</h2>
+      <p>${state.idea || '—'}</p>
+      <p>القطاع: <b>${s.icon} ${L(s)}</b> &nbsp;|&nbsp; الموقع: <b>${L(city)}</b> &nbsp;|&nbsp; حجم الفريق: <b>${L(team)}</b> &nbsp;|&nbsp; سيناريو الميزانية: <b>${budgetLabel()}</b></p>
+
+      <h2>٢. تحليل التكلفة التقديرية</h2>
+      <table>
+        <tr><th>البند</th><th class="num">القيمة (ر.ع)</th></tr>
+        ${rows}
+        <tr class="tot"><td>الإجمالي التقديري</td><td class="num">${c.total}</td></tr>
+      </table>
+      <p style="margin-top:8px; font-size:12px; color:#7a7a7a;">الإيجار الشهري المتكرر بعد التأسيس يُقدَّر بـ ${c.rentMonthly} ر.ع/شهرياً. <b>هذه الأرقام تقديرية توضيحية</b> (لا توجد تسعيرة موحدة معلنة لكل نشاط) وليست تسعيرة رسمية معتمدة.</p>
+
+      <h2>٣. خطوات التسجيل الموصى بها</h2>
+      <ul>${stepsHtml}</ul>
+      <p style="font-size:12px; color:#7a7a7a;">تقدّم الفريق حالياً: ${doneCount} من ${state.checklist.length} خطوة مكتملة.</p>
+
+      <h2>٤. الجهات الحكومية ذات الصلة (روابط رسمية موثّقة)</h2>
+      <ul>
+        ${BASE_BODIES.map(b=>`<li>${linkOf(b)} — ${b.noteAr}</li>`).join("")}
+        <li>${linkOf(extra)} — جهة قطاعية إضافية حسب نوع النشاط</li>
+      </ul>
+
+      ${financeSection}
+
+      <h2>٥. الخطوة التالية</h2>
+      <p>يُنصح بالبدء بحجز الاسم التجاري عبر بوابة ${linkOf(GOV_LINKS.invest)}${f && f.gap>0 ? `، والتقديم على ${linkOf(f.source)} لسد الفجوة التمويلية قبل الإطلاق الرسمي` : ''}. راجع الجهات الحكومية المذكورة أعلاه للتأكد من متطلبات نشاطك تحديداً.</p>
+
+      <div class="disc">⚠️ أسماء الجهات الحكومية وروابطها الرسمية أعلاه حقيقية ومُتحقَّق منها. أما أرقام الرسوم والتكاليف فتقديرية توضيحية أُعدَّت لأغراض تحدي AI Agent MVP Challenge، ولا تمثّل تسعيرة رسمية معتمدة — يُرجى التحقق من الأرقام الدقيقة عبر الجهات المذكورة مباشرة.</div>
+    `;
+  }
+
+  return `
+    <h1>Preliminary Feasibility Report</h1>
+    <div class="rsub">Generated by "Fazaa" agent · ${dateStr} · AI Agent MVP Challenge</div>
+
+    <h2>1. Executive summary</h2>
+    <p>${state.idea || '—'}</p>
+    <p>Sector: <b>${s.icon} ${L(s)}</b> &nbsp;|&nbsp; Location: <b>${L(city)}</b> &nbsp;|&nbsp; Team size: <b>${L(team)}</b> &nbsp;|&nbsp; Budget scenario: <b>${budgetLabel()}</b></p>
+
+    <h2>2. Estimated cost analysis</h2>
+    <table>
+      <tr><th>Item</th><th class="num">Value (OMR)</th></tr>
+      ${rows}
+      <tr class="tot"><td>Estimated total</td><td class="num">${c.total}</td></tr>
+    </table>
+    <p style="margin-top:8px; font-size:12px; color:#7a7a7a;">Recurring monthly rent after setup is estimated at ${c.rentMonthly} OMR/month. <b>These figures are illustrative estimates</b> (no single published fee schedule exists per activity) and not an official rate card.</p>
+
+    <h2>3. Recommended registration steps</h2>
+    <ul>${stepsHtml}</ul>
+    <p style="font-size:12px; color:#7a7a7a;">Current team progress: ${doneCount} of ${state.checklist.length} steps completed.</p>
+
+    <h2>4. Relevant government bodies (verified official links)</h2>
+    <ul>
+      ${BASE_BODIES.map(b=>`<li>${linkOf(b)} — ${b.noteEn}</li>`).join("")}
+      <li>${linkOf(extra)} — an additional sector-specific body</li>
+    </ul>
+
+    ${financeSection}
+
+    <h2>5. Next step</h2>
+    <p>We recommend starting by reserving your trade name via the ${linkOf(GOV_LINKS.invest)} portal${f && f.gap>0 ? `, and applying to ${linkOf(f.source)} to close the funding gap before official launch` : ''}. Review the government bodies listed above to confirm your activity's specific requirements.</p>
+
+    <div class="disc">⚠️ The government body names and official links above are real and verified. The fee and cost figures are illustrative estimates prepared for the AI Agent MVP Challenge and do not represent an official approved rate card — please verify exact figures directly with the bodies listed.</div>
+  `;
+}
+
+
+function openReport(){
+  const sheet = document.getElementById('reportSheet');
+  sheet.innerHTML = buildReportHTML();
+  sheet.dir = LANG==='ar' ? 'rtl' : 'ltr';
+  sheet.style.fontFamily = LANG==='ar' ? "'Tajawal', sans-serif" : "'Inter', sans-serif";
+  document.getElementById('reportOverlay').classList.add('show');
+}
+function closeReport(){
+  document.getElementById('reportOverlay').classList.remove('show');
+}
+
+/**
+ * تنزيل PDF حقيقي (وليس مجرد نافذة طباعة) — يدعم العربية والإنجليزية بشكل موثوق
+ * لأنه يعتمد html2canvas لالتقاط التقرير كصورة (بمحرك عرض النصوص الحقيقي للمتصفح،
+ * وهذا يتفادى مشاكل تشكيل الحروف العربية المعروفة في مكتبات PDF النصية البحتة)
+ * ثم jsPDF لتحويل الصورة إلى ملف PDF متعدد الصفحات عند الحاجة، وتنزيله مباشرة.
+ */
+async function downloadPdf(){
+  const btn = document.getElementById('downloadPdfBtn');
+  const sheet = document.getElementById('reportSheet');
+  if(!sheet || typeof html2canvas === "undefined" || typeof window.jspdf === "undefined"){
+    alert(t('downloadPdfError'));
+    return;
+  }
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = t('downloadPdfBusy');
+  try{
+    const canvas = await html2canvas(sheet, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#fbfaf6",
+      windowWidth: sheet.scrollWidth,
+      windowHeight: sheet.scrollHeight,
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidthMm = pageWidth;
+    const imgHeightMm = (canvas.height * imgWidthMm) / canvas.width;
+
+    if(imgHeightMm <= pageHeight){
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, imgWidthMm, imgHeightMm);
+    } else {
+      // التقرير أطول من صفحة واحدة — نقسّمه لعدة صفحات A4 من نفس الصورة عالية الدقة
+      const pageHeightPx = Math.floor((pageHeight * canvas.width) / imgWidthMm);
+      let renderedPx = 0;
+      let pageIndex = 0;
+      while(renderedPx < canvas.height){
+        const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedPx);
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sliceHeightPx;
+        const ctx = pageCanvas.getContext('2d');
+        ctx.fillStyle = "#fbfaf6";
+        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        ctx.drawImage(canvas, 0, renderedPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+        if(pageIndex > 0) pdf.addPage();
+        const sliceHeightMm = (sliceHeightPx * imgWidthMm) / canvas.width;
+        pdf.addImage(pageCanvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, imgWidthMm, sliceHeightMm);
+        renderedPx += sliceHeightPx;
+        pageIndex++;
+      }
+    }
+
+    const fname = `fazaa-report-${state.sector || 'project'}-${LANG}.pdf`;
+    pdf.save(fname);
+  }catch(e){
+    console.error("PDF generation failed:", e);
+    alert(t('downloadPdfError'));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+
+/* ======================= THEME & LOGO HELPERS ======================= */
+function applyTheme(){
+  const pref = localStorage.getItem('fazaa_theme') || 'palm';
+  if(pref === 'palm') document.body.classList.add('palm-theme'); else document.body.classList.remove('palm-theme');
+  const btn = document.getElementById('themeToggle'); if(btn) btn.textContent = (pref==='palm') ? '🌙' : '🌴';
+}
+function toggleTheme(){
+  const cur = document.body.classList.contains('palm-theme') ? 'palm' : 'default';
+  const next = cur === 'palm' ? 'default' : 'palm';
+  localStorage.setItem('fazaa_theme', next);
+  applyTheme();
+  if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
+  if(["review","done"].includes(state.step)){
+    const costs = calcCosts();
+    if(costs) drawDonut(costs);
+  }
+}
+
+function checkLogo(){
+  const img = document.getElementById('logoImg'); const fallback = document.querySelector('.mark-fallback');
+  if(!img) return;
+  // try to load the logo image if user placed one at /public/logo.png
+  const probe = new Image();
+  probe.onload = ()=>{ img.src = '/logo.png'; img.style.display='block'; if(fallback) fallback.style.display='none'; };
+  probe.onerror = ()=>{ img.style.display='none'; if(fallback) fallback.style.display='inline-block'; };
+  probe.src = '/logo.png?ts=' + Date.now();
+}
+
+/* ======================= INIT ======================= */
+
+(async function init(){
+  applyStaticTranslations();
+  applyTheme();
+  checkLogo();
+  setMicState(MIC_STATE.IDLE);
+  const saved = await loadState();
+  if(saved && saved.step && saved.step !== "idea"){
+    if(!saved.chatHistory) saved.chatHistory = []; // توافق مع جلسات محفوظة قبل إضافة ذاكرة المحادثة
+    document.getElementById('resumeBanner').innerHTML = "";
+    const isAr = LANG==='ar';
+    const banner = el(`
+      <div class="resume-banner">
+        <span>🔄 ${isAr?'وجدنا جلسة سابقة لمشروع':'We found a previous session for'}: <b>${saved.idea || (isAr?'بدون اسم':'unnamed')}</b> — ${isAr?'عند مرحلة':'at stage'} "${UI[LANG].stepLabels[saved.step] || saved.step}".</span>
+        <div class="rb-actions">
+          <button class="primary" id="resumeYes">${isAr?'أكمل من حيث توقفت':'Continue where I left off'}</button>
+          <button id="resumeNo">${isAr?'ابدأ جديد':'Start fresh'}</button>
+        </div>
+      </div>`);
+    document.getElementById('resumeBanner').appendChild(banner);
+    document.getElementById('resumeYes').onclick = ()=>{
+      state = saved;
+      document.getElementById('resumeBanner').innerHTML = "";
+      restoreUI();
+    };
+    document.getElementById('resumeNo').onclick = ()=>{
+      document.getElementById('resumeBanner').innerHTML = "";
+      resetSession();
+    };
+    boot(false);
+    // show first greeting anyway so screen isn't empty while they decide
+    addMessage('agent', `<p>${LANG==='ar'?'مرحباً بك مجدداً 👋 اضغط أعلاه للمتابعة أو البدء من جديد.':'Welcome back 👋 Click above to continue or start fresh.'}</p>`, {skipSave:true, skipHistory:true});
+  } else if(saved){
+    state = saved;
+    if(!state.chatHistory) state.chatHistory = [];
+    restoreUI();
+  } else {
+    boot(true);
+  }
+})();
+
+function restoreUI(){
+  renderStageStrip(); refreshBadge();
+  document.getElementById('messages').innerHTML = "";
+  state.messages.forEach(m=>{
+    const wrap = el(`<div class="msg ${m.role}"><div class="avatar">${m.role==='agent'?'🧭':'🙂'}</div><div class="bubble">${m.html}${m.src?`<span class="src">📚 ${m.src}</span>`:''}</div></div>`);
+    document.getElementById('messages').appendChild(wrap);
+  });
+  scrollDown();
+  if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
+
+  if(["review","done"].includes(state.step)){
+    document.getElementById('costCard').style.display="block";
+    const costs = calcCosts();
+    if(costs) drawDonut(costs);
+    document.getElementById('budgetSlider').value = state.budgetLevel;
+    document.getElementById('budgetLbl').innerText = budgetLabel();
+    renderFeasibility();
+    renderBodies();
+    renderChecklist();
+    document.getElementById('reportBtn').disabled = false;
+    setChips([{ label: LANG==='ar'?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() }]);
+  } else if(["sector","city","team","budget"].includes(state.step)){
+    showStepChips(state.step);
+
+  }
+}
+</script>
+</body>
+</html>
