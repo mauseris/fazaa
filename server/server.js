@@ -37,6 +37,16 @@ const HF_API_TOKEN = process.env.HF_API_TOKEN;
 const HF_MODEL = process.env.HF_MODEL || "meta-llama/Llama-3.1-8B-Instruct";
 const HF_ROUTER_BASE_URL = "https://router.huggingface.co/v1";
 
+/**
+ * تكامل اختياري ومستقل تماماً عن مزوّد المحادثة أعلاه: Google Places API لميزة
+ * "المنافسون والموقع" (server/places.js). فارغ = الميزة تستمر بكتالوج تجريبي
+ * محلي كما هي اليوم، بدون أي كسر بالتشغيل.
+ */
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || null;
+if (GOOGLE_MAPS_API_KEY) {
+  console.log("✅ Google Places API مفعّل — ميزة المنافسون والموقع ستعرض بيانات حقيقية عند توفرها.\n");
+}
+
 const usingGateway = Boolean(GATEWAY_BASE_URL && GATEWAY_API_KEY);
 const usingDirectAnthropic = !usingGateway && Boolean(ANTHROPIC_API_KEY);
 const usingHuggingFace = !usingGateway && !usingDirectAnthropic && Boolean(HF_API_TOKEN);
@@ -426,6 +436,7 @@ app.use("/api/assistant", createAssistantRouter({
   GATEWAY_BASE_URL, GATEWAY_API_KEY, MODEL_NAME,
   ANTHROPIC_API_KEY, ANTHROPIC_MODEL_NAME, ANTHROPIC_VERSION,
   HF_API_TOKEN, HF_MODEL, HF_ROUTER_BASE_URL,
+  GOOGLE_MAPS_API_KEY,
 }));
 
 /**

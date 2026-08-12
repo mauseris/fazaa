@@ -9,6 +9,8 @@
 
 const express = require("express");
 const data = require("./assistantData");
+const places = require("./places");
+const osm = require("./osmPlaces");
 
 // نسخة "نداء واحد" من نفس منطق اختيار المزوّد الموجود في server.js — مكرَّرة
 // هنا عمداً بدل استيراد حلقة الوكيل الأصلية، حتى لا نلمس مساراً يعمل فعلياً
@@ -161,11 +163,60 @@ function createAssistantRouter(cfg) {
     res.json({ suppliers: data.matchSuppliers(sector || null, lang || "ar") });
   });
 
-  router.post("/competitors", (req, res) => {
+  // سلسلة رجوع تلقائي ثلاثية المستويات — نفس فلسفة اختيار مزوّد المحادثة في
+  // server.js: أفضل مصدر متاح أولاً، وأي فشل (مفتاح غير صالح، لا نتائج، خطأ
+  // شبكة، قطاع بلا معنى جغرافي) ينتقل للمستوى التالي بدل كسر الميزة:
+  //   1) Google Places (إن وُجد GOOGLE_MAPS_API_KEY) — أغنى بيانات (تقييمات،
+  //      أوقات عمل)، لكن يحتاج فوترة.
+  //   2) OpenStreetMap Overpass (server/osmPlaces.js) — مجاني بالكامل بدون
+  //      مفتاح، لكن تغطية أقل كثافة للأعمال العُمانية ولا يوفر تقييمات/أوقات عمل.
+  //   3) الكتالوج التجريبي المحلي (assistantData.js) — شبكة أمان أخيرة، يعمل دائماً.
+  router.post("/competitors", async (req, res) => {
     const { sector, city, lang } = req.body || {};
+    const L = lang || "ar";
+
+    if (cfg.GOOGLE_MAPS_API_KEY) {
+      try {
+        const [competitors, rentals] = await Promise.all([
+          places.searchCompetitors(cfg.GOOGLE_MAPS_API_KEY, sector || null, city || null, L),
+          places.searchNearbyAgencies(cfg.GOOGLE_MAPS_API_KEY, city || null, L),
+        ]);
+        // competitors === null يعني قطاع بلا معنى جغرافي (مثال: ecommerce) — رجوع تجريبي
+        if (competitors !== null) {
+          return res.json({
+            source: "google",
+            competitors: competitors.length ? competitors : data.matchCompetitors(sector || null, city || null, L),
+            rentals: rentals.length ? rentals : data.matchRentals(city || null, L),
+            rentalsSource: rentals.length ? "google" : "mock",
+          });
+        }
+      } catch (e) {
+        console.warn(`⚠️  Google Places فشل (${e.message}) — تجربة OpenStreetMap.`);
+      }
+    }
+
+    try {
+      const [competitors, agencies] = await Promise.all([
+        osm.searchCompetitors(sector || null, city || null, L),
+        osm.searchNearbyAgencies(city || null, L),
+      ]);
+      if (competitors !== null && competitors.length) {
+        return res.json({
+          source: "osm",
+          competitors,
+          rentals: agencies.length ? agencies : data.matchRentals(city || null, L),
+          rentalsSource: agencies.length ? "osm" : "mock",
+        });
+      }
+    } catch (e) {
+      console.warn(`⚠️  OpenStreetMap Overpass فشل (${e.message}) — رجوع للكتالوج التجريبي.`);
+    }
+
     res.json({
-      competitors: data.matchCompetitors(sector || null, city || null, lang || "ar"),
-      rentals: data.matchRentals(city || null, lang || "ar"),
+      source: "mock",
+      competitors: data.matchCompetitors(sector || null, city || null, L),
+      rentals: data.matchRentals(city || null, L),
+      rentalsSource: "mock",
     });
   });
 

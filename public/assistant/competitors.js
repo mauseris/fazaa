@@ -10,18 +10,39 @@ AiViews.competitors = async function (container) {
   try {
     const sector = state.sector || null;
     const city = state.city || null;
-    const { competitors, rentals } = await AssistantAPI.matchCompetitors(sector, city, LANG);
+    const { competitors, rentals, source, rentalsSource } = await AssistantAPI.matchCompetitors(sector, city, LANG);
     const cityLabel = city ? (LANG === "ar" ? (CITIES[city]?.label || city) : (CITIES[city]?.label_en || city)) : (LANG === "ar" ? "غير محدد" : "not set");
+    const isLive = source === "google" || source === "osm";
+    const rentalsLive = rentalsSource === "google" || rentalsSource === "osm";
     container.innerHTML = `<h2 class="ai-view-title">📍 ${ta("navCompetitors")}</h2>
       <div class="ai-card"><div class="row-between"><span>${LANG === "ar" ? "موقعك" : "Your location"}</span><b>${cityLabel}</b></div></div>
       ${competitors.length ? mockMapHtml(competitors) : `<div class="ai-empty">${LANG === "ar" ? "لا يوجد منافسون مطابقون حالياً." : "No matching competitors yet."}</div>`}
       <h3 style="margin-top:14px;">${LANG === "ar" ? "تفاصيل المنافسين" : "Competitor details"}</h3>
-      ${competitors.map(competitorCardHtml).join("")}
-      <h3 style="margin-top:14px;">${LANG === "ar" ? "مواقع تجارية متاحة قريباً منك" : "Nearby commercial rentals"}</h3>
-      ${rentals.map(rentalCardHtml).join("")}
-      <div class="ai-disclaimer">⚠️ ${LANG === "ar" ? "خريطة توضيحية وبيانات تجريبية — ليست بيانات خرائط أو عقارات حقيقية." : "Illustrative map and mock data — not real map or real-estate data."}</div>`;
+      ${competitors.map((c) => competitorCardHtml(c, isLive)).join("")}
+      <h3 style="margin-top:14px;">${rentalsLive ? (LANG === "ar" ? "وكالات عقارية قريبة منك" : "Nearby real-estate agencies") : (LANG === "ar" ? "مواقع تجارية متاحة قريباً منك" : "Nearby commercial rentals")}</h3>
+      ${rentals.map((r) => rentalCardHtml(r, rentalsLive)).join("")}
+      ${sourceDisclaimerHtml(source, rentalsLive)}`;
   } catch (e) { container.innerHTML = `<h2 class="ai-view-title">📍 ${ta("navCompetitors")}</h2><div class="ai-error">${ta("errorGeneric")}</div>`; }
 };
+
+// نص التنويه أسفل القائمة يعكس مصدر البيانات الفعلي — ثلاث حالات تطابق سلسلة
+// الرجوع التلقائي في server/assistantRoutes.js: google (الأغنى) → osm (مجاني
+// لكن تغطية أقل) → mock (شبكة أمان أخيرة).
+function sourceDisclaimerHtml(source, rentalsLive) {
+  if (source === "google") {
+    const rentalsNote = rentalsLive
+      ? (LANG === "ar" ? " تواصل مع الوكالات العقارية المذكورة لمعرفة الأسعار الفعلية — Google لا يوفر بيانات إيجار." : " Contact the listed agencies for actual prices — Google doesn't provide rental pricing data.")
+      : "";
+    return `<div class="ai-disclaimer">🟢 ${LANG === "ar" ? "بيانات منافسين حقيقية عبر Google Maps." : "Real competitor data via Google Maps."}${rentalsNote}</div>`;
+  }
+  if (source === "osm") {
+    const rentalsNote = rentalsLive
+      ? (LANG === "ar" ? " تواصل مع الوكالات العقارية المذكورة لمعرفة الأسعار الفعلية." : " Contact the listed agencies for actual prices.")
+      : "";
+    return `<div class="ai-disclaimer">🟡 ${LANG === "ar" ? "بيانات منافسين حقيقية عبر OpenStreetMap (مصدر مجاني) — تغطية أقل من Google، بدون تقييمات أو أوقات عمل." : "Real competitor data via OpenStreetMap (free source) — less coverage than Google, no ratings or opening hours."}${rentalsNote}</div>`;
+  }
+  return `<div class="ai-disclaimer">⚠️ ${LANG === "ar" ? "خريطة توضيحية وبيانات تجريبية — ليست بيانات خرائط أو عقارات حقيقية." : "Illustrative map and mock data — not real map or real-estate data."}</div>`;
+}
 
 function mockMapHtml(competitors) {
   const maxD = Math.max(...competitors.map((c) => c.distanceKm || 1), 1);
@@ -39,7 +60,22 @@ function mockMapHtml(competitors) {
   </div>`;
 }
 
-function competitorCardHtml(c) {
+function competitorCardHtml(c, isLive) {
+  if (isLive) {
+    const priceLabel = { budget: LANG === "ar" ? "اقتصادي" : "Budget", mid: LANG === "ar" ? "متوسط" : "Mid-range", premium: LANG === "ar" ? "فاخر" : "Premium", luxury: LANG === "ar" ? "فاخر جداً" : "Luxury" }[c.priceRange] || null;
+    const openLabel = c.openNow === true ? (LANG === "ar" ? "🟢 مفتوح الآن" : "🟢 Open now") : c.openNow === false ? (LANG === "ar" ? "🔴 مغلق الآن" : "🔴 Closed now") : "";
+    return `<div class="ai-match-card">
+      <div class="title">${escapeHtml(c.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">${c.neighborhood ? `— ${escapeHtml(c.neighborhood)} ` : ""}(${c.distanceKm}km)</span></div>
+      <div style="font-size:14px;color:var(--text-faint);margin:4px 0;">
+        ${priceLabel ? `${LANG === "ar" ? "السعر" : "Price"}: <b>${priceLabel}</b> &nbsp;|&nbsp; ` : ""}${c.rating ? `${LANG === "ar" ? "التقييم" : "Rating"}: <b>${c.rating}/5</b> (${c.reviews || 0}) &nbsp;|&nbsp; ` : ""}${openLabel}
+      </div>
+      ${c.phone ? `<div style="font-size:13px;color:var(--text-dim);">📞 ${escapeHtml(c.phone)}</div>` : ""}
+      <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;">
+        ${c.website ? `<a class="ai-btn" href="https://${c.website.replace(/^https?:\/\//, "")}" target="_blank" rel="noopener">${LANG === "ar" ? "الموقع ↗" : "Website ↗"}</a>` : ""}
+        <a class="ai-btn" href="${c.mapsUrl}" target="_blank" rel="noopener">${LANG === "ar" ? "📍 خرائط جوجل ↗" : "📍 Google Maps ↗"}</a>
+      </div>
+    </div>`;
+  }
   const priceLabel = { budget: LANG === "ar" ? "اقتصادي" : "Budget", mid: LANG === "ar" ? "متوسط" : "Mid-range", premium: LANG === "ar" ? "فاخر" : "Premium", luxury: LANG === "ar" ? "فاخر جداً" : "Luxury" }[c.priceRange] || c.priceRange;
   return `<div class="ai-match-card">
     <div class="title">${escapeHtml(c.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">— ${escapeHtml(c.neighborhood)} (${c.distanceKm}km)</span></div>
@@ -53,7 +89,19 @@ function competitorCardHtml(c) {
   </div>`;
 }
 
-function rentalCardHtml(r) {
+function rentalCardHtml(r, isLive) {
+  if (isLive) {
+    return `<div class="ai-match-card">
+      <div class="title">🏢 ${escapeHtml(r.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">(${r.distanceKm}km)</span></div>
+      ${r.address ? `<div style="font-size:14px;color:var(--text-faint);margin:4px 0;">📍 ${escapeHtml(r.address)}</div>` : ""}
+      ${r.rating ? `<div style="font-size:13px;color:var(--text-dim);">${LANG === "ar" ? "التقييم" : "Rating"}: <b>${r.rating}/5</b> (${r.reviews || 0})</div>` : ""}
+      ${r.phone ? `<div style="font-size:13px;color:var(--text-dim);">📞 ${escapeHtml(r.phone)}</div>` : ""}
+      <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;">
+        ${r.website ? `<a class="ai-btn" href="https://${r.website.replace(/^https?:\/\//, "")}" target="_blank" rel="noopener">${LANG === "ar" ? "الموقع ↗" : "Website ↗"}</a>` : ""}
+        <a class="ai-btn" href="${r.mapsUrl}" target="_blank" rel="noopener">${LANG === "ar" ? "📍 خرائط جوجل ↗" : "📍 Google Maps ↗"}</a>
+      </div>
+    </div>`;
+  }
   const omr = LANG === "ar" ? "ر.ع/شهر" : "OMR/month";
   return `<div class="ai-match-card">
     <div class="title">💰 ${escapeHtml(r.name)}</div>
