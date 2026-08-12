@@ -763,6 +763,107 @@ function matchInfluencers(sector, lang = "ar") {
   }));
 }
 
+// ---------------------------------------------------------------------------
+// محاكاة التدفق النقدي (Cash Flow Simulation) — إسقاط ١٢ شهراً حتمي (بدون
+// عشوائية) مبني على مخرجات الحاسبة المالية، مع نمو مبيعات تدريجي بسيط لتقريب
+// واقع مشروع ناشئ بدل خط مسطح غير واقعي.
+// ---------------------------------------------------------------------------
+function simulateCashFlow(financials = {}, months = 12) {
+  const startupCost = Number(financials.totalStartupCost) || 0;
+  const monthlyExpenses = Number(financials.monthlyExpenses) || 0;
+  const baseRevenue = Number(financials.estimatedRevenue) || 0;
+  const growthRate = 0.03; // نمو شهري تقديري ٣٪ — تبسيط توضيحي وليس تنبؤاً مضموناً
+  let balance = -startupCost;
+  const rows = [];
+  for (let m = 1; m <= months; m++) {
+    const revenue = Math.round(baseRevenue * Math.pow(1 + growthRate, m - 1));
+    const profit = revenue - monthlyExpenses;
+    balance += profit;
+    rows.push({ month: m, revenue, expenses: monthlyExpenses, profit, balance: Math.round(balance) });
+  }
+  const breakEvenMonth = rows.find((r) => r.balance >= 0)?.month || null;
+  return { startupCost, months: rows, breakEvenMonth, note: { ar: "محاكاة تقديرية بنمو مبيعات ثابت ٣٪ شهرياً — ليست ضماناً لأداء فعلي.", en: "An illustrative simulation assuming a flat 3% monthly sales growth — not a guarantee of actual performance." } };
+}
+
+// ---------------------------------------------------------------------------
+// التسعير الديناميكي (Dynamic Pricing) — نطاق سعري مقترح من التكلفة + نطاقات
+// أسعار المنافسين (تجريبية)، حتمي بحت.
+// ---------------------------------------------------------------------------
+const PRICE_BAND_BY_RANGE = { budget: [3, 8], mid: [8, 18], premium: [18, 35] };
+function suggestPricing(unitCost, sector, lang = "ar") {
+  const cost = Number(unitCost) || 0;
+  const competitors = COMPETITORS.filter((c) => !sector || c.sectors.includes(sector));
+  const bands = competitors.length ? competitors.map((c) => PRICE_BAND_BY_RANGE[c.priceRange] || PRICE_BAND_BY_RANGE.mid) : [PRICE_BAND_BY_RANGE.mid];
+  const marketMin = Math.min(...bands.map((b) => b[0]));
+  const marketMax = Math.max(...bands.map((b) => b[1]));
+  const costFloor = cost * 1.2; // حد أدنى يضمن هامش ربح ٢٠٪ على الأقل
+  const minPrice = Math.max(costFloor, marketMin);
+  const maxPrice = Math.max(minPrice + 1, marketMax);
+  const recommended = Math.round(((minPrice + maxPrice) / 2) * 10) / 10;
+  return {
+    minPrice: Math.round(minPrice * 10) / 10, recommendedPrice: recommended, maxPrice: Math.round(maxPrice * 10) / 10,
+    marketMin, marketMax,
+    reasoning: lang === "ar"
+      ? `بناءً على تكلفة الوحدة (${cost} ر.ع) ونطاق أسعار المنافسين في قطاعك (${marketMin}-${marketMax} ر.ع)، هذا النطاق يضمن هامش ربح معقول مع بقائك ضمن توقعات السوق.`
+      : `Based on your unit cost (${cost} OMR) and competitor pricing in your sector (${marketMin}-${marketMax} OMR), this range keeps a reasonable margin while staying within market expectations.`,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// إعادة التخزين التنبؤية (Predictive Restocking) — تنبيهات تجريبية حتمية
+// (بدون بيانات مبيعات فعلية متصلة) مبنية على فئات المنتجات والموردين.
+// ---------------------------------------------------------------------------
+function getRestockingAlerts(sector, lang = "ar") {
+  const categories = getProductCategories(sector);
+  const suppliers = matchSuppliers(sector, lang);
+  return categories.map((cat, i) => {
+    const daysLeft = 3 + ((i * 5) % 21); // نمط حتمي وليس عشوائياً — قابل لإعادة الإنتاج
+    const urgency = daysLeft <= 7 ? "critical" : daysLeft <= 14 ? "low" : "ok";
+    const supplier = suppliers[i % Math.max(suppliers.length, 1)] || null;
+    return {
+      id: cat.id, category: lang === "ar" ? cat.ar : cat.en, daysLeft, urgency,
+      suggestedSupplier: supplier ? supplier.name : null, supplierContact: supplier ? supplier.contact : null,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// شبكة رواد الأعمال (Entrepreneur Network) — دليل تجريبي (mock) لرواد أعمال
+// آخرين في نفس القطاع للتواصل وتبادل الخبرات.
+// ---------------------------------------------------------------------------
+const ENTREPRENEURS = [
+  { id: "ent-1", sectors: ["beauty", "retail"], name: "هدى السعدية", business: "أروجا للعناية الطبيعية", city: "muscat", yearsActive: 2, lookingForAr: "شراكات توريد مشتركة", lookingForEn: "Shared supplier partnerships", contact: "huda@aroja.om", social: "@aroja.om" },
+  { id: "ent-2", sectors: ["food", "services"], name: "سالم الغيلاني", business: "مطبخ بيتنا", city: "muscat", yearsActive: 3, lookingForAr: "تبادل خبرات تسويق محلي", lookingForEn: "Local marketing knowledge-sharing", contact: "salim@baytna.om", social: "@baytna.kitchen" },
+  { id: "ent-3", sectors: ["tech", "ecommerce"], name: "ريم البلوشية", business: "سوق سوق (منصة تسوق)", city: "muscat", yearsActive: 1, lookingForAr: "التعاون على حلول شحن مشتركة", lookingForEn: "Collaborating on shared shipping solutions", contact: "reem@souqsouq.om", social: "@souqsouq" },
+  { id: "ent-4", sectors: ["services", "education"], name: "ياسر الرواحي", business: "أكاديمية المهارات", city: "sohar", yearsActive: 4, lookingForAr: "تبادل عملاء وإحالات", lookingForEn: "Client referral exchange", contact: "yasser@skillsacademy.om", social: "@skillsacademy.om" },
+];
+function matchEntrepreneurs(sector, lang = "ar") {
+  const list = ENTREPRENEURS.filter((e) => !sector || e.sectors.includes(sector));
+  return (list.length ? list : ENTREPRENEURS).map((e) => ({
+    id: e.id, name: e.name, business: e.business, city: e.city, yearsActive: e.yearsActive,
+    lookingFor: lang === "ar" ? e.lookingForAr : e.lookingForEn, contact: e.contact, social: e.social,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// المستقلون (Freelancer Connection) — دليل تجريبي (mock) لمستقلين تخدم
+// المشاريع الناشئة (تصميم، برمجة، تسويق، محاسبة).
+// ---------------------------------------------------------------------------
+const FREELANCERS = [
+  { id: "fl-1", skill: "design", nameAr: "تصميم جرافيك وهوية بصرية", nameEn: "Graphic Design & Branding", name: "منى الحوسنية", rateMin: 15, rateMax: 40, unit: "hour", rating: 4.8, city: "muscat", contact: "mona.design@freelance.om" },
+  { id: "fl-2", skill: "dev", nameAr: "تطوير مواقع ومتاجر إلكترونية", nameEn: "Web & E-commerce Development", name: "عبدالله الفارسي", rateMin: 20, rateMax: 60, unit: "hour", rating: 4.6, city: "muscat", contact: "abdullah.dev@freelance.om" },
+  { id: "fl-3", skill: "marketing", nameAr: "إدارة حسابات السوشال ميديا", nameEn: "Social Media Management", name: "لولوة الكندية", rateMin: 150, rateMax: 400, unit: "month", rating: 4.7, city: "muscat", contact: "lulwa.social@freelance.om" },
+  { id: "fl-4", skill: "accounting", nameAr: "محاسبة وإقرارات ضريبية", nameEn: "Accounting & Tax Filing", name: "خالد المعمري", rateMin: 100, rateMax: 300, unit: "month", rating: 4.9, city: "muscat", contact: "khalid.acc@freelance.om" },
+  { id: "fl-5", skill: "legal", nameAr: "استشارات قانونية للشركات الناشئة", nameEn: "Startup Legal Consulting", name: "شيخة الهنائية", rateMin: 30, rateMax: 80, unit: "hour", rating: 4.5, city: "muscat", contact: "sheikha.legal@freelance.om" },
+];
+function matchFreelancers(skill, lang = "ar") {
+  const list = FREELANCERS.filter((f) => !skill || f.skill === skill);
+  return (list.length ? list : FREELANCERS).map((f) => ({
+    id: f.id, category: lang === "ar" ? f.nameAr : f.nameEn, name: f.name, rateMin: f.rateMin, rateMax: f.rateMax,
+    unit: f.unit, rating: f.rating, city: f.city, contact: f.contact,
+  }));
+}
+
 module.exports = {
   SECTORS, CITIES, TEAM_FACTORS,
   GOV_BODIES, SECTOR_BODY,
@@ -774,4 +875,5 @@ module.exports = {
   seedApplications,
   computeFinancials,
   getProductCategories, matchSuppliers, matchCompetitors, matchRentals, matchInfluencers,
+  simulateCashFlow, suggestPricing, getRestockingAlerts, matchEntrepreneurs, matchFreelancers,
 };

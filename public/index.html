@@ -8,15 +8,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
+  /* توليفة الألوان مأخوذة من شعار الوضع الداكن (شخصية الروبوت الكرتونية على
+     خلفية كحلية) — تم استخراجها عبر معاينة بكسلات الشعار الفعلية: خلفية كحلية
+     #0c1729، لون ذهبي/بيج دافئ للهلال والقبّعة #d0af8c، ورمادي مائل للأزرق
+     لوجه الروبوت المعدني #93a2b8 (لا يوجد أي أخضر/تركواز في الشعار الداكن،
+     لذلك استُبدل التركواز السابق بهذا الرمادي المائل للأزرق بدل الاحتفاظ بلون
+     غير موجود في الشعار أصلاً). */
   --navy-950:#080c1c;
   --navy-900:#0c1330;
   --navy-800:#131c42;
   --navy-700:#1c2a5e;
   --navy-600:#2a3b7a;
   --line:#25315f;
-  --gold:#d1a34a;
-  --gold-soft:#e8c988;
-  --teal:#33c9b0;
+  --gold:#d3b287;
+  --gold-soft:#e8d4b8;
+  --teal:#93a2b8;
   --coral:#e8735c;
   --text:#f3f0e6;
   --text-dim:#a7b0d6;
@@ -66,18 +72,18 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
   padding:16px 22px; border-bottom:1px solid var(--line);
   background:linear-gradient(180deg, rgba(19,28,66,.6), transparent);
 }
-.brand{display:flex; align-items:center; gap:12px;}
+.brand{display:flex; align-items:center; gap:14px;}
 .brand .mark{
-  width:44px; height:44px; border-radius:10px;
+  width:60px; height:60px; border-radius:14px;
   background:linear-gradient(135deg, var(--gold), var(--coral));
   display:flex; align-items:center; justify-content:center;
-  font-family:'Cairo'; font-weight:800; color:#1a1204; font-size:16px;
+  font-family:'Cairo'; font-weight:800; color:#1a1204; font-size:22px;
   box-shadow:var(--shadow-sm);
   overflow:hidden;
 }
 .brand .mark img{width:100%; height:100%; object-fit:cover; display:block;}
-.brand .name{font-family:'Cairo'; font-weight:800; font-size:19px;}
-.brand .tag{font-size:11px; color:var(--text-faint); margin-top:-2px;}
+.brand .name{font-family:'Cairo'; font-weight:800; font-size:21px;}
+.brand .tag{font-size:12px; color:var(--text-faint); margin-top:-1px;}
 .top-actions{display:flex; gap:10px; align-items:center;}
 .pill{
   font-size:12px; padding:6px 12px; border-radius:999px;
@@ -92,13 +98,17 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 }
 .btn-reset:hover{border-color:var(--coral); color:var(--coral);}
 
-/* ---------- top nav (all-features bar) ---------- */
+/* ---------- top nav (categorized feature bar) ---------- */
+.top-nav-bar{
+  display:flex; align-items:center;
+  border-bottom:1px solid var(--line);
+  background:var(--navy-900);
+}
 .top-nav{
-  display:flex; gap:6px; align-items:center;
-  padding:8px 22px; border-bottom:1px solid var(--line);
+  display:flex; gap:4px; align-items:center; flex:1;
+  padding:8px 22px;
   overflow-x:auto; overflow-y:hidden; white-space:nowrap;
   scrollbar-width:thin;
-  background:var(--navy-900);
 }
 .top-nav::-webkit-scrollbar{height:5px;}
 .top-nav::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
@@ -110,18 +120,83 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 }
 .top-nav-item:hover{border-color:var(--line); color:var(--text);}
 .top-nav-item.active{border-color:var(--gold); color:var(--text); background:var(--navy-800);}
-@media (max-width:720px){
-  .top-nav{padding:8px 12px;}
-  .top-nav-item{font-size:12px; padding:6px 10px;}
+.nav-cat{position:relative; flex:none;}
+.nav-cat-btn{
+  flex:none; display:inline-flex; align-items:center; gap:6px;
+  font-family:'Tajawal'; font-size:12.5px; color:var(--text-dim);
+  background:transparent; border:1px solid transparent; border-radius:8px;
+  padding:7px 12px; cursor:pointer; white-space:nowrap;
+  border-inline-start:3px solid var(--cat-color, transparent);
+}
+.nav-cat-btn:hover, .nav-cat.open .nav-cat-btn{border-color:var(--line); color:var(--text); background:var(--navy-800);}
+.nav-cat-btn .caret{font-size:9px; opacity:.7; transition:transform .15s;}
+.nav-cat.open .nav-cat-btn .caret{transform:rotate(180deg);}
+.nav-dropdown{
+  position:absolute; top:calc(100% + 6px); inset-inline-start:0;
+  min-width:220px; background:var(--navy-800); border:1px solid var(--line);
+  border-radius:10px; box-shadow:var(--shadow); padding:6px;
+  display:none; z-index:50;
+}
+.nav-cat.open .nav-dropdown{display:block;}
+.nav-dropdown-item{
+  display:flex; align-items:center; gap:8px; width:100%; text-align:start;
+  font-family:'Tajawal'; font-size:12.5px; color:var(--text-dim);
+  background:transparent; border:none; border-radius:7px;
+  padding:8px 10px; cursor:pointer;
+}
+.nav-dropdown-item:hover{background:var(--navy-700); color:var(--text);}
+.hamburger-btn{display:none; flex:none; background:transparent; border:none; color:var(--text); font-size:20px; padding:8px 18px; cursor:pointer;}
+
+/* mobile hamburger accordion menu */
+.mobile-nav-overlay{
+  display:none; position:fixed; inset:0; z-index:200;
+  background:var(--navy-950); overflow-y:auto;
+}
+.mobile-nav-overlay.show{display:block;}
+.mobile-nav-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; border-bottom:1px solid var(--line);
+  font-family:'Cairo'; font-weight:800; font-size:16px; color:var(--text);
+}
+.mobile-nav-body{padding:10px 14px 30px;}
+.mobile-nav-home{
+  display:block; width:100%; text-align:start; font-family:'Tajawal'; font-size:14px;
+  color:var(--text); background:var(--navy-800); border:1px solid var(--line);
+  border-radius:10px; padding:12px 14px; margin-bottom:8px; cursor:pointer;
+}
+.mobile-nav-cat{border:1px solid var(--line); border-radius:10px; margin-bottom:8px; overflow:hidden;}
+.mobile-nav-cat-btn{
+  display:flex; align-items:center; justify-content:space-between; width:100%;
+  font-family:'Tajawal'; font-weight:700; font-size:13.5px; color:var(--text);
+  background:var(--navy-800); border:none; border-inline-start:3px solid var(--cat-color, transparent);
+  padding:13px 14px; cursor:pointer;
+}
+.mobile-nav-cat-items{display:none; padding:4px;}
+.mobile-nav-cat.open .mobile-nav-cat-items{display:block;}
+.mobile-nav-cat.open .mobile-nav-cat-btn .caret{transform:rotate(180deg);}
+.mobile-nav-item{
+  display:flex; align-items:center; gap:8px; width:100%; text-align:start;
+  font-family:'Tajawal'; font-size:13px; color:var(--text-dim);
+  background:transparent; border:none; border-radius:7px;
+  padding:11px 12px; cursor:pointer;
+}
+.mobile-nav-item:hover{background:var(--navy-700); color:var(--text);}
+@media (max-width:900px){
+  .top-nav{display:none;}
+  .hamburger-btn{display:block;}
 }
 
-/* Palm theme (logo-inspired) — toggled via body.palm-theme */
+/* Palm theme (logo-inspired) — toggled via body.palm-theme. Values verified
+   against actual pixel samples of the light-mode logo (cream bg #fbefdf,
+   warm tan #d2b486, muted khaki-olive crescent #808050, dark olive-brown
+   linework #3f3b1e) rather than eyeballed, so the theme genuinely matches
+   the logo instead of just approximating "earthy" tones. */
 .palm-theme{
-  --gold:#d9c49c;      /* robot-body tan */
+  --gold:#d4b787;      /* robot-body tan */
   --gold-soft:#f2e6c8;
   --coral:#b1552a;     /* terracotta/rust — CTA pop, echoes the dark outline's warmth */
-  --teal:#587433;      /* palm-leaf olive green, deepened for contrast on cream */
-  --navy-950:#f7f0e2;  /* cream background */
+  --teal:#6d6a3a;      /* palm-leaf khaki-olive crescent, deepened slightly for contrast on cream */
+  --navy-950:#fbefdf;  /* cream background */
   --navy-900:#f0e4cb;
   --navy-800:#e8d9b6;
   --navy-700:#d3bd8c;
@@ -133,7 +208,7 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
   --good:#3f7a3e;
   --warn:#a8681c;
   --user-bubble-1:#f2e6c8;
-  --user-bubble-2:#d9c49c;
+  --user-bubble-2:#d4b787;
   --shadow:0 10px 26px rgba(94,58,26,.10);
   --shadow-sm:0 4px 14px rgba(94,58,26,.08);
 }
@@ -146,7 +221,7 @@ body.palm-theme{
 .palm-theme .topbar{ background:linear-gradient(180deg, rgba(232,217,182,.7), transparent); }
 .palm-theme .composer{ background:linear-gradient(0deg, rgba(232,217,182,.6), transparent); }
 .palm-theme aside.rail{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 160'%3E%3Cg fill='%23587433' fill-opacity='0.14'%3E%3Cpath d='M100 160 C95 100 70 70 20 40 C55 55 90 75 100 120 Z'/%3E%3Cpath d='M100 160 C90 95 55 60 10 55 C50 60 90 85 100 130 Z'/%3E%3Cpath d='M100 160 C100 90 95 55 90 10 C100 50 105 90 100 140 Z'/%3E%3Cpath d='M100 160 C110 95 145 60 190 55 C150 60 110 85 100 130 Z'/%3E%3Cpath d='M100 160 C105 100 130 70 180 40 C145 55 110 75 100 120 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 160'%3E%3Cg fill='%236d6a3a' fill-opacity='0.14'%3E%3Cpath d='M100 160 C95 100 70 70 20 40 C55 55 90 75 100 120 Z'/%3E%3Cpath d='M100 160 C90 95 55 60 10 55 C50 60 90 85 100 130 Z'/%3E%3Cpath d='M100 160 C100 90 95 55 90 10 C100 50 105 90 100 140 Z'/%3E%3Cpath d='M100 160 C110 95 145 60 190 55 C150 60 110 85 100 130 Z'/%3E%3Cpath d='M100 160 C105 100 130 70 180 40 C145 55 110 75 100 120 Z'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat:no-repeat;
   background-position:bottom -6px center;
   background-size:230px 190px;
@@ -217,7 +292,7 @@ html[dir="rtl"] .app > aside.rail{
 .jp-stage.locked .jp-stage-head{cursor:default;}
 .jp-stage-dot{width:20px; height:20px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:11px; border:1px solid var(--line); background:var(--navy-900);}
 .jp-stage.active .jp-stage-dot{background:var(--gold); border-color:var(--gold); color:#1a1204;}
-.jp-stage.done .jp-stage-dot{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.jp-stage.done .jp-stage-dot{background:var(--teal); border-color:var(--teal); color:var(--navy-950);}
 .jp-stage-title{font-family:'Cairo'; font-weight:700; font-size:12.5px; flex:1;}
 .jp-stage-count{font-size:10.5px; color:var(--text-faint); font-family:'IBM Plex Mono';}
 .jp-tasks{padding:0 12px 12px 12px; display:flex; flex-direction:column; gap:2px; animation:msgIn .2s ease both;}
@@ -228,7 +303,7 @@ html[dir="rtl"] .app > aside.rail{
   width:16px; height:16px; border-radius:5px; border:1px solid var(--line); flex:none; margin-top:2px;
   display:flex; align-items:center; justify-content:center; font-size:11px; background:var(--navy-900);
 }
-.jp-task.done .jp-check{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.jp-task.done .jp-check{background:var(--teal); border-color:var(--teal); color:var(--navy-950);}
 .jp-task-title{font-size:12.5px; line-height:1.5; flex:1;}
 .jp-task.done .jp-task-title{color:var(--text-faint); text-decoration:line-through;}
 .jp-cat{font-size:9.5px; padding:2px 7px; border-radius:999px; flex:none; margin-top:1px; font-family:'IBM Plex Mono';}
@@ -276,7 +351,7 @@ main.chatcol{
 }
 .stage-item.active{color:var(--gold-soft);}
 .stage-item.active .n{background:var(--gold); border-color:var(--gold); color:#1a1204; font-weight:700;}
-.stage-item.done .n{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.stage-item.done .n{background:var(--teal); border-color:var(--teal); color:var(--navy-950);}
 .stage-item.done{color:var(--teal);}
 .stage-sep{width:22px; height:1px; background:var(--line); align-self:center; margin:0 -4px;}
 
@@ -292,21 +367,21 @@ main.chatcol{
   font-size:12px; padding:6px 12px; border-radius:7px; cursor:pointer; font-family:'Tajawal'; font-weight:700;
   border:1px solid var(--teal); background:transparent; color:var(--teal);
 }
-.resume-banner button.primary{background:var(--teal); color:#04241d;}
+.resume-banner button.primary{background:var(--teal); color:var(--navy-950);}
 
 .messages{
   flex:1; overflow-y:auto; padding:20px 22px; display:flex; flex-direction:column; gap:14px;
 }
-.msg{display:flex; gap:10px; max-width:82%;}
+.msg{display:flex; gap:12px; max-width:82%;}
 .msg.agent{align-self:flex-start;}
 .msg.user{align-self:flex-end; flex-direction:row-reverse;}
 .avatar{
-  width:30px;height:30px;border-radius:9px; flex:none; display:flex; align-items:center; justify-content:center;
-  font-size:14px; margin-top:2px;
+  width:42px;height:42px;border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:19px; margin-top:2px;
 }
 .msg.agent .avatar{background:linear-gradient(135deg,var(--gold),var(--coral)); color:#1a1204;}
 .msg.user .avatar{background:var(--navy-700); border:1px solid var(--line);}
-.avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:11px;display:block}
 .bubble{
   padding:12px 15px; border-radius:14px; font-size:14.5px; line-height:1.85;
 }
@@ -470,7 +545,7 @@ aside.rail{
   width:16px;height:16px;border-radius:5px; border:1px solid var(--line); flex:none; margin-top:1px;
   display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;
 }
-.check-item.on .box{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.check-item.on .box{background:var(--teal); border-color:var(--teal); color:var(--navy-950);}
 .check-item.on span.txt{color:var(--text-faint); text-decoration:line-through;}
 
 .report-btn{
@@ -558,7 +633,17 @@ aside.rail{
     <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
   </div>
 </div>
-<nav class="top-nav" id="topNav"></nav>
+<div class="top-nav-bar">
+  <nav class="top-nav" id="topNav"></nav>
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+</div>
+<div class="mobile-nav-overlay" id="mobileNavOverlay">
+  <div class="mobile-nav-header">
+    <span data-t="mobileMenuTitle">القائمة</span>
+    <button class="btn-reset" onclick="toggleMobileNav()">✕</button>
+  </div>
+  <div class="mobile-nav-body" id="mobileNavBody"></div>
+</div>
 <div class="pattern-accent"></div>
 
 <div class="app">
@@ -683,6 +768,7 @@ const UI = {
     brandSub:"— وكيل ريادة الذكي", brandTag:"من الفكرة إلى السجل التجاري، خطوة بخطوة",
     connectedPill:"متصل — جهات رسمية موثّقة + تكاليف تقديرية", newSession:"جلسة جديدة ↺",
     assistantBtn:"المساعد الذكي الكامل",
+    mobileMenuTitle:"القائمة",
     composerPh:"اكتب سؤالك أو فكرتك هنا…",
     statusHeader:"حالة المشروع", logoSub:"شعار مبدئي تلقائي — مؤقت",
     costHeader:"حاسبة التكلفة التقديرية", totalLbl:"إجمالي التأسيس التقديري",
@@ -716,6 +802,7 @@ const UI = {
     brandSub:"— Riyada AI Agent", brandTag:"From idea to commercial registration, step by step",
     connectedPill:"Connected — Verified bodies + estimated costs", newSession:"New session ↺",
     assistantBtn:"AI Business Assistant",
+    mobileMenuTitle:"Menu",
     composerPh:"Type your question or idea here…",
     statusHeader:"Project status", logoSub:"Auto-generated placeholder logo",
     costHeader:"Estimated cost calculator", totalLbl:"Estimated total setup cost",
@@ -801,63 +888,158 @@ function toggleLang(){
   applyLangChange();
 }
 
-/* ======================= TOP NAV (ALL-FEATURES BAR) =======================
-   شريط علوي واحد يجمع كل ميزات المنصة في مكان واحد ثابت — كل عنصر إما يفتح
-   طبقة "المساعد الذكي الكامل" على واجهة محددة (الأدوات الموجودة أصلاً هناك)،
-   أو يوجّه لميزة موجودة في الصفحة الرئيسية (رحلتي/دراسة الجدوى). لا يضيف أي
-   صندوق نص جديد — فقط تنقّل. */
-const TOP_NAV_ITEMS = [
-  { id:'home', icon:'🏠', ar:'الرئيسية', en:'Home', action:'home' },
-  { id:'dashboard', icon:'🤖', ar:'مساعد الأعمال', en:'Business Assistant', action:'assistant' },
-  { id:'journey', icon:'🗺️', ar:'رحلتي', en:'My Journey', action:'journey' },
-  { id:'names', icon:'🏷️', ar:'اسم المشروع', en:'Business Name', action:'assistant' },
-  { id:'brand', icon:'🎨', ar:'الهوية والشعار', en:'Brand & Logo', action:'assistant' },
-  { id:'idea', icon:'📊', ar:'تحليل الفكرة', en:'Idea Analysis', action:'assistant' },
-  { id:'feasibility', icon:'📋', ar:'دراسة الجدوى', en:'Feasibility Study', action:'report' },
-  { id:'gov', icon:'🏛️', ar:'الخدمات الحكومية', en:'Government Services', action:'assistant' },
-  { id:'documents', icon:'📄', ar:'المستندات', en:'Documents', action:'assistant' },
-  { id:'funding', icon:'💰', ar:'التمويل', en:'Funding', action:'assistant' },
-  { id:'financial', icon:'🧮', ar:'المالية', en:'Financial', action:'assistant' },
-  { id:'suppliers', icon:'🏪', ar:'الموردون', en:'Suppliers', action:'assistant' },
-  { id:'competitors', icon:'📍', ar:'المنافسون والموقع', en:'Competitors & Location', action:'assistant' },
-  { id:'marketing', icon:'📣', ar:'التسويق', en:'Marketing', action:'assistant' },
-  { id:'content', icon:'📝', ar:'المحتوى', en:'Content', action:'assistant' },
-  { id:'applications', icon:'📬', ar:'طلباتي', en:'My Applications', action:'assistant' },
+/* ======================= TOP NAV (CATEGORIZED FEATURE BAR) =======================
+   بدل شريط أفقي مسطّح بـ١٦ عنصراً، ٦ فئات رئيسية بقوائم منسدلة (سطح المكتب) أو
+   قائمة أكورديون (جوال) — كل عنصر إما يفتح طبقة "المساعد الذكي الكامل" على واجهة
+   محددة، أو يوجّه لميزة في الصفحة الرئيسية (رحلتي/دراسة الجدوى). لا يضيف أي
+   صندوق نص جديد — فقط تنقّل. كل عنصر له مسار URL (history API) لدعم الروابط
+   المباشرة والرجوع للخلف، مدعوم من app.get("*") الموجود أصلاً في السيرفر. */
+const NAV_CATEGORIES = [
+  { id:'planning', icon:'📊', ar:'التخطيط والتحليل', en:'Planning & Analysis', color:'#2196F3', slug:'planning', items:[
+    { id:'dashboard', icon:'🤖', ar:'مساعد الأعمال', en:'Business Assistant', slug:'assistant' },
+    { id:'idea', icon:'📊', ar:'تحليل الفكرة', en:'Idea Analysis', slug:'analysis' },
+    { id:'feasibility', icon:'📋', ar:'دراسة الجدوى', en:'Feasibility Study', slug:'feasibility', action:'report' },
+    { id:'journey', icon:'🗺️', ar:'رحلتي', en:'My Journey', slug:'journey', action:'journey' },
+    { id:'simulation', icon:'📈', ar:'محاكاة مالية', en:'Cash Flow Simulation', slug:'simulation' },
+  ]},
+  { id:'design', icon:'🎨', ar:'التصميم والهوية', en:'Design & Branding', color:'#9C27B0', slug:'design', items:[
+    { id:'names', icon:'🏷️', ar:'اسم المشروع', en:'Business Name', slug:'name' },
+    { id:'brand', icon:'🎨', ar:'الهوية والشعار', en:'Brand & Logo', slug:'brand' },
+    { id:'content', icon:'📝', ar:'المحتوى', en:'Content', slug:'content' },
+  ]},
+  { id:'establish', icon:'🏗️', ar:'التأسيس والتراخيص', en:'Establishment & Legal', color:'#FF9800', slug:'establish', items:[
+    { id:'gov', icon:'🏛️', ar:'الخدمات الحكومية', en:'Government Services', slug:'government' },
+    { id:'documents', icon:'📄', ar:'المستندات', en:'Documents', slug:'documents' },
+    { id:'applications', icon:'📬', ar:'طلباتي', en:'My Applications', slug:'applications' },
+  ]},
+  { id:'finance', icon:'💰', ar:'المالية والتمويل', en:'Finance & Funding', color:'#4CAF50', slug:'finance', items:[
+    { id:'financial', icon:'🧮', ar:'المالية', en:'Financial', slug:'calculator' },
+    { id:'funding', icon:'💰', ar:'التمويل', en:'Funding', slug:'funding' },
+    { id:'cashflow', icon:'💰', ar:'التدفق النقدي', en:'Cash Flow', slug:'cashflow' },
+  ]},
+  { id:'operations', icon:'🏪', ar:'العمليات والموردين', en:'Operations & Suppliers', color:'#F44336', slug:'operations', items:[
+    { id:'suppliers', icon:'🏪', ar:'الموردون', en:'Suppliers', slug:'suppliers' },
+    { id:'restocking', icon:'📦', ar:'إعادة التخزين', en:'Predictive Restocking', slug:'restocking' },
+    { id:'pricing', icon:'🎯', ar:'التسعير الديناميكي', en:'Dynamic Pricing', slug:'pricing' },
+  ]},
+  { id:'marketing', icon:'📣', ar:'التسويق والنمو', en:'Marketing & Growth', color:'#E91E63', slug:'marketing', items:[
+    { id:'competitors', icon:'📍', ar:'المنافسون والموقع', en:'Competitors & Location', slug:'competitors' },
+    { id:'marketing', icon:'📣', ar:'التسويق', en:'Marketing', slug:'marketing' },
+    { id:'network', icon:'🤝', ar:'شبكة رواد الأعمال', en:'Entrepreneur Network', slug:'network' },
+    { id:'freelancers', icon:'🤝', ar:'المستقلون', en:'Freelancer Connection', slug:'freelancers' },
+  ]},
 ];
+let openNavCat = null;
+
 function renderTopNav(){
   const nav = document.getElementById('topNav');
-  if(!nav) return;
-  nav.innerHTML = TOP_NAV_ITEMS.map(item=>`
-    <button class="top-nav-item" onclick="topNavGo('${item.id}')">
-      <span>${item.icon}</span><span>${LANG==='ar'?item.ar:item.en}</span>
-    </button>
-  `).join('');
+  if(nav){
+    nav.innerHTML = `<button class="top-nav-item" onclick="topNavGo('home')"><span>🏠</span><span>${LANG==='ar'?'الرئيسية':'Home'}</span></button>` +
+      NAV_CATEGORIES.map(cat=>`
+        <div class="nav-cat${openNavCat===cat.id?' open':''}" data-cat="${cat.id}">
+          <button class="nav-cat-btn" style="--cat-color:${cat.color}" onclick="toggleNavDropdown('${cat.id}')">
+            <span>${cat.icon}</span><span>${LANG==='ar'?cat.ar:cat.en}</span><span class="caret">▾</span>
+          </button>
+          <div class="nav-dropdown">
+            ${cat.items.map(item=>`<button class="nav-dropdown-item" onclick="topNavGo('${cat.id}','${item.id}')"><span>${item.icon}</span><span>${LANG==='ar'?item.ar:item.en}</span></button>`).join('')}
+          </div>
+        </div>
+      `).join('');
+  }
+  renderMobileNav();
 }
-function topNavGo(id){
-  const item = TOP_NAV_ITEMS.find(x=>x.id===id);
-  if(!item) return;
-  if(item.action==='home'){
+
+function toggleNavDropdown(catId){
+  openNavCat = (openNavCat === catId) ? null : catId;
+  renderTopNav();
+}
+document.addEventListener('click', (e)=>{
+  if(openNavCat && !e.target.closest('.nav-cat')){ openNavCat = null; renderTopNav(); }
+});
+
+function renderMobileNav(){
+  const body = document.getElementById('mobileNavBody');
+  if(!body) return;
+  body.innerHTML = `<button class="mobile-nav-home" onclick="topNavGo('home')">🏠 ${LANG==='ar'?'الرئيسية':'Home'}</button>` +
+    NAV_CATEGORIES.map(cat=>`
+      <div class="mobile-nav-cat" data-mcat="${cat.id}">
+        <button class="mobile-nav-cat-btn" style="--cat-color:${cat.color}" onclick="toggleMobileNavCat('${cat.id}')">
+          <span>${cat.icon} ${LANG==='ar'?cat.ar:cat.en}</span><span class="caret">▾</span>
+        </button>
+        <div class="mobile-nav-cat-items">
+          ${cat.items.map(item=>`<button class="mobile-nav-item" onclick="topNavGo('${cat.id}','${item.id}')"><span>${item.icon}</span><span>${LANG==='ar'?item.ar:item.en}</span></button>`).join('')}
+        </div>
+      </div>
+    `).join('');
+}
+function toggleMobileNavCat(catId){
+  document.querySelector(`.mobile-nav-cat[data-mcat="${catId}"]`)?.classList.toggle('open');
+}
+function toggleMobileNav(){
+  document.getElementById('mobileNavOverlay')?.classList.toggle('show');
+}
+
+function findNavItem(catId, itemId){
+  if(catId==='home') return { action:'home' };
+  const cat = NAV_CATEGORIES.find(c=>c.id===catId);
+  if(!cat) return null;
+  const item = cat.items.find(i=>i.id===itemId);
+  if(!item) return null;
+  return { cat, item, action: item.action || 'assistant' };
+}
+
+function topNavGo(catId, itemId, opts){
+  const found = findNavItem(catId, itemId);
+  if(!found) return;
+  openNavCat = null;
+  document.getElementById('mobileNavOverlay')?.classList.remove('show');
+  if(found.action==='home'){
     if(typeof closeAssistant==='function') closeAssistant();
     closeReport();
     document.getElementById('textInput')?.focus();
+    if(!opts || !opts.silent) history.pushState({nav:'home'}, '', '/');
+    renderTopNav();
     return;
   }
-  if(item.action==='report'){
+  if(found.action==='report'){
     if(typeof closeAssistant==='function') closeAssistant();
     openReport();
+    if(!opts || !opts.silent) history.pushState({nav:catId+'/'+itemId}, '', `/${found.cat.slug}/${found.item.slug}`);
+    renderTopNav();
     return;
   }
-  if(item.action==='journey'){
+  if(found.action==='journey'){
     if(typeof closeAssistant==='function') closeAssistant();
     closeReport();
     document.getElementById('journeyPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
+    if(!opts || !opts.silent) history.pushState({nav:catId+'/'+itemId}, '', `/${found.cat.slug}/${found.item.slug}`);
+    renderTopNav();
     return;
   }
   // action==='assistant': يفتح طبقة المساعد الذكي على الواجهة المطابقة مباشرة
   closeReport();
   if(typeof openAssistant==='function') openAssistant();
-  if(typeof switchAiView==='function') switchAiView(id === 'dashboard' ? 'dashboard' : id);
+  if(typeof switchAiView==='function') switchAiView(itemId === 'dashboard' ? 'dashboard' : itemId);
+  if(!opts || !opts.silent) history.pushState({nav:catId+'/'+itemId}, '', `/${found.cat.slug}/${found.item.slug}`);
+  renderTopNav();
 }
+
+// يدعم الروابط المباشرة (deep links) — يقرأ مسار الصفحة عند التحميل ويفتح
+// نفس الميزة، بالاعتماد على app.get("*") الموجود أصلاً في السيرفر الذي يرسل
+// index.html لأي مسار، فلا حاجة لأي تغيير في السيرفر.
+function routeFromPath(path, opts){
+  const parts = (path || '/').split('/').filter(Boolean);
+  if(!parts.length) return; // "/" — البقاء على الصفحة الرئيسية، لا إجراء
+  const [catSlug, itemSlug] = parts;
+  const cat = NAV_CATEGORIES.find(c=>c.slug===catSlug);
+  if(!cat) return;
+  const item = cat.items.find(i=>i.slug===itemSlug) || cat.items[0];
+  if(!item) return;
+  topNavGo(cat.id, item.id, { silent: true, ...opts });
+}
+window.addEventListener('popstate', (e)=>{
+  routeFromPath(location.pathname, { silent: true });
+});
 
 /* ======================= MOCK DATA LAYER (تحاكي مصادر ريادة/تجارة الرسمية) ======================= */
 
@@ -1340,10 +1522,10 @@ function refreshBadge(){ document.getElementById('stageBadge').innerText = stage
 function isPalmTheme(){ return document.body.classList.contains('palm-theme'); }
 
 const LOGO_PALETTES = [
-  ["#d1a34a","#e8735c"], ["#33c9b0","#1c2a5e"], ["#e8b23c","#2a3b7a"], ["#e8735c","#131c42"]
+  ["#d3b287","#e8735c"], ["#93a2b8","#1c2a5e"], ["#e8b23c","#2a3b7a"], ["#e8735c","#131c42"]
 ];
 const LOGO_PALETTES_PALM = [
-  ["#d9c49c","#7a5c3a"], ["#6f8f47","#4a4020"], ["#b9a273","#3f3a26"], ["#8a7148","#241f14"]
+  ["#d4b787","#7a5c3a"], ["#6f8f47","#4a4020"], ["#b9a273","#3f3a26"], ["#8a7148","#241f14"]
 ];
 function initialsOf(name){
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -2710,5 +2892,17 @@ function restoreUI(){
 <script src="/assistant/competitors.js"></script>
 <script src="/assistant/marketing.js"></script>
 <script src="/assistant/content.js"></script>
+<script src="/assistant/simulation.js"></script>
+<script src="/assistant/cashflow.js"></script>
+<script src="/assistant/restocking.js"></script>
+<script src="/assistant/pricing.js"></script>
+<script src="/assistant/network.js"></script>
+<script src="/assistant/freelancers.js"></script>
+<script>
+  // يُنفَّذ بعد تحميل كل ملفات المساعد الذكي (openAssistant/switchAiView)، حتى
+  // تعمل الروابط المباشرة (deep links) لأي مسار مثل /planning/assistant فعلياً
+  // من أول تحميل للصفحة، وليس فقط عند التنقل داخل الصفحة.
+  if(typeof routeFromPath === 'function') routeFromPath(location.pathname);
+</script>
 </body>
 </html>

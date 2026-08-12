@@ -40,5 +40,10 @@ const AssistantAPI = (function () {
     generateBrandIdentity: (profile, lang) => post("/brand-identity", { profile, lang }),
     generateContent: (profile, lang) => post("/content", { profile, lang }),
     generateMarketingStrategy: (profile, lang) => post("/marketing-strategy", { profile, lang }),
+    simulateCashFlow: (financials, months) => post("/cashflow-simulation", { financials, months }),
+    suggestPricing: (unitCost, sector, lang) => post("/pricing-suggestion", { unitCost, sector, lang }),
+    getRestockingAlerts: (sector, lang) => post("/restocking-alerts", { sector, lang }),
+    matchEntrepreneurs: (sector, lang) => post("/entrepreneurs", { sector, lang }),
+    matchFreelancers: (skill, lang) => post("/freelancers", { skill, lang }),
   };
 })();
