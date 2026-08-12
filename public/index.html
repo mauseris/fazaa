@@ -426,20 +426,12 @@ aside.rail{
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script type="module">
-  // Whisper speech-to-text, running fully client-side via transformers.js (Xenova/whisper-tiny,
-  // ~39MB, multilingual). No API key, no server round-trip — the model is cached by the browser
-  // after first download. Exposed on window so the classic <script> below (voice input UI) can use it.
-  import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
-  env.allowLocalModels = false;
-  window.__hfPipeline = pipeline;
-</script>
 </head>
 <body>
 
 <div class="topbar">
   <div class="brand">
-    <div class="mark"><img id="logoImg" src="/logo.png" alt="logo" style="display:none"><span class="mark-fallback">ف</span></div>
+    <div class="mark"><img id="logoImg" alt="logo" style="display:none"><span class="mark-fallback">ف</span></div>
     <div>
       <div class="name">فزعة <span style="color:var(--text-faint); font-weight:500; font-size:13px;" data-t="brandSub">— وكيل ريادة الذكي</span></div>
       <div class="tag" data-t="brandTag">من الفكرة إلى السجل التجاري، خطوة بخطوة</div>
@@ -552,13 +544,11 @@ const UI = {
     stageBadge:{ idea:"صياغة الفكرة", collect:"جمع بيانات المشروع", review:"دراسة الجدوى جاهزة", done:"جاهز للتسجيل" },
     reChooseHint:"تقدر تجاوبني بكلامك العادي أو تختار من القائمة تحت 👇",
     micTitleIdle:"تسجيل صوتي", micTitleRecording:"إيقاف التسجيل", micTitleProcessing:"جاري المعالجة…",
-    voiceLoadingModel:"جارٍ تحميل نموذج التعرف على الصوت (أول مرة فقط)…",
     voiceListening:"🎙️ يستمع… اضغط على الميكروفون للإيقاف",
-    voiceTranscribing:"⏳ جاري تحويل الصوت إلى نص…",
     voiceNoSpeech:"⚠️ لم يتم التقاط أي كلام — حاول مرة أخرى",
     voiceMicDenied:"⚠️ تعذّر الوصول للميكروفون — تأكد من إعطاء الإذن للمتصفح",
-    voiceNotSupported:"⚠️ التسجيل الصوتي غير مدعوم في هذا المتصفح",
-    voiceModelError:"⚠️ تعذّر تحميل نموذج الصوت — تحقق من الاتصال بالإنترنت",
+    voiceNotSupported:"⚠️ التعرف الصوتي غير مدعوم في هذا المتصفح — جرّب Chrome أو Edge",
+    voiceModelError:"⚠️ تعذّر التعرف على الصوت — تحقق من اتصالك بالإنترنت وحاول مرة أخرى",
   },
   en: {
     brandSub:"— Riyada AI Agent", brandTag:"From idea to commercial registration, step by step",
@@ -576,13 +566,11 @@ const UI = {
     stageBadge:{ idea:"Shaping the idea", collect:"Collecting project data", review:"Feasibility study ready", done:"Ready to register" },
     reChooseHint:"You can reply in your own words, or pick from the list below 👇",
     micTitleIdle:"Voice input", micTitleRecording:"Stop recording", micTitleProcessing:"Processing…",
-    voiceLoadingModel:"Loading speech recognition model (first time only)…",
     voiceListening:"🎙️ Listening… click the mic to stop",
-    voiceTranscribing:"⏳ Transcribing your voice…",
     voiceNoSpeech:"⚠️ No speech detected — try again",
     voiceMicDenied:"⚠️ Could not access the microphone — check your browser permission",
-    voiceNotSupported:"⚠️ Voice recording is not supported in this browser",
-    voiceModelError:"⚠️ Could not load the speech model — check your internet connection",
+    voiceNotSupported:"⚠️ Speech recognition is not supported in this browser — try Chrome or Edge",
+    voiceModelError:"⚠️ Speech recognition failed — check your internet connection and try again",
   }
 };
 function t(key){ return UI[LANG][key]; }
@@ -1638,16 +1626,14 @@ async function sendFree(){
   }
 }
 
-/* ======================= VOICE INPUT (Whisper via transformers.js) =======================
-   Fully client-side speech-to-text: records mic audio, resamples it to the 16kHz mono format
-   Whisper expects, then runs real ONNX inference in the browser (Xenova/whisper-tiny, ~39MB,
-   multilingual — cached after the first download). No API key, no server round-trip. */
+/* ======================= VOICE INPUT (Web Speech API) =======================
+   Uses the browser's native SpeechRecognition (Chrome/Edge — backed by Google's speech
+   service, so it needs internet access and only runs in Chromium browsers, but it's far
+   more accurate than a tiny in-browser model and has no download/model-loading step. */
 
 const MIC_STATE = { IDLE:'idle', RECORDING:'recording', PROCESSING:'processing' };
 let micState = MIC_STATE.IDLE;
-let mediaRecorder = null;
-let recordedChunks = [];
-let transcriberPromise = null;
+let recognition = null;
 
 function setVoiceStatus(html){
   document.getElementById('voiceStatus').innerHTML = html ? `<span class="vs-dot"></span>${html}` : '';
@@ -1673,92 +1659,47 @@ function setMicState(next){
   }
 }
 
-// Lazily loads the Whisper pipeline on first use — nothing downloads until the user actually
-// records something, keeping normal (typed) usage of the app completely unaffected.
-function getTranscriber(){
-  if(!transcriberPromise){
-    transcriberPromise = window.__hfPipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-      progress_callback: (p)=>{
-        if(p && p.status === 'progress' && typeof p.progress === 'number'){
-          setVoiceStatus(`${t('voiceLoadingModel')} ${Math.round(p.progress)}%`);
-        } else if(p && p.status === 'progress'){
-          setVoiceStatus(t('voiceLoadingModel'));
-        }
-      }
-    });
-  }
-  return transcriberPromise;
+function getSpeechRecognitionCtor(){
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
-async function toggleVoiceInput(){
+function toggleVoiceInput(){
   if(micState === MIC_STATE.RECORDING){
-    if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    if(recognition) recognition.stop(); // triggers onend below
     return;
   }
   if(micState !== MIC_STATE.IDLE) return;
 
-  if(!window.__hfPipeline){
+  const SpeechRecognitionCtor = getSpeechRecognitionCtor();
+  if(!SpeechRecognitionCtor){
+    setVoiceStatus(t('voiceNotSupported'));
+    return;
+  }
+
+  recognition = new SpeechRecognitionCtor();
+  recognition.lang = LANG === 'ar' ? 'ar-SA' : 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  let gotResult = false;
+
+  // Safety net: if the browser/speech service never calls back at all (hung permission
+  // prompt, unreachable service, etc.), don't leave the mic button stuck disabled forever.
+  let startTimeout = setTimeout(() => {
+    startTimeout = null;
+    try{ recognition.abort(); }catch(e){}
+    setMicState(MIC_STATE.IDLE);
     setVoiceStatus(t('voiceModelError'));
-    return;
-  }
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
-    setVoiceStatus(t('voiceNotSupported'));
-    return;
-  }
+  }, 8000);
+  function clearStartTimeout(){ if(startTimeout){ clearTimeout(startTimeout); startTimeout = null; } }
 
-  let stream;
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({ audio:true });
-  }catch(e){
-    setVoiceStatus(t('voiceMicDenied'));
-    return;
-  }
+  recognition.onstart = () => { clearStartTimeout(); setMicState(MIC_STATE.RECORDING); };
 
-  recordedChunks = [];
-  try{
-    mediaRecorder = new MediaRecorder(stream);
-  }catch(e){
-    stream.getTracks().forEach(tr=>tr.stop());
-    setVoiceStatus(t('voiceNotSupported'));
-    return;
-  }
-  mediaRecorder.ondataavailable = (e)=>{ if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
-  mediaRecorder.onstop = async ()=>{
-    stream.getTracks().forEach(tr=>tr.stop());
-    const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-    await transcribeBlob(blob);
-  };
-  mediaRecorder.start();
-  setMicState(MIC_STATE.RECORDING);
-}
-
-async function decodeToMono16k(blob){
-  const arrayBuffer = await blob.arrayBuffer();
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  const probeCtx = new AudioCtx();
-  const decoded = await probeCtx.decodeAudioData(arrayBuffer);
-  probeCtx.close();
-  const targetRate = 16000;
-  const offlineCtx = new OfflineAudioContext(1, Math.ceil(decoded.duration * targetRate), targetRate);
-  const source = offlineCtx.createBufferSource();
-  source.buffer = decoded;
-  source.connect(offlineCtx.destination);
-  source.start(0);
-  const rendered = await offlineCtx.startRendering();
-  return rendered.getChannelData(0);
-}
-
-async function transcribeBlob(blob){
-  setMicState(MIC_STATE.PROCESSING);
-  setVoiceStatus(t('voiceTranscribing'));
-  try{
-    const audioData = await decodeToMono16k(blob);
-    const transcriber = await getTranscriber();
-    setVoiceStatus(t('voiceTranscribing'));
-    // Let Whisper auto-detect the spoken language instead of forcing the UI language —
-    // the two aren't the same thing (UI defaults to Arabic, but people pitch in either language).
-    const result = await transcriber(audioData, { task:'transcribe' });
-    const text = (result && result.text || '').trim();
+  recognition.onresult = (e) => {
+    clearStartTimeout();
+    gotResult = true;
+    const text = (e.results && e.results[0] && e.results[0][0] && e.results[0][0].transcript || '').trim();
     setMicState(MIC_STATE.IDLE);
     if(!text){
       setVoiceStatus(t('voiceNoSpeech'));
@@ -1767,8 +1708,27 @@ async function transcribeBlob(blob){
     const input = document.getElementById('textInput');
     input.value = text;
     sendFree();
+  };
+
+  recognition.onerror = (e) => {
+    clearStartTimeout();
+    console.error('Speech recognition error:', e.error);
+    setMicState(MIC_STATE.IDLE);
+    if(e.error === 'not-allowed' || e.error === 'service-not-allowed') setVoiceStatus(t('voiceMicDenied'));
+    else if(e.error === 'no-speech') setVoiceStatus(t('voiceNoSpeech'));
+    else setVoiceStatus(t('voiceModelError'));
+  };
+
+  recognition.onend = () => {
+    clearStartTimeout();
+    if(!gotResult && micState !== MIC_STATE.IDLE) setMicState(MIC_STATE.IDLE);
+  };
+
+  try{
+    recognition.start();
+    setMicState(MIC_STATE.PROCESSING); // brief state until onstart flips it to RECORDING
   }catch(e){
-    console.error('Voice transcription failed:', e);
+    clearStartTimeout();
     setMicState(MIC_STATE.IDLE);
     setVoiceStatus(t('voiceModelError'));
   }
@@ -1976,6 +1936,7 @@ function toggleTheme(){
   const next = cur === 'palm' ? 'default' : 'palm';
   localStorage.setItem('fazaa_theme', next);
   applyTheme();
+  checkLogo();
   if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
   if(["review","done"].includes(state.step)){
     const costs = calcCosts();
@@ -1983,14 +1944,18 @@ function toggleTheme(){
   }
 }
 
+// Two logo files are supported — /logo-light.png (used on the cream "palm" theme) and
+// /logo-dark.png (used on the navy default theme) — so the mark always has contrast against
+// its background. Falls back to the "ف" letter mark if the matching file isn't present.
 function checkLogo(){
   const img = document.getElementById('logoImg'); const fallback = document.querySelector('.mark-fallback');
   if(!img) return;
-  // try to load the logo image if user placed one at /public/logo.png
+  const isPalm = document.body.classList.contains('palm-theme');
+  const path = isPalm ? '/logo-light.png' : '/logo-dark.png';
   const probe = new Image();
-  probe.onload = ()=>{ img.src = '/logo.png'; img.style.display='block'; if(fallback) fallback.style.display='none'; };
-  probe.onerror = ()=>{ img.style.display='none'; if(fallback) fallback.style.display='inline-block'; };
-  probe.src = '/logo.png?ts=' + Date.now();
+  probe.onload = ()=>{ img.src = path; img.style.display='block'; if(fallback) fallback.style.display='none'; };
+  probe.onerror = ()=>{ img.style.display='none'; img.removeAttribute('src'); if(fallback) fallback.style.display='inline-block'; };
+  probe.src = path + '?ts=' + Date.now();
 }
 
 /* ======================= INIT ======================= */
