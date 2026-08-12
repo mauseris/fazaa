@@ -32,12 +32,12 @@ function renderNameCards(names) {
   return names.map((n, i) => `
     <div class="ai-card" style="margin-bottom:10px;${selected === n.arabicName || selected === n.englishName ? "border-color:var(--gold);" : ""}">
       <div class="row-between" style="margin-bottom:6px;">
-        <span style="font-weight:800;font-size:15px;color:var(--text);">${escapeHtml(n.arabicName || "")} <span style="font-weight:500;color:var(--text-faint);font-size:12.5px;">(${escapeHtml(n.englishName || "")})</span></span>
+        <span style="font-weight:800;font-size:17.5px;color:var(--text);">${escapeHtml(n.arabicName || "")} <span style="font-weight:500;color:var(--text-faint);font-size:14.5px;">(${escapeHtml(n.englishName || "")})</span></span>
         ${typeof n.memorabilityScore === "number" ? `<span class="ai-level-tag recommended">${n.memorabilityScore}/10</span>` : ""}
       </div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:4px;"><b>${LANG === "ar" ? "المعنى:" : "Meaning:"}</b> ${escapeHtml(n.meaning || "")}</div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:8px;"><b>${LANG === "ar" ? "ليش يناسب مشروعك:" : "Why it fits:"}</b> ${escapeHtml(n.whyItFits || "")}</div>
-      <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:10px;">📸 ${escapeHtml(n.suggestedInstagramHandle || "")} &nbsp; 🎵 ${escapeHtml(n.suggestedTiktokHandle || "")}</div>
+      <div style="font-size:14.5px;color:var(--text-dim);margin-bottom:4px;"><b>${LANG === "ar" ? "المعنى:" : "Meaning:"}</b> ${escapeHtml(n.meaning || "")}</div>
+      <div style="font-size:14.5px;color:var(--text-dim);margin-bottom:8px;"><b>${LANG === "ar" ? "ليش يناسب مشروعك:" : "Why it fits:"}</b> ${escapeHtml(n.whyItFits || "")}</div>
+      <div style="font-size:13px;color:var(--text-faint);margin-bottom:10px;">📸 ${escapeHtml(n.suggestedInstagramHandle || "")} &nbsp; 🎵 ${escapeHtml(n.suggestedTiktokHandle || "")}</div>
       <div class="ai-row">
         <button class="ai-btn primary" onclick="selectBusinessName(${i})">${LANG === "ar" ? "اختيار الاسم" : "Select this name"}</button>
         <button class="ai-btn" onclick="switchAiView('brand')">${LANG === "ar" ? "🎨 إنشاء شعار" : "🎨 Create logo"}</button>

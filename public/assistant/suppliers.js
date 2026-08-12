@@ -28,12 +28,12 @@ function supplierCardHtml(s) {
   return `<div class="ai-match-card">
     <div class="title">${escapeHtml(s.name)}</div>
     <div class="why">${(s.products || []).join(" · ")}</div>
-    <div style="font-size:12px;color:var(--text-faint);margin:6px 0;">
+    <div style="font-size:14px;color:var(--text-faint);margin:6px 0;">
       ${LANG === "ar" ? "سعر الجملة" : "Wholesale price"}: <b>${s.priceMin}-${s.priceMax} ${omr}</b> &nbsp;|&nbsp;
       MOQ: <b>${s.moq}</b> &nbsp;|&nbsp; ${LANG === "ar" ? "مدة التوصيل" : "Delivery"}: <b>${s.deliveryDays} ${LANG === "ar" ? "أيام" : "days"}</b> &nbsp;|&nbsp;
       ${LANG === "ar" ? "الشحن" : "Shipping"}: <b>${s.shippingCost} ${omr}</b>
     </div>
-    <div class="next"><span style="font-size:12px;color:var(--text-faint);">${escapeHtml(s.contact || "")}</span>
+    <div class="next"><span style="font-size:14px;color:var(--text-faint);">${escapeHtml(s.contact || "")}</span>
       ${s.website ? `<a class="ai-btn" href="https://${s.website.replace(/^https?:\/\//, "")}" target="_blank" rel="noopener">↗</a>` : ""}</div>
   </div>`;
 }

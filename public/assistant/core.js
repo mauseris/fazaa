@@ -216,7 +216,7 @@ async function renderDashboard(container) {
 
   container.innerHTML = `
     <div class="ai-dash-greeting">${greeting}</div>
-    <div class="ai-dash-business">${businessName ? `"${escapeHtml(businessName)}"` : ta("dashNoBusiness")} <a href="#" onclick="editBusinessName();return false;" style="color:var(--text-faint); font-size:11px;">✎ ${ta("editBusinessName")}</a></div>
+    <div class="ai-dash-business">${businessName ? `"${escapeHtml(businessName)}"` : ta("dashNoBusiness")} <a href="#" onclick="editBusinessName();return false;" style="color:var(--text-faint); font-size:12.5px;">✎ ${ta("editBusinessName")}</a></div>
     <div class="ai-next-action"><div class="lbl">${ta("dashNextAction")}</div><div class="txt" id="aiDashNextAction">${ta("loading")}</div></div>
     <div class="ai-quick-grid">${QUICK_ACTIONS.map((id) => {
       const item = NAV_ITEMS.find((n) => n.id === id);

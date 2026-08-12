@@ -30,8 +30,8 @@ async function generateCaseSummary() {
     if (result.raw) { box.innerHTML = `<div class="ai-card" style="white-space:pre-wrap;">${escapeHtml(result.raw)}</div>`; return; }
     const summaryText = buildSummaryText(result);
     box.innerHTML = `<div class="ai-card">
-      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشروع" : "Business"}</div><div style="font-size:13px;">${escapeHtml(result.business || "")}</div></div>
-      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشكلة" : "Issue"}</div><div style="font-size:13px;">${escapeHtml(result.issue || "")}</div></div>
+      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشروع" : "Business"}</div><div style="font-size:15px;">${escapeHtml(result.business || "")}</div></div>
+      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشكلة" : "Issue"}</div><div style="font-size:15px;">${escapeHtml(result.issue || "")}</div></div>
       ${listSection(result.infoCollected, LANG === "ar" ? "المعلومات المجموعة" : "Information collected")}
       ${listSection(result.documents, LANG === "ar" ? "المستندات" : "Documents")}
       ${listSection(result.questionsForStaff, LANG === "ar" ? "أسئلة لموظف ريادة" : "Questions for Riyada staff")}
@@ -64,9 +64,9 @@ AiViews.voice = function (container) {
   container.innerHTML = `<h2 class="ai-view-title">🎙️ ${ta("navVoice")}</h2>
     <p class="ai-view-sub">${LANG === "ar" ? "تكلّم بصوتك، وبنحوّله لنص ونرسله للمساعد مباشرة." : "Speak naturally — we'll transcribe it and send it straight to the assistant."}</p>
     <div class="ai-card" style="text-align:center;padding:32px 16px;">
-      <button class="mic-btn" id="aiVoiceMicBtn" style="width:64px;height:64px;font-size:24px;margin:0 auto 14px auto;" onclick="startAssistantVoice()">🎤</button>
-      <div id="aiVoiceStatus" style="font-size:12.5px;color:var(--text-faint);min-height:18px;"></div>
-      <div id="aiVoiceTranscript" style="margin-top:14px;font-size:14px;color:var(--text);white-space:pre-wrap;"></div>
+      <button class="mic-btn" id="aiVoiceMicBtn" style="width:64px;height:64px;font-size:27.5px;margin:0 auto 14px auto;" onclick="startAssistantVoice()">🎤</button>
+      <div id="aiVoiceStatus" style="font-size:14.5px;color:var(--text-faint);min-height:18px;"></div>
+      <div id="aiVoiceTranscript" style="margin-top:14px;font-size:16px;color:var(--text);white-space:pre-wrap;"></div>
     </div>`;
 };
 function startAssistantVoice() {

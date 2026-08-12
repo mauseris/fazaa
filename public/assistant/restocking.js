@@ -22,7 +22,7 @@ function restockAlertHtml(a) {
   const urgencyLabel = { critical: LANG === "ar" ? "🔴 عاجل" : "🔴 Critical", low: LANG === "ar" ? "🟡 منخفض" : "🟡 Low", ok: LANG === "ar" ? "🟢 جيد" : "🟢 OK" }[a.urgency];
   return `<div class="ai-reminder-item" data-restock="${a.id}">
     <div class="txt"><b>${escapeHtml(a.category)}</b> — ${urgencyLabel} — ${LANG === "ar" ? `${a.daysLeft} يوم متبقٍ` : `${a.daysLeft} days left`}
-      ${a.suggestedSupplier ? `<div style="font-size:11px;color:var(--text-faint);margin-top:2px;">${LANG === "ar" ? "المورد المقترح" : "Suggested supplier"}: ${escapeHtml(a.suggestedSupplier)}</div>` : ""}</div>
+      ${a.suggestedSupplier ? `<div style="font-size:12.5px;color:var(--text-faint);margin-top:2px;">${LANG === "ar" ? "المورد المقترح" : "Suggested supplier"}: ${escapeHtml(a.suggestedSupplier)}</div>` : ""}</div>
     <div class="acts"><button onclick="dismissRestockAlert('${a.id}')">${LANG === "ar" ? "تمت إعادة الطلب ✓" : "Reordered ✓"}</button></div>
   </div>`;
 }

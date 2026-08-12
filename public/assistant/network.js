@@ -47,26 +47,26 @@ AiViews.network = async function (container) {
 function entrepreneurCardHtml(e) {
   const statusDot = e.operating ? "🟢" : "🟠";
   return `<div class="ai-match-card">
-    <div class="title">${statusDot} ${escapeHtml(e.name)} <span style="font-weight:400;font-size:11.5px;color:var(--text-faint);">— ${escapeHtml(e.business)}</span></div>
+    <div class="title">${statusDot} ${escapeHtml(e.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">— ${escapeHtml(e.business)}</span></div>
     <div class="why">${escapeHtml(e.city)} · ${escapeHtml(e.stage)}</div>
-    ${e.operating ? `<div style="font-size:12px;color:var(--text-faint);margin:4px 0;">
+    ${e.operating ? `<div style="font-size:14px;color:var(--text-faint);margin:4px 0;">
       ${LANG === "ar" ? "الإيرادات الشهرية" : "Monthly revenue"}: <b>${escapeHtml(e.monthlyRevenue)}</b> &nbsp;|&nbsp;
       ${LANG === "ar" ? "العملاء" : "Customers"}: <b>${e.customers}</b> &nbsp;|&nbsp;
       ${LANG === "ar" ? "التقييم" : "Rating"}: <b>${e.rating}/5</b>
     </div>` : ""}
-    <div style="font-size:12px;color:var(--good);margin-bottom:2px;">✅ ${(e.skills || []).join(" · ")}</div>
-    <div style="font-size:12px;color:var(--text-dim);">${LANG === "ar" ? "يبحث عن" : "Looking for"}: ${(e.lookingFor || []).join(" · ")}</div>
+    <div style="font-size:14px;color:var(--good);margin-bottom:2px;">✅ ${(e.skills || []).join(" · ")}</div>
+    <div style="font-size:14px;color:var(--text-dim);">${LANG === "ar" ? "يبحث عن" : "Looking for"}: ${(e.lookingFor || []).join(" · ")}</div>
     ${e.availableForMentoring ? `<span class="ai-level-tag recommended" style="margin-top:6px;display:inline-block;">${LANG === "ar" ? "🎯 مستعد للإرشاد" : "🎯 Available for mentoring"}</span>` : ""}
-    <div class="next" style="margin-top:8px;"><span style="font-size:12px;color:var(--text-faint);">${escapeHtml(e.contact)}</span>
-      <span style="font-size:11px;color:var(--text-faint);">${escapeHtml(e.social)}</span></div>
+    <div class="next" style="margin-top:8px;"><span style="font-size:14px;color:var(--text-faint);">${escapeHtml(e.contact)}</span>
+      <span style="font-size:12.5px;color:var(--text-faint);">${escapeHtml(e.social)}</span></div>
   </div>`;
 }
 
 function successStoryHtml(e) {
   return `<div class="ai-card">
-    <div style="font-weight:700;font-size:13px;">🌟 ${escapeHtml(e.name)} — ${escapeHtml(e.business)}</div>
-    <div style="font-size:12px;color:var(--text-dim);margin:6px 0;">${escapeHtml(e.city)} · ${escapeHtml(e.stage)} · ${LANG === "ar" ? "الإيرادات" : "Revenue"}: ${escapeHtml(e.monthlyRevenue)}</div>
-    <div style="font-size:12px;color:var(--text-faint);">${e.customers} ${LANG === "ar" ? "عميل" : "customers"} · ${e.followers} ${LANG === "ar" ? "متابع" : "followers"} · ${e.rating}/5</div>
+    <div style="font-weight:700;font-size:15px;">🌟 ${escapeHtml(e.name)} — ${escapeHtml(e.business)}</div>
+    <div style="font-size:14px;color:var(--text-dim);margin:6px 0;">${escapeHtml(e.city)} · ${escapeHtml(e.stage)} · ${LANG === "ar" ? "الإيرادات" : "Revenue"}: ${escapeHtml(e.monthlyRevenue)}</div>
+    <div style="font-size:14px;color:var(--text-faint);">${e.customers} ${LANG === "ar" ? "عميل" : "customers"} · ${e.followers} ${LANG === "ar" ? "متابع" : "followers"} · ${e.rating}/5</div>
   </div>`;
 }
 
@@ -82,7 +82,7 @@ function discussionGroupsHtml() {
     { name: "Women in Entrepreneurship", members: 34, topics: ["Work challenges for women", "Business financing", "Work-life balance"] },
   ];
   return groups.map((g) => `<div class="ai-card">
-    <div class="row-between" style="margin-bottom:6px;"><span style="font-weight:700;color:var(--text);">${escapeHtml(g.name)}</span><span style="font-size:11px;color:var(--text-faint);">${g.members} ${LANG === "ar" ? "مشارك" : "members"}</span></div>
-    <div style="font-size:12px;color:var(--text-dim);">${g.topics.map(escapeHtml).join(" · ")}</div>
+    <div class="row-between" style="margin-bottom:6px;"><span style="font-weight:700;color:var(--text);">${escapeHtml(g.name)}</span><span style="font-size:12.5px;color:var(--text-faint);">${g.members} ${LANG === "ar" ? "مشارك" : "members"}</span></div>
+    <div style="font-size:14px;color:var(--text-dim);">${g.topics.map(escapeHtml).join(" · ")}</div>
   </div>`).join("");
 }

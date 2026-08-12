@@ -46,13 +46,13 @@ function renderBrandResult(r) {
   const swatch = (c, label) => c ? `
     <div style="text-align:center;">
       <div style="width:44px;height:44px;border-radius:10px;background:${escapeHtml(c.hex || "#ccc")};border:1px solid var(--line);margin:0 auto 4px;"></div>
-      <div style="font-size:10.5px;color:var(--text-faint);">${escapeHtml(c.name || c.nameAr || "")}</div>
-      <div style="font-size:10px;color:var(--text-faint);font-family:'IBM Plex Mono';">${escapeHtml(c.hex || "")}</div>
+      <div style="font-size:12px;color:var(--text-faint);">${escapeHtml(c.name || c.nameAr || "")}</div>
+      <div style="font-size:11.5px;color:var(--text-faint);font-family:'IBM Plex Mono';">${escapeHtml(c.hex || "")}</div>
     </div>` : "";
   return `
     <div class="ai-card">
       <div class="row-between"><span style="font-weight:800;">${LANG === "ar" ? "الأسلوب" : "Style"}</span><b>${escapeHtml(r.brandStyle || "")}</b></div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-top:4px;">${escapeHtml(r.brandVoice || "")}</div>
+      <div style="font-size:14.5px;color:var(--text-dim);margin-top:4px;">${escapeHtml(r.brandVoice || "")}</div>
       <div style="display:flex;gap:16px;margin-top:12px;">
         ${swatch(colors.primary)}${swatch(colors.secondary)}${swatch(colors.accent)}
       </div>
@@ -61,17 +61,17 @@ function renderBrandResult(r) {
       <div class="ai-card" style="margin-top:10px;">
         <div class="row-between" style="margin-bottom:8px;">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg, ${escapeHtml((colors.primary && colors.primary.hex) || "#ccc")}, ${escapeHtml((colors.accent && colors.accent.hex) || "#eee")});">
+            <div style="width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:25.5px;background:linear-gradient(135deg, ${escapeHtml((colors.primary && colors.primary.hex) || "#ccc")}, ${escapeHtml((colors.accent && colors.accent.hex) || "#eee")});">
               ${iconForHint(c.iconHint)}
             </div>
             <div>
-              <div style="font-weight:800;font-size:14px;">${escapeHtml(businessName || (LANG === "ar" ? "مفهوم " + (i + 1) : "Concept " + (i + 1)))}</div>
-              <div style="font-size:11px;color:var(--text-faint);">${LANG === "ar" ? "مفهوم" : "Concept"} ${i + 1}</div>
+              <div style="font-weight:800;font-size:16px;">${escapeHtml(businessName || (LANG === "ar" ? "مفهوم " + (i + 1) : "Concept " + (i + 1)))}</div>
+              <div style="font-size:12.5px;color:var(--text-faint);">${LANG === "ar" ? "مفهوم" : "Concept"} ${i + 1}</div>
             </div>
           </div>
         </div>
-        <div style="font-size:12.5px;color:var(--text-dim);"><b>${LANG === "ar" ? "الأسلوب:" : "Style:"}</b> ${escapeHtml(c.style || c.styleAr || "")}</div>
-        <div style="font-size:12.5px;color:var(--text-dim);"><b>${LANG === "ar" ? "الخط المقترح:" : "Suggested font:"}</b> ${escapeHtml(c.fontStyle || c.fontStyleAr || "")}</div>
+        <div style="font-size:14.5px;color:var(--text-dim);"><b>${LANG === "ar" ? "الأسلوب:" : "Style:"}</b> ${escapeHtml(c.style || c.styleAr || "")}</div>
+        <div style="font-size:14.5px;color:var(--text-dim);"><b>${LANG === "ar" ? "الخط المقترح:" : "Suggested font:"}</b> ${escapeHtml(c.fontStyle || c.fontStyleAr || "")}</div>
       </div>
     `).join("")}
     <div class="ai-disclaimer">⚠️ ${LANG === "ar" ? "مفاهيم بصرية توضيحية من الذكاء الاصطناعي — ليست ملفات شعار نهائية جاهزة للاستخدام." : "AI-generated illustrative visual concepts — not final, ready-to-use logo files."}</div>

@@ -18,7 +18,7 @@ AiViews.idea = function (container) {
   container.innerHTML = `<h2 class="ai-view-title">💡 ${ta("navIdea")}</h2>
     <p class="ai-view-sub">${LANG === "ar" ? "بنقيّم فكرتك بواقعية (مو ضمان نجاح) بناءً على وصفك لها في المحادثة." : "We'll evaluate your idea realistically (not a success guarantee) based on what you told the chat."}</p>
     <div class="ai-card">
-      <div style="font-size:13.5px;color:var(--text);line-height:1.7;">${escapeHtml(state.idea)}</div>
+      <div style="font-size:15.5px;color:var(--text);line-height:1.7;">${escapeHtml(state.idea)}</div>
       <button class="ai-btn primary" style="margin-top:10px;" onclick="runIdeaEvaluation()">${LANG === "ar" ? "قيّم الفكرة" : "Evaluate idea"}</button>
     </div>
     <div id="aiIdeaResult"></div>`;
@@ -41,7 +41,7 @@ async function runIdeaEvaluation() {
       quad(result.weaknesses, LANG === "ar" ? "⚠️ نقاط الضعف" : "⚠️ Weaknesses", "warn") +
       quad(result.opportunities, LANG === "ar" ? "🚀 الفرص" : "🚀 Opportunities", "good") +
       quad(result.threats, LANG === "ar" ? "🔴 التهديدات" : "🔴 Threats", "bad") +
-      (result.targetMarket ? `<div class="ai-section"><div class="sec-title">🎯 ${LANG === "ar" ? "السوق المستهدف" : "Target Market"}</div><div style="font-size:13px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result.targetMarket)}</div></div>` : "") +
+      (result.targetMarket ? `<div class="ai-section"><div class="sec-title">🎯 ${LANG === "ar" ? "السوق المستهدف" : "Target Market"}</div><div style="font-size:15px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result.targetMarket)}</div></div>` : "") +
       listSection(result.validationQuestions, LANG === "ar" ? "⚠️ أسئلة عليك الإجابة عنها للتحقق" : "⚠️ Questions to Validate") +
       listSection(result.nextSteps, LANG === "ar" ? "📋 الخطوات القادمة" : "📋 Next Steps");
   } catch (e) { box.innerHTML = `<div class="ai-error">${ta("errorGeneric")}</div>`; }

@@ -39,7 +39,7 @@ function renderContentSections(r) {
     <div class="ai-card" style="margin-bottom:10px;" data-content-key="${key}">
       <div class="row-between"><span style="font-weight:700;">${LANG === "ar" ? label.ar : label.en}</span>
         <button class="ai-btn" onclick="copyContentSection('${key}', this)">${LANG === "ar" ? "📋 نسخ" : "📋 Copy"}</button></div>
-      <div style="font-size:13px;color:var(--text-dim);white-space:pre-wrap;line-height:1.8;margin-top:6px;">${escapeHtml(r[key])}</div>
+      <div style="font-size:15px;color:var(--text-dim);white-space:pre-wrap;line-height:1.8;margin-top:6px;">${escapeHtml(r[key])}</div>
     </div>
   ` : "").join("");
 }

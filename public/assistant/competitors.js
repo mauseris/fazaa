@@ -31,10 +31,10 @@ function mockMapHtml(competitors) {
     const radiusPct = 18 + (Math.min(c.distanceKm || 0, maxD) / maxD) * 32;
     const left = 50 + radiusPct * Math.cos(angle);
     const top = 50 + radiusPct * Math.sin(angle);
-    return `<div title="${escapeHtml(c.name)} — ${c.distanceKm}km" style="position:absolute;left:${left}%;top:${top}%;transform:translate(-50%,-50%);font-size:20px;">🔴<div style="font-size:9px;color:var(--text-dim);white-space:nowrap;text-align:center;">${escapeHtml(c.name)}</div></div>`;
+    return `<div title="${escapeHtml(c.name)} — ${c.distanceKm}km" style="position:absolute;left:${left}%;top:${top}%;transform:translate(-50%,-50%);font-size:23px;">🔴<div style="font-size:10.5px;color:var(--text-dim);white-space:nowrap;text-align:center;">${escapeHtml(c.name)}</div></div>`;
   }).join("");
   return `<div style="position:relative;width:100%;aspect-ratio:16/9;background:var(--navy-800);border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden;">
-    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:26px;">⭐<div style="font-size:9px;color:var(--text-dim);text-align:center;">${LANG === "ar" ? "مشروعك" : "You"}</div></div>
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:30px;">⭐<div style="font-size:10.5px;color:var(--text-dim);text-align:center;">${LANG === "ar" ? "مشروعك" : "You"}</div></div>
     ${pins}
   </div>`;
 }
@@ -42,13 +42,13 @@ function mockMapHtml(competitors) {
 function competitorCardHtml(c) {
   const priceLabel = { budget: LANG === "ar" ? "اقتصادي" : "Budget", mid: LANG === "ar" ? "متوسط" : "Mid-range", premium: LANG === "ar" ? "فاخر" : "Premium", luxury: LANG === "ar" ? "فاخر جداً" : "Luxury" }[c.priceRange] || c.priceRange;
   return `<div class="ai-match-card">
-    <div class="title">${escapeHtml(c.name)} <span style="font-weight:400;font-size:11.5px;color:var(--text-faint);">— ${escapeHtml(c.neighborhood)} (${c.distanceKm}km)</span></div>
-    <div style="font-size:12px;color:var(--text-faint);margin:4px 0;">
+    <div class="title">${escapeHtml(c.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">— ${escapeHtml(c.neighborhood)} (${c.distanceKm}km)</span></div>
+    <div style="font-size:14px;color:var(--text-faint);margin:4px 0;">
       ${LANG === "ar" ? "السعر" : "Price"}: <b>${priceLabel}</b> &nbsp;|&nbsp; ${LANG === "ar" ? "التقييم" : "Rating"}: <b>${c.rating}/5</b> (${c.reviews}) &nbsp;|&nbsp;
       ${c.social} (${c.followers})
     </div>
-    <div style="font-size:12px;color:var(--good);margin-bottom:2px;">✅ ${escapeHtml(c.strengths)}</div>
-    <div style="font-size:12px;color:var(--warn);">⚠️ ${escapeHtml(c.weakness)}</div>
+    <div style="font-size:14px;color:var(--good);margin-bottom:2px;">✅ ${escapeHtml(c.strengths)}</div>
+    <div style="font-size:14px;color:var(--warn);">⚠️ ${escapeHtml(c.weakness)}</div>
     ${c.website ? `<a class="ai-btn" style="margin-top:6px;" href="https://${c.website.replace(/^https?:\/\//, "")}" target="_blank" rel="noopener">${LANG === "ar" ? "الموقع ↗" : "Website ↗"}</a>` : ""}
   </div>`;
 }
@@ -57,11 +57,11 @@ function rentalCardHtml(r) {
   const omr = LANG === "ar" ? "ر.ع/شهر" : "OMR/month";
   return `<div class="ai-match-card">
     <div class="title">💰 ${escapeHtml(r.name)}</div>
-    <div style="font-size:12px;color:var(--text-faint);margin:4px 0;">
+    <div style="font-size:14px;color:var(--text-faint);margin:4px 0;">
       ${LANG === "ar" ? "المساحة" : "Size"}: <b>${r.sizeSqm} m²</b> &nbsp;|&nbsp; ${LANG === "ar" ? "الإيجار" : "Rent"}: <b>${r.rent} ${omr}</b> &nbsp;|&nbsp;
       ${LANG === "ar" ? "المسافة" : "Distance"}: <b>${r.distanceM}m</b>
     </div>
-    <div style="font-size:12px;color:var(--text-dim);">${LANG === "ar" ? "مناسب لـ" : "Suitable for"}: ${(r.suitableFor || []).join(" · ")}</div>
-    <div style="font-size:11px;color:var(--text-faint);margin-top:6px;">${escapeHtml(r.contact)} — ${escapeHtml(r.source)}</div>
+    <div style="font-size:14px;color:var(--text-dim);">${LANG === "ar" ? "مناسب لـ" : "Suitable for"}: ${(r.suitableFor || []).join(" · ")}</div>
+    <div style="font-size:12.5px;color:var(--text-faint);margin-top:6px;">${escapeHtml(r.contact)} — ${escapeHtml(r.source)}</div>
   </div>`;
 }

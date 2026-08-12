@@ -36,7 +36,7 @@ async function runMarketingStrategy() {
 }
 
 function marketingStrategyHtml(r) {
-  if (r.raw) return `<div style="white-space:pre-wrap;font-size:12.5px;">${escapeHtml(r.raw)}</div>`;
+  if (r.raw) return `<div style="white-space:pre-wrap;font-size:14.5px;">${escapeHtml(r.raw)}</div>`;
   return `
     <div class="row-between"><span>${LANG === "ar" ? "المنصات" : "Platforms"}</span><b>${(r.platforms || []).join(" · ")}</b></div>
     <div class="row-between"><span>${LANG === "ar" ? "الميزانية المقترحة" : "Suggested budget"}</span><b>${escapeHtml(r.budgetSuggestionOmr || "")} ${LANG === "ar" ? "ر.ع/شهر" : "OMR/mo"}</b></div>
@@ -46,14 +46,14 @@ function marketingStrategyHtml(r) {
 function influencerCardHtml(inf) {
   const omr = LANG === "ar" ? "ر.ع" : "OMR";
   return `<div class="ai-match-card">
-    <div class="title">${escapeHtml(inf.name)} <span style="font-weight:400;font-size:11.5px;color:var(--text-faint);">— ${(inf.platforms || []).join(" + ")}</span></div>
+    <div class="title">${escapeHtml(inf.name)} <span style="font-weight:400;font-size:13px;color:var(--text-faint);">— ${(inf.platforms || []).join(" + ")}</span></div>
     <div class="why">${LANG === "ar" ? "الجمهور" : "Audience"}: ${escapeHtml(inf.audience)}</div>
-    <div style="font-size:12px;color:var(--text-faint);margin:4px 0;">
+    <div style="font-size:14px;color:var(--text-faint);margin:4px 0;">
       ${LANG === "ar" ? "المتابعون" : "Followers"}: <b>${inf.followers}</b> &nbsp;|&nbsp; ${LANG === "ar" ? "نسبة التفاعل" : "Engagement"}: <b>${inf.engagementRate}%</b> &nbsp;|&nbsp;
       ${LANG === "ar" ? "السعر التقديري" : "Est. price"}: <b>${inf.priceMin}-${inf.priceMax} ${omr}</b>
     </div>
-    <div style="font-size:12px;color:var(--text-dim);">${escapeHtml(inf.content)}</div>
-    <div class="next"><span style="font-size:12px;color:var(--text-faint);">${LANG === "ar" ? "حملة مقترحة" : "Suggested campaign"}: ${escapeHtml(inf.campaign)}</span>
-      <span style="font-size:11px;color:var(--text-faint);">${escapeHtml(inf.social)}</span></div>
+    <div style="font-size:14px;color:var(--text-dim);">${escapeHtml(inf.content)}</div>
+    <div class="next"><span style="font-size:14px;color:var(--text-faint);">${LANG === "ar" ? "حملة مقترحة" : "Suggested campaign"}: ${escapeHtml(inf.campaign)}</span>
+      <span style="font-size:12.5px;color:var(--text-faint);">${escapeHtml(inf.social)}</span></div>
   </div>`;
 }

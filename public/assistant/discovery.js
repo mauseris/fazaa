@@ -62,7 +62,7 @@ function matchCardHtml(m) {
     <div class="title">${escapeHtml(m.name)}</div>
     <div class="why">${escapeHtml(m.why)}</div>
     <ul class="req-list">${(m.required || []).map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>
-    <div class="next"><span style="font-size:12px;color:var(--text-faint);">${escapeHtml(m.nextAction)}</span>
+    <div class="next"><span style="font-size:14px;color:var(--text-faint);">${escapeHtml(m.nextAction)}</span>
       ${m.url ? `<a class="ai-btn" href="${m.url}" target="_blank" rel="noopener">↗</a>` : ""}</div>
   </div>`;
 }
@@ -88,7 +88,7 @@ AiViews.eligibility = function (container) {
         ${yesNoRadio("aiElRegistered", pa.registered)}</div>
       <div class="ai-field"><label>${LANG === "ar" ? "منذ كم شهر يعمل مشروعك؟" : "How long has it been operating?"}</label>
         <div class="ai-row" id="aiElMonthsRow">${MONTHS_OPTIONS.map((o) => `<button type="button" class="ai-btn${pa.monthsOperating === o.value ? " primary" : ""}" data-months="${o.value}" onclick="pickMonthsOperating(${o.value})">${LANG === "ar" ? o.ar : o.en}</button>`).join("")}</div></div>
-      ${typeof p.fundingNeeded === "number" ? `<div class="ai-field"><label>${LANG === "ar" ? "التمويل الذي تحتاجه" : "Funding you need"}</label><div style="font-size:13px;">${p.fundingNeeded} ${LANG === "ar" ? "ر.ع" : "OMR"}</div></div>` : ""}
+      ${typeof p.fundingNeeded === "number" ? `<div class="ai-field"><label>${LANG === "ar" ? "التمويل الذي تحتاجه" : "Funding you need"}</label><div style="font-size:15px;">${p.fundingNeeded} ${LANG === "ar" ? "ر.ع" : "OMR"}</div></div>` : ""}
       <button class="ai-btn primary" onclick="runEligibilityCheck()">${LANG === "ar" ? "افحص أهليتي" : "Check my eligibility"}</button>
     </div>
     <div id="aiEligibilityResult"></div>`;
@@ -152,8 +152,8 @@ AiViews.gov = async function (container) {
       return `<div class="ai-match-card">
         <div class="title">${LANG === "ar" ? b.name : b.name_en}${k === highlightKey ? ` <span class="ai-level-tag required">${LANG === "ar" ? "الأنسب لك" : "Best fit"}</span>` : ""}</div>
         <div class="why">${LANG === "ar" ? b.whyAr : b.whyEn}</div>
-        <div style="font-size:12px;color:var(--text-faint);margin-bottom:8px;"><b>${LANG === "ar" ? "جهّز:" : "Prepare:"}</b> ${LANG === "ar" ? b.prepareAr : b.prepareEn}</div>
-        <div style="font-size:12px;color:var(--text-faint);margin-bottom:8px;"><b>${LANG === "ar" ? "بعدها:" : "After:"}</b> ${LANG === "ar" ? b.afterAr : b.afterEn}</div>
+        <div style="font-size:14px;color:var(--text-faint);margin-bottom:8px;"><b>${LANG === "ar" ? "جهّز:" : "Prepare:"}</b> ${LANG === "ar" ? b.prepareAr : b.prepareEn}</div>
+        <div style="font-size:14px;color:var(--text-faint);margin-bottom:8px;"><b>${LANG === "ar" ? "بعدها:" : "After:"}</b> ${LANG === "ar" ? b.afterAr : b.afterEn}</div>
         <a class="ai-btn" href="${b.url}" target="_blank" rel="noopener">${LANG === "ar" ? "الموقع الرسمي ↗" : "Official site ↗"}</a>
       </div>`;
     }).join("");

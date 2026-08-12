@@ -92,7 +92,7 @@ function renderCashFlowResult(box, inputs, r) {
       ${cfSlider("month1Revenue", inputs.month1Revenue, 0, Math.max(inputs.month1Revenue * 3, 1000), LANG === "ar" ? "المبيعات الشهرية" : "Monthly sales")}
       ${cfSlider("inventoryCost", inputs.inventoryCost, 0, Math.max(inputs.inventoryCost * 3, 1000), LANG === "ar" ? "تكاليف المخزون" : "Inventory cost")}
       ${cfSlider("marketingCost", inputs.marketingCost, 0, Math.max(inputs.marketingCost * 3, 500), LANG === "ar" ? "ميزانية التسويق" : "Marketing budget")}
-      <div id="aiCfWhatIfResult" style="margin-top:10px;font-size:13px;"></div>
+      <div id="aiCfWhatIfResult" style="margin-top:10px;font-size:15px;"></div>
     </div>
 
     <button class="ai-btn" onclick="window.print()">🖨 ${LANG === "ar" ? "طباعة" : "Print"}</button>
@@ -142,7 +142,7 @@ function cashFlowChartSvg(balances) {
   const path = points.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
   const zeroY = yOf(0);
   const dots = points.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="${balances[i] < 0 ? "var(--coral)" : "var(--good)"}" />`).join("");
-  const labels = balances.map((v, i) => `<text x="${points[i][0].toFixed(1)}" y="${h - 8}" font-size="9" fill="var(--text-faint)" text-anchor="middle">${i === 0 ? "0" : i}</text>`).join("");
+  const labels = balances.map((v, i) => `<text x="${points[i][0].toFixed(1)}" y="${h - 8}" font-size="10.5" fill="var(--text-faint)" text-anchor="middle">${i === 0 ? "0" : i}</text>`).join("");
   return `<h3>📈 ${LANG === "ar" ? "الرسم البياني التفاعلي — الرصيد عبر الأشهر" : "Interactive chart — balance over time"}</h3>
     <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:auto; max-height:200px;">
       <line x1="${pad}" y1="${zeroY.toFixed(1)}" x2="${w - pad}" y2="${zeroY.toFixed(1)}" stroke="var(--line)" stroke-dasharray="4 4" />

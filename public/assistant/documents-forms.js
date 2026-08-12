@@ -79,7 +79,7 @@ async function explainField(id) {
   box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
   try {
     const field = await AssistantAPI.getFormField(id, state.sector, LANG);
-    box.innerHTML = `<div style="margin-top:8px;font-size:12.5px;color:var(--text-dim);line-height:1.7;">
+    box.innerHTML = `<div style="margin-top:8px;font-size:14.5px;color:var(--text-dim);line-height:1.7;">
       ${escapeHtml(field.explain)}${field.example ? `<div style="margin-top:6px;color:var(--text-faint);">${escapeHtml(field.example)}</div>` : ""}</div>`;
   } catch (e) { box.innerHTML = `<div class="ai-error">${ta("errorGeneric")}</div>`; }
 }
@@ -100,9 +100,9 @@ AiViews.applications = async function (container) {
     (apps.length ? apps.map((a) => `
       <div class="ai-app-item">
         <div class="ai-app-status ${a.status}">${statusLabel[a.status] || a.status}</div>
-        <div style="font-weight:700;font-size:13.5px;margin-bottom:4px;">${LANG === "ar" ? a.nameAr : a.nameEn}</div>
-        <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:6px;">${LANG === "ar" ? "قُدّم بتاريخ" : "Submitted"}: ${new Date(a.submittedAt).toLocaleDateString(LANG === "ar" ? "ar-OM" : "en-GB")}</div>
-        <div style="font-size:12.5px;color:var(--text-dim);">${LANG === "ar" ? a.recommendationAr : a.recommendationEn}</div>
+        <div style="font-weight:700;font-size:15.5px;margin-bottom:4px;">${LANG === "ar" ? a.nameAr : a.nameEn}</div>
+        <div style="font-size:13px;color:var(--text-faint);margin-bottom:6px;">${LANG === "ar" ? "قُدّم بتاريخ" : "Submitted"}: ${new Date(a.submittedAt).toLocaleDateString(LANG === "ar" ? "ar-OM" : "en-GB")}</div>
+        <div style="font-size:14.5px;color:var(--text-dim);">${LANG === "ar" ? a.recommendationAr : a.recommendationEn}</div>
         ${a.status === "action_required" ? `<button class="ai-btn" style="margin-top:8px;" onclick="switchAiView('documents')">${LANG === "ar" ? "عرض المستند المطلوب" : "View required document"}</button>` : ""}
       </div>
     `).join("") : `<div class="ai-empty">${LANG === "ar" ? "لا توجد طلبات حالياً." : "No applications yet."}</div>`);

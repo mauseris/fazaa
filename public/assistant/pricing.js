@@ -37,9 +37,9 @@ function renderPricingResult(r) {
       <div class="row-between"><span>${LANG === "ar" ? "الحد الأعلى" : "Max"}</span><b>${r.maxPrice} ${omr}</b></div>
       <div style="margin-top:10px;">
         <input type="range" id="dpSlider" min="${r.minPrice}" max="${r.maxPrice}" step="0.1" value="${r.recommendedPrice}" style="width:100%;">
-        <div id="dpSliderLabel" style="text-align:center;font-size:12.5px;color:var(--text-dim);margin-top:4px;">${LANG === "ar" ? "جرّب سعراً مختلفاً ضمن النطاق" : "Try a different price within the range"}: <b>${r.recommendedPrice} ${omr}</b></div>
+        <div id="dpSliderLabel" style="text-align:center;font-size:14.5px;color:var(--text-dim);margin-top:4px;">${LANG === "ar" ? "جرّب سعراً مختلفاً ضمن النطاق" : "Try a different price within the range"}: <b>${r.recommendedPrice} ${omr}</b></div>
       </div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-top:10px;line-height:1.7;">${escapeHtml(r.reasoning)}</div>
+      <div style="font-size:14.5px;color:var(--text-dim);margin-top:10px;line-height:1.7;">${escapeHtml(r.reasoning)}</div>
     </div>
     <div class="ai-disclaimer">⚠️ ${LANG === "ar" ? "نطاق أسعار المنافسين تجريبي للعرض فقط." : "Competitor price ranges are mock data for demo purposes."}</div>`;
 }
