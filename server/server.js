@@ -4,6 +4,7 @@ const path = require("path");
 const db = require("./db");
 const rag = require("./rag");
 const tools = require("./tools");
+const roadmap = require("./roadmap");
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -412,6 +413,37 @@ app.post("/api/state/:sessionId", (req, res) => {
 app.delete("/api/state/:sessionId", (req, res) => {
   db.remove(req.params.sessionId);
   res.json({ ok: true });
+});
+
+/**
+ * POST /api/roadmap — يولّد خارطة رحلة المشروع (مراحل + مهام خاصة بنوع المشروع)
+ * body: { idea: string, sector?: string, lang?: "ar"|"en" }
+ * response: { business_type, stages: [...], source: "ai"|"fallback" }
+ *
+ * يستخدم Structured Outputs عبر Anthropic مباشرة (نفس مسار التطوير المحلي المُفعّل
+ * حالياً) فيرجع JSON موثوق الشكل مباشرة بدل تحليل نص حر. عند عدم توفر اتصال حي،
+ * يرجع تلقائياً لقالب توضيحي محلي واضح المصدر (source:"fallback") فلا ينكسر العرض.
+ */
+app.post("/api/roadmap", async (req, res) => {
+  try {
+    const { idea, sector, lang } = req.body || {};
+    if (!idea || typeof idea !== "string" || !idea.trim()) {
+      return res.status(400).json({ error: "idea مطلوب" });
+    }
+    const result = await roadmap.generateRoadmap({
+      idea: idea.trim(),
+      sector: sector || null,
+      lang: lang === "en" ? "en" : "ar",
+      usingDirectAnthropic,
+      apiKey: ANTHROPIC_API_KEY,
+      model: ANTHROPIC_MODEL_NAME,
+      apiVersion: ANTHROPIC_VERSION,
+    });
+    res.json(result);
+  } catch (e) {
+    console.error("roadmap endpoint error:", e);
+    res.status(e.status || 500).json({ error: e.message || "خطأ داخلي في السيرفر" });
+  }
 });
 
 /**

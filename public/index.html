@@ -152,6 +152,84 @@ body.palm-theme{
   aside.rail{order:-1; border-left:none; border-bottom:1px solid var(--line);}
 }
 
+/* ---------- business journey panel (new left panel) ----------
+   Wrapped in its own dir="ltr" flex row so it always renders on the true
+   physical left edge, in both languages, without touching .app's existing
+   RTL-aware grid behavior at all — each child re-asserts its own reading
+   direction via JS (see applyStaticTranslations) so text still flows
+   correctly per language; only the macro left/right slot order is fixed. */
+.journey-layout{
+  display:flex;
+  min-height:calc(100vh - 71px);
+}
+.journey-layout > .app{ flex:1; min-width:0; }
+.journey-rail{
+  width:300px; flex:none; overflow-y:auto; height:calc(100vh - 71px);
+  border-right:1px solid var(--line);
+  padding:18px 16px;
+  display:flex; flex-direction:column; gap:14px;
+  background:linear-gradient(180deg, rgba(19,28,66,.35), transparent);
+}
+.palm-theme .journey-rail{ background:linear-gradient(180deg, rgba(232,217,182,.35), transparent); }
+.jp-title{font-family:'Cairo'; font-weight:800; font-size:13.5px; letter-spacing:.02em;}
+.jp-subtitle{font-size:12px; color:var(--text-dim); margin-top:2px;}
+.jp-progress-track{width:100%; height:8px; border-radius:999px; background:var(--navy-900); overflow:hidden; margin-top:10px;}
+.jp-progress-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--gold), var(--teal)); transition:width .35s ease;}
+.jp-progress-label{display:flex; justify-content:space-between; font-size:11px; color:var(--text-faint); margin-top:6px;}
+.jp-stage{border:1px solid var(--line); border-radius:12px; background:var(--navy-800); overflow:hidden;}
+.jp-stage.locked{opacity:.55;}
+.jp-stage-head{
+  display:flex; align-items:center; gap:9px; padding:11px 12px; cursor:pointer; user-select:none;
+}
+.jp-stage.locked .jp-stage-head{cursor:default;}
+.jp-stage-dot{width:20px; height:20px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:11px; border:1px solid var(--line); background:var(--navy-900);}
+.jp-stage.active .jp-stage-dot{background:var(--gold); border-color:var(--gold); color:#1a1204;}
+.jp-stage.done .jp-stage-dot{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.jp-stage-title{font-family:'Cairo'; font-weight:700; font-size:12.5px; flex:1;}
+.jp-stage-count{font-size:10.5px; color:var(--text-faint); font-family:'IBM Plex Mono';}
+.jp-tasks{padding:0 12px 12px 12px; display:flex; flex-direction:column; gap:2px; animation:msgIn .2s ease both;}
+.jp-task{border-radius:8px; transition:.15s;}
+.jp-task-row{display:flex; align-items:flex-start; gap:8px; padding:7px 6px; cursor:pointer; border-radius:8px;}
+.jp-task-row:hover{background:var(--navy-900);}
+.jp-check{
+  width:16px; height:16px; border-radius:5px; border:1px solid var(--line); flex:none; margin-top:2px;
+  display:flex; align-items:center; justify-content:center; font-size:11px; background:var(--navy-900);
+}
+.jp-task.done .jp-check{background:var(--teal); border-color:var(--teal); color:#04241d;}
+.jp-task-title{font-size:12.5px; line-height:1.5; flex:1;}
+.jp-task.done .jp-task-title{color:var(--text-faint); text-decoration:line-through;}
+.jp-cat{font-size:9.5px; padding:2px 7px; border-radius:999px; flex:none; margin-top:1px; font-family:'IBM Plex Mono';}
+.jp-cat.verify_official{background:color-mix(in srgb, var(--warn) 16%, transparent); color:var(--warn); border:1px solid color-mix(in srgb, var(--warn) 40%, transparent);}
+.jp-cat.recommended{background:color-mix(in srgb, var(--teal) 14%, transparent); color:var(--teal); border:1px solid color-mix(in srgb, var(--teal) 35%, transparent);}
+.jp-cat.optional{background:color-mix(in srgb, var(--text-faint) 16%, transparent); color:var(--text-dim); border:1px solid var(--line);}
+.jp-card{
+  margin:2px 6px 8px 6px; padding:10px 11px; border-radius:9px; background:var(--navy-900);
+  border:1px solid var(--line); font-size:12px; line-height:1.7; color:var(--text-dim); animation:msgIn .18s ease both;
+}
+.jp-card b{color:var(--text); font-family:'Cairo'; font-size:11.5px;}
+.jp-card .jp-link{color:var(--teal); font-size:11.5px; display:inline-block; margin-top:4px;}
+.jp-card .jp-ask{
+  margin-top:8px; font-size:11.5px; padding:6px 11px; border-radius:7px; cursor:pointer;
+  border:1px solid var(--gold); background:transparent; color:var(--gold-soft); font-family:'Tajawal';
+}
+.jp-card .jp-ask:hover{background:color-mix(in srgb, var(--gold) 16%, transparent);}
+.jp-empty{font-size:12px; color:var(--text-dim); line-height:1.7;}
+.jp-demo-chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px;}
+.jp-demo-chip{
+  padding:7px 11px; border-radius:9px; border:1px solid var(--line); background:var(--navy-800);
+  color:var(--text); font-size:12px; cursor:pointer; font-family:'Tajawal'; transition:.15s;
+}
+.jp-demo-chip:hover{border-color:var(--gold); background:color-mix(in srgb, var(--gold) 18%, var(--navy-800));}
+.jp-change{font-size:11px; color:var(--text-faint); cursor:pointer; text-decoration:underline; margin-top:2px; display:inline-block;}
+.jp-change:hover{color:var(--coral);}
+.jp-loading{font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;}
+.jp-loading .spin{width:8px;height:8px;border-radius:50%; background:var(--gold); animation:blink 1s infinite;}
+@media (max-width:1100px){ .journey-rail{width:260px;} }
+@media (max-width:900px){
+  .journey-layout{flex-direction:column; min-height:0;}
+  .journey-rail{width:auto; height:auto; max-height:70vh; border-right:none; border-bottom:1px solid var(--line); order:-2;}
+}
+
 /* ---------- chat column ---------- */
 main.chatcol{
   display:flex; flex-direction:column; height:calc(100vh - 71px);
@@ -451,7 +529,23 @@ aside.rail{
 </div>
 <div class="pattern-accent"></div>
 
-<div class="app">
+<div class="journey-layout" dir="ltr">
+  <aside class="journey-rail" id="journeyPanel">
+    <div>
+      <div class="jp-title" data-t="jpTitle">Your Business Journey</div>
+      <div class="jp-subtitle" id="jpSubtitle" data-t="jpSubtitleEmpty">Tell us your business idea to get a personalized roadmap</div>
+      <div id="jpProgressWrap" style="display:none;">
+        <div class="jp-progress-track"><div class="jp-progress-fill" id="jpProgressFill" style="width:0%;"></div></div>
+        <div class="jp-progress-label">
+          <span id="jpProgressPct">0%</span>
+          <span id="jpProgressCount"></span>
+        </div>
+      </div>
+    </div>
+    <div id="jpBody"></div>
+  </aside>
+
+  <div class="app">
   <main class="chatcol">
     <div class="stage-strip" id="stageStrip"></div>
     <div id="resumeBanner"></div>
@@ -513,6 +607,7 @@ aside.rail{
     <button class="report-btn" id="reportBtn" onclick="openReport()" disabled>📄 <span data-t="reportBtnLbl">توليد تقرير الجدوى الكامل</span></button>
     <div class="hint" data-t="reportHint">التقرير يُبنى من إجاباتك + جدول تكاليف عُمانية تقريبي (بيانات تجريبية للعرض فقط) ويمكن تصديره PDF مباشرة من نافذة الطباعة.</div>
   </aside>
+  </div>
 </div>
 
 <div class="overlay" id="reportOverlay">
@@ -549,6 +644,15 @@ const UI = {
     stageBadge:{ idea:"صياغة الفكرة", collect:"جمع بيانات المشروع", review:"دراسة الجدوى جاهزة", done:"جاهز للتسجيل" },
     reChooseHint:"تقدر تجاوبني بكلامك العادي أو تختار من القائمة تحت 👇",
     continueSetup:"↩️ متابعة إعداد المشروع",
+    jpTitle:"رحلة مشروعك", jpSubtitleEmpty:"احكيلي عن فكرة مشروعك عشان أجهّز لك خارطة طريق خاصة فيه",
+    jpGenerating:"يجهّز خارطة طريق مشروعك…", jpLocked:"مقفلة",
+    jpCatVerify:"تحقق من متطلب رسمي", jpCatRecommended:"موصى به", jpCatOptional:"اختياري",
+    jpWhy:"ليش هالخطوة مهمة", jpHow:"كيف تسويها",
+    jpAsk:"🤖 اسأل الوكيل عن هذي الخطوة", jpVerifyNote:"معلومة رسمية غير مؤكدة — تحقق من الجهة المختصة قبل الاعتماد عليها",
+    jpChange:"↺ تغيير نوع المشروع", jpTasksDone:"مهمة منجزة",
+    jpDemoHint:"جرّب أحد الأمثلة السريعة، أو اكتب فكرتك في المحادثة:",
+    jpDemoSkincare:"منتجات عناية بالبشرة", jpDemoClothing:"متجر ملابس", jpDemoRestaurant:"مطعم",
+    jpDemoOnline:"متجر إلكتروني", jpDemoFreelance:"خدمة عمل حر", jpDemoTech:"شركة تقنية ناشئة",
     micTitleIdle:"تسجيل صوتي", micTitleRecording:"إيقاف التسجيل", micTitleProcessing:"جاري المعالجة…",
     voiceListening:"🎙️ يستمع… اضغط على الميكروفون للإيقاف",
     voiceNoSpeech:"⚠️ لم يتم التقاط أي كلام — حاول مرة أخرى",
@@ -572,6 +676,15 @@ const UI = {
     stageBadge:{ idea:"Shaping the idea", collect:"Collecting project data", review:"Feasibility study ready", done:"Ready to register" },
     reChooseHint:"You can reply in your own words, or pick from the list below 👇",
     continueSetup:"↩️ Continue business setup",
+    jpTitle:"Your Business Journey", jpSubtitleEmpty:"Tell us your business idea to get a personalized roadmap",
+    jpGenerating:"Building your business roadmap…", jpLocked:"Locked",
+    jpCatVerify:"Verify official requirement", jpCatRecommended:"Recommended", jpCatOptional:"Optional",
+    jpWhy:"Why this matters", jpHow:"What to do",
+    jpAsk:"🤖 Ask the agent about this task", jpVerifyNote:"Unverified official info — check with the relevant body before relying on it",
+    jpChange:"↺ Change business type", jpTasksDone:"tasks done",
+    jpDemoHint:"Try a quick example, or describe your idea in the chat:",
+    jpDemoSkincare:"Skincare products", jpDemoClothing:"Clothing store", jpDemoRestaurant:"Restaurant",
+    jpDemoOnline:"Online store", jpDemoFreelance:"Freelance service", jpDemoTech:"Tech/AI startup",
     micTitleIdle:"Voice input", micTitleRecording:"Stop recording", micTitleProcessing:"Processing…",
     voiceListening:"🎙️ Listening… click the mic to stop",
     voiceNoSpeech:"⚠️ No speech detected — try again",
@@ -585,6 +698,13 @@ function t(key){ return UI[LANG][key]; }
 function applyStaticTranslations(){
   document.documentElement.lang = (LANG==='ar' ? 'ar' : 'en');
   document.documentElement.dir = (LANG==='ar' ? 'rtl' : 'ltr');
+  // .journey-layout يبقى دائماً dir="ltr" عشان تثبيت لوحة الرحلة فعلياً على اليسار
+  // بغض النظر عن اللغة؛ نعيد فرض اتجاه القراءة الصحيح داخلياً على كل من اللوحة
+  // والمحتوى الأصلي (.app) عشان النص والتخطيط الداخلي يبقيان كما كانا تماماً.
+  const jpEl = document.getElementById('journeyPanel');
+  const appEl = document.querySelector('.journey-layout > .app');
+  if(jpEl) jpEl.dir = document.documentElement.dir;
+  if(appEl) appEl.dir = document.documentElement.dir;
   document.querySelectorAll('[data-t]').forEach(elm=>{
     const key = elm.getAttribute('data-t');
     if(UI[LANG][key] !== undefined) elm.textContent = UI[LANG][key];
@@ -610,6 +730,14 @@ function applyLangChange(){
     renderFeasibility(); renderBodies(); renderChecklist();
   } else if(["sector","city","team","budget"].includes(state.step)){
     showStepChips(state.step);
+  }
+  // خارطة الرحلة نص حر مولَّد بالنموذج بلغة معيّنة — عند تبديل صريح للغة يُعاد توليدها
+  // بنفس فكرة/قطاع المشروع باللغة الجديدة بدل ترك محتوى مختلط اللغة، وإلا نكتفي بإعادة
+  // رسم التسميات الثابتة (فئات، أزرار...) التي تتبع LANG مباشرة.
+  if(state.journey.stages.length && state.journey.lang !== LANG){
+    startJourney(state.journey.idea, state.journey.sector);
+  } else {
+    renderJourneyPanel();
   }
   if(typeof setMicState === 'function' && micState !== MIC_STATE.RECORDING) setMicState(micState);
 }
@@ -769,6 +897,12 @@ function retrieve(query, lang){
 
 /* ======================= APP STATE ======================= */
 
+// حالة لوحة "رحلة مشروعك" الافتراضية — منفصلة عن حالة المحادثة، لكن مرتبطة بنفس
+// الفكرة/القطاع المُلتقطين من المحادثة (state.idea/state.sector) لتفادي سؤال مزدوج.
+function defaultJourney(){
+  return { businessType: null, idea: null, sector: null, lang: null, stages: [], activeStage: 0, completed: {}, source: null, loading: false, openTaskKey: null };
+}
+
 let state = {
   step: "idea",           // idea -> sector -> city -> team -> budget -> review -> done
   idea: "",
@@ -780,6 +914,7 @@ let state = {
   messages: [],
   checklist: [],
   chatHistory: [],        // {role:'user'|'assistant', content:string} — لذاكرة المحادثة متعددة الأدوار
+  journey: defaultJourney(),
 };
 
 const STEPS_ORDER = ["idea","sector","city","team","budget","review"];
@@ -858,7 +993,7 @@ async function clearState(){
 
 function resetSession(){
   clearState();
-  state = { step:"idea", idea:"", sector:null, city:null, budgetLevel:50, team:null, userBudget:null, messages:[], checklist:[], chatHistory:[] };
+  state = { step:"idea", idea:"", sector:null, city:null, budgetLevel:50, team:null, userBudget:null, messages:[], checklist:[], chatHistory:[], journey: defaultJourney() };
   document.getElementById('messages').innerHTML = "";
   document.getElementById('resumeBanner').innerHTML = "";
   document.getElementById('costCard').style.display = "none";
@@ -868,6 +1003,7 @@ function resetSession(){
   document.getElementById('logoPreview').style.display = "none";
   document.getElementById('reportBtn').disabled = true;
   clearChips();
+  renderJourneyPanel();
   boot(true);
 }
 
@@ -1501,6 +1637,7 @@ function historyForCall(){
 function boot(fresh){
   renderStageStrip();
   refreshBadge();
+  renderJourneyPanel();
   if(fresh){
     setTimeout(()=>{
       const greet = LANG==='ar'
@@ -1568,7 +1705,222 @@ function applyProfileUpdates(updates){
     state.step = nextMissingField() || "review";
     renderStageStrip(); refreshBadge();
   }
+  // فكرة/قطاع جديد أو مُحدَّث عبر المحادثة الطبيعية → يشغّل خارطة رحلة المشروع تلقائياً
+  // (بدون سؤال منفصل — نفس اللحظة التي ذكر فيها المستخدم فكرته للمحادثة أصلاً).
+  if(changed && state.idea) maybeStartJourney();
   return changed;
+}
+
+/* ======================= BUSINESS JOURNEY PANEL ======================= */
+// لوحة "رحلة مشروعك" (اليسار) — خارطة طريق حقيقية خاصة بنوع المشروع، مبنية من
+// بيانات منظّمة (business_type → stages → tasks) يولّدها /api/roadmap، لا واجهة
+// ثابتة. تُستهلّ تلقائياً من نفس فكرة/قطاع المحادثة الرئيسية (لا سؤال مزدوج)،
+// وتُخزَّن كجزء من state فتُحفَظ وتُستعاد مع باقي الجلسة.
+
+const JP_DEMO_BUSINESSES = [
+  { key:"skincare",   sector:"beauty",   ar:"مشروع لبيع منتجات العناية بالبشرة", en:"A skincare products business" },
+  { key:"clothing",   sector:"retail",   ar:"متجر لبيع الملابس",                 en:"A clothing store" },
+  { key:"restaurant", sector:"food",     ar:"مطعم صغير",                         en:"A small restaurant" },
+  { key:"online",     sector:"ecommerce",ar:"متجر إلكتروني",                     en:"An online store" },
+  { key:"freelance",  sector:"services", ar:"خدمة عمل حر",                       en:"A freelance service business" },
+  { key:"tech",       sector:"tech",     ar:"شركة تقنية ناشئة",                   en:"A technology/AI startup" },
+];
+
+function taskKey(si, ti){ return si + "-" + ti; }
+
+// يقرر إن كان لازم (إعادة) توليد الخارطة: أول مرة، أو تغيّرت الفكرة/القطاع فعلياً
+// عن آخر خارطة تم توليدها لهما.
+function maybeStartJourney(){
+  const j = state.journey;
+  if(j.loading) return;
+  if(j.stages.length && j.idea === state.idea && j.sector === state.sector && j.lang === LANG) return;
+  startJourney(state.idea, state.sector);
+}
+
+async function startJourney(idea, sector){
+  if(!idea) return;
+  state.journey.loading = true;
+  renderJourneyPanel();
+  try{
+    const resp = await fetch("/api/roadmap", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idea, sector: sector || null, lang: LANG }),
+    });
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || "roadmap request failed");
+    state.journey = {
+      businessType: data.business_type || idea,
+      idea, sector: sector || null, lang: LANG,
+      stages: (data.stages || []).map(s => ({ title: s.title, tasks: s.tasks || [] })),
+      activeStage: 0, completed: {}, expandedDone: {},
+      source: data.source || "ai", loading: false, openTaskKey: null,
+    };
+  }catch(e){
+    console.warn("startJourney failed:", e.message);
+    state.journey.loading = false;
+  }
+  renderJourneyPanel();
+  saveState();
+}
+
+function jpStageStatus(si){
+  const j = state.journey;
+  if(si < j.activeStage) return "done";
+  if(si === j.activeStage) return "active";
+  return "locked";
+}
+
+function jpStageDoneCount(si){
+  const tasks = state.journey.stages[si].tasks;
+  const done = tasks.filter((_, ti) => state.journey.completed[taskKey(si, ti)]).length;
+  return { done, total: tasks.length };
+}
+
+function jpTotals(){
+  let done = 0, total = 0;
+  state.journey.stages.forEach((s, si) => {
+    total += s.tasks.length;
+    s.tasks.forEach((_, ti) => { if(state.journey.completed[taskKey(si, ti)]) done++; });
+  });
+  return { done, total };
+}
+
+function toggleStageExpand(si){
+  if(jpStageStatus(si) !== "done") return;
+  state.journey.expandedDone[si] = !state.journey.expandedDone[si];
+  renderJourneyPanel();
+}
+
+function toggleTaskDone(si, ti){
+  const j = state.journey;
+  const key = taskKey(si, ti);
+  j.completed[key] = !j.completed[key];
+  // كل مهام المرحلة النشطة اكتملت → فتح المرحلة التالية تلقائياً (بانتقال بصري ناعم
+  // عبر msgIn/الأنيميشن الموجود أصلاً على .jp-tasks).
+  if(jpStageStatus(si) === "active"){
+    const { done, total } = jpStageDoneCount(si);
+    if(done === total && si < j.stages.length - 1){
+      j.activeStage = si + 1;
+      j.openTaskKey = null;
+    }
+  }
+  renderJourneyPanel();
+  saveState();
+}
+
+function openTaskCard(si, ti){
+  const key = taskKey(si, ti);
+  state.journey.openTaskKey = (state.journey.openTaskKey === key) ? null : key;
+  renderJourneyPanel();
+}
+
+// يرسل سؤال المستخدم عن مهمة محددة عبر نفس خط أنابيب المحادثة الحقيقي (نفس الأدوات
+// وسياق الوكيل) بدل بناء ذكاء اصطناعي منفصل — يفتح نتيجة الرد داخل المحادثة نفسها.
+function askAboutTask(si, ti){
+  const task = state.journey.stages[si].tasks[ti];
+  const text = task.ai_action_hint && task.ai_action_hint.trim()
+    ? task.ai_action_hint.trim()
+    : (LANG==='ar' ? `ساعدني في: ${task.title}` : `Help me with: ${task.title}`);
+  document.getElementById('textInput').value = text;
+  sendFree();
+}
+
+function changeBusinessType(){
+  state.idea = ""; state.sector = null; state.step = "idea";
+  state.journey = defaultJourney();
+  renderStageStrip(); refreshBadge();
+  renderJourneyPanel();
+  const isAr = LANG==='ar';
+  addMessage('agent', `<p>${isAr?'تمام، خلّنا نبدأ من جديد — احكيلي عن فكرة مشروعك الجديدة؟':"Sure, let's start fresh — tell me about your new business idea?"}</p>`, {skipHistory:true});
+  clearChips();
+}
+
+function pickDemoBusiness(key){
+  const def = JP_DEMO_BUSINESSES.find(d => d.key === key);
+  if(!def) return;
+  const isAr = LANG==='ar';
+  const ideaText = isAr ? def.ar : def.en;
+  addMessage('user', ideaText);
+  const changed = applyProfileUpdates({ idea: ideaText, sector: def.sector });
+  const ack = isAr
+    ? `<p>تمام! ${ideaText} 👍 جهّزت لك على اليسار خارطة رحلة خاصة فيه.</p>`
+    : `<p>Great choice! ${ideaText} 👍 I've put together a personalized journey for it on the left.</p>`;
+  addMessage('agent', ack);
+  afterAgentTurn(changed);
+}
+
+function renderJourneyPanel(){
+  const j = state.journey;
+  const isAr = LANG==='ar';
+  const subEl = document.getElementById('jpSubtitle');
+  const progWrap = document.getElementById('jpProgressWrap');
+  const body = document.getElementById('jpBody');
+
+  if(!j.stages.length){
+    subEl.textContent = j.loading ? t('jpGenerating') : t('jpSubtitleEmpty');
+    progWrap.style.display = "none";
+    if(j.loading){
+      body.innerHTML = `<div class="jp-loading"><span class="spin"></span>${t('jpGenerating')}</div>`;
+      return;
+    }
+    const chips = JP_DEMO_BUSINESSES.map(d =>
+      `<div class="jp-demo-chip" onclick="pickDemoBusiness('${d.key}')">${isAr ? d.ar : d.en}</div>`
+    ).join("");
+    body.innerHTML = `<div class="jp-empty">${t('jpDemoHint')}</div><div class="jp-demo-chips">${chips}</div>`;
+    return;
+  }
+
+  subEl.textContent = j.businessType;
+  progWrap.style.display = "block";
+  const { done, total } = jpTotals();
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('jpProgressFill').style.width = pct + "%";
+  document.getElementById('jpProgressPct').textContent = pct + "%";
+  document.getElementById('jpProgressCount').textContent = `${done}/${total} ${t('jpTasksDone')}`;
+
+  const catLabel = { verify_official: t('jpCatVerify'), recommended: t('jpCatRecommended'), optional: t('jpCatOptional') };
+
+  let html = `<div style="margin-bottom:4px;"><span class="jp-change" onclick="changeBusinessType()">${t('jpChange')}</span></div>`;
+  j.stages.forEach((stage, si) => {
+    const status = jpStageStatus(si);
+    const { done: sd, total: st } = jpStageDoneCount(si);
+    const dotContent = status==='done' ? '✓' : status==='locked' ? '🔒' : (si+1);
+    const expanded = status==='active' || (status==='done' && j.expandedDone[si]);
+    html += `<div class="jp-stage ${status}">
+      <div class="jp-stage-head" onclick="toggleStageExpand(${si})">
+        <div class="jp-stage-dot">${dotContent}</div>
+        <div class="jp-stage-title">${escapeHtml(stage.title)}${status==='locked' ? ` <span style="color:var(--text-faint); font-weight:400;">(${t('jpLocked')})</span>` : ''}</div>
+        <div class="jp-stage-count">${st ? sd+'/'+st : ''}</div>
+      </div>`;
+    if(expanded){
+      html += `<div class="jp-tasks">`;
+      stage.tasks.forEach((task, ti) => {
+        const key = taskKey(si, ti);
+        const isDone = !!j.completed[key];
+        const isOpen = j.openTaskKey === key;
+        html += `<div class="jp-task ${isDone?'done':''}">
+          <div class="jp-task-row">
+            <div class="jp-check" onclick="event.stopPropagation(); toggleTaskDone(${si},${ti});">${isDone?'✓':''}</div>
+            <div class="jp-task-title" onclick="openTaskCard(${si},${ti})">${escapeHtml(task.title)}</div>
+            <div class="jp-cat ${task.category}" onclick="openTaskCard(${si},${ti})">${catLabel[task.category]||task.category}</div>
+          </div>`;
+        if(isOpen){
+          html += `<div class="jp-card">
+            <div><b>${t('jpWhy')}:</b> ${escapeHtml(task.why||'')}</div>
+            <div style="margin-top:6px;"><b>${t('jpHow')}:</b> ${escapeHtml(task.how||'')}</div>
+            ${task.category==='verify_official' ? `<div style="margin-top:6px; color:var(--warn);">⚠️ ${t('jpVerifyNote')}</div>` : ''}
+            ${task.resource_url ? `<a class="jp-link" href="${task.resource_url}" target="_blank" rel="noopener">🔗 ${isAr?'المصدر الرسمي':'Official source'} ↗</a>` : ''}
+            <div><button class="jp-ask" onclick="askAboutTask(${si},${ti})">${t('jpAsk')}</button></div>
+          </div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  body.innerHTML = html;
 }
 
 // بعد أي رد حر: لو اكتمل الملف يعرض بطاقة المراجعة، ولو بقي حقل ناقص يعرض خياراته،
@@ -2159,6 +2511,7 @@ function checkLogo(){
   const saved = await loadState();
   if(saved && saved.step && saved.step !== "idea"){
     if(!saved.chatHistory) saved.chatHistory = []; // توافق مع جلسات محفوظة قبل إضافة ذاكرة المحادثة
+    if(!saved.journey) saved.journey = defaultJourney(); // توافق مع جلسات محفوظة قبل إضافة لوحة الرحلة
     document.getElementById('resumeBanner').innerHTML = "";
     const isAr = LANG==='ar';
     const banner = el(`
@@ -2185,6 +2538,7 @@ function checkLogo(){
   } else if(saved){
     state = saved;
     if(!state.chatHistory) state.chatHistory = [];
+    if(!state.journey) state.journey = defaultJourney();
     restoreUI();
   } else {
     boot(true);
@@ -2193,6 +2547,7 @@ function checkLogo(){
 
 function restoreUI(){
   renderStageStrip(); refreshBadge();
+  renderJourneyPanel();
   document.getElementById('messages').innerHTML = "";
   state.messages.forEach(m=>{
     const wrap = el(`<div class="msg ${m.role}"><div class="avatar">${m.role==='agent'?agentAvatarHtml():'🙂'}</div><div class="bubble">${m.html}${m.src?`<span class="src">📚 ${m.src}</span>`:''}</div></div>`);
