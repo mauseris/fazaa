@@ -928,7 +928,49 @@ function renderStageStrip(){
   });
 }
 
-function isGreetingOrTooShort(text){
+// عبارات طلب مساعدة عامة واضحة — إشارة موثوقة بغض النظر عن طول الرسالة كاملة،
+// لأنها تقريباً لا تظهر أبداً ضمن وصف فكرة مشروع حقيقية.
+const HELP_REQUEST_STRONG = [
+  'ابغى مساعدة','ابغى المساعدة','ابى مساعدة','احتاج مساعدة','ابي مساعدة','ابي مساعده',
+  'وش تقدر تسوي','شو تقدر تسوي','شنو تقدر تسوي','كيف تشتغل','كيف يشتغل','ايش تسوي',
+  'help me','need help','can you help','what can you do','what do you do',
+  'i need assistance','how does this work','how do you work',
+];
+// جذور "مساعدة" المجرّدة — إشارة موثوقة فقط عندما تكون الرسالة قصيرة إجمالاً؛ رسالة
+// أطول تحوي هذا الجذر قد تكون فكرة حقيقية ملتفّة حول طلب مساعدة، فتُترك للتصنيف بالنموذج.
+const HELP_REQUEST_SHORT_ONLY = ['مساعدة','مساعده','ساعدني','ساعديني'];
+
+// يطلب من الباك-إند تصنيفاً خفيفاً (IDEA / NOT_IDEA) للرسائل القصيرة الغامضة التي لا
+// تحسمها قوائم الكلمات أعلاه — أدق من قائمة كلمات متنامية لا تكتمل أبداً. عند فشل
+// الطلب (شبكة/مهلة/رد غير متوقع) يرجع null فيعتمد المستدعي على قرار الكلمات كخط رجوع.
+async function classifyIsBusinessIdea(text, rl){
+  try{
+    const controller = new AbortController();
+    const timer = setTimeout(()=>controller.abort(), 6000);
+    const sys = rl==='ar'
+      ? `صنّف الرسالة التالية: هل تصف فكرة مشروع تجاري حقيقية، أم أنها مجرد تحية أو طلب مساعدة عام أو رسالة خارج الموضوع؟ رد بكلمة واحدة فقط بالضبط: IDEA أو NOT_IDEA. بدون أي شرح إضافي.`
+      : `Classify the following message: does it describe an actual business idea, or is it just a greeting / a generic help-request / an off-topic message? Reply with exactly one word: IDEA or NOT_IDEA. No explanation.`;
+    let resp;
+    try{
+      resp = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({ system: sys, message: text })
+      });
+    } finally { clearTimeout(timer); }
+    if(!resp.ok) return null;
+    const data = await resp.json();
+    const verdict = (data.text || "").trim().toUpperCase();
+    if(verdict.startsWith("NOT_IDEA")) return "NOT_IDEA";
+    if(verdict.startsWith("IDEA")) return "IDEA";
+    return null; // رد غير متوقع — لا نخمّن
+  }catch(e){
+    return null; // خطأ شبكة أو مهلة — المستدعي يرجع لقرار الكلمات
+  }
+}
+
+async function isGreetingOrTooShort(text){
   const t = text.trim().toLowerCase().replace(/[!.؟?]/g,'');
   if(t.length < 2) return true;
   const greetings = ['hi','hello','hey','yo','sup','howdy','مرحبا','مرحباً','هلا','هلو','هاي','السلام عليكم','سلام','صباح الخير','مساء الخير','اهلين','أهلين','اهلا','أهلا','مرحبتين','هلابك'];
@@ -936,6 +978,17 @@ function isGreetingOrTooShort(text){
   const words = t.split(/\s+/).filter(Boolean);
   const hasArabicOrLatinWord = /[a-zA-Zء-ي]{4,}/.test(t);
   if(words.length <= 2 && !hasArabicOrLatinWord) return true;
+
+  if(HELP_REQUEST_STRONG.some(p => t.includes(p))) return true;
+  if(words.length <= 3 && HELP_REQUEST_SHORT_ONLY.some(p => t.includes(p))) return true;
+
+  // منطقة رمادية: رسالة قصيرة نسبياً لم تحسمها أي قائمة كلمات — تصنيف خفيف بالنموذج
+  // بدل تخمين محلي أعمى، مع رجوع فوري لقرار الكلمات (اعتبارها فكرة) لو فشل الطلب.
+  if(words.length <= 6){
+    const verdict = await classifyIsBusinessIdea(text, detectLang(text));
+    if(verdict === 'NOT_IDEA') return true;
+    if(verdict === 'IDEA') return false;
+  }
   return false;
 }
 
@@ -1422,7 +1475,7 @@ function boot(fresh){
 
 async function handleIdea(text){
   const rl = detectLang(text); // اللغة الفعلية التي كتب بها المستخدم — الرد يتبعها تلقائياً
-  if(isGreetingOrTooShort(text)){
+  if(await isGreetingOrTooShort(text)){
     const msg = rl==='ar'
       ? `<p>أهلاً فيك 👋 قبل ما نبدأ، احكيلي عن فكرة مشروعك بجملة أو جملتين — مثلاً "أبي أفتح مقهى صغير في صور" أو "فكرة تطبيق لتوصيل الطلبات". اكتبها هنا وأنا أتكفل بالباقي.</p>`
       : `<p>Hi there 👋 Before we start, tell me about your business idea in a sentence or two — e.g. "I want to open a small café in Sur" or "an idea for a delivery app". Type it here and I'll take it from there.</p>`;
