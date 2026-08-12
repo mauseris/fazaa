@@ -1377,7 +1377,7 @@ function stripHtml(html){
 // يُعرض فيه أفاتار رسالة وكيل (رسالة عادية، فقاعة بث حيّ، أو رسالة مُستعادة من جلسة
 // محفوظة) عشان يبقى نفس الشعار ثابتاً طوال المحادثة، بدل أي أيقونة أخرى.
 function agentAvatarHtml(){
-  const preferLightNow = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  const preferLightNow = document.body.classList.contains('palm-theme');
   const curLightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
   const curDarkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
   const chosenSrc = preferLightNow ? curLightSrc : curDarkSrc;
@@ -1406,7 +1406,7 @@ function addMessage(role, html, opts={}){
 }
 
 function setMessageAvatars(){
-  const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  const preferLight = document.body.classList.contains('palm-theme');
   const lightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
   const darkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
   document.querySelectorAll('.msg.agent .avatar img.msgLogo').forEach(img=>{
@@ -2841,23 +2841,12 @@ function checkLogo(){
   probeCandidates(dark, ['/logo-dark.jpg','/logo-dark.png','/logo-dark.webp','/logo-dark.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
 
   function updateVisibility(){
-    const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    const preferLight = document.body.classList.contains('palm-theme');
     if(light) light.style.display = preferLight && light.src ? 'block' : 'none';
     if(dark) dark.style.display = !preferLight && dark.src ? 'block' : 'none';
     if(fallback) fallback.style.display = anyLoaded ? 'none' : 'inline-block';
     // also update message avatars to match
     setMessageAvatars();
-  }
-
-  // respond to OS theme changes
-  if(window.matchMedia){
-    try{
-      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateVisibility);
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateVisibility);
-    }catch(e){ /* some older browsers use addListener */
-      try{ window.matchMedia('(prefers-color-scheme: light)').addListener(updateVisibility); }catch(e){}
-      try{ window.matchMedia('(prefers-color-scheme: dark)').addListener(updateVisibility); }catch(e){}
-    }
   }
 }
 
