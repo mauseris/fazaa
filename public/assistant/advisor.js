@@ -31,16 +31,19 @@ async function runIdeaEvaluation() {
   try {
     const { result } = await AssistantAPI.evaluateIdea(text, LANG);
     if (result.raw) { box.innerHTML = `<div class="ai-card" style="white-space:pre-wrap;">${escapeHtml(result.raw)}</div>`; return; }
-    const sections = [
-      ["targetCustomers", LANG === "ar" ? "العملاء المستهدفون" : "Target customers"],
-      ["demand", LANG === "ar" ? "الطلب المحتمل" : "Potential demand"],
-      ["competition", LANG === "ar" ? "المنافسة" : "Competition"],
-      ["costs", LANG === "ar" ? "التكاليف المتوقعة" : "Expected costs"],
-    ];
-    box.innerHTML = sections.map(([k, label]) => result[k] ? `<div class="ai-section"><div class="sec-title">${label}</div><div style="font-size:13px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result[k])}</div></div>` : "").join("") +
-      listSection(result.requirements, LANG === "ar" ? "متطلبات أساسية" : "Basic requirements") +
-      listSection(result.risks, LANG === "ar" ? "مخاطر محتملة" : "Potential risks") +
-      listSection(result.questions, LANG === "ar" ? "أسئلة عليك الإجابة عنها قبل البدء" : "Questions to answer before starting");
+    const quad = (arr, label, cls) => (Array.isArray(arr) && arr.length) ? `
+      <div class="ai-card" style="margin-bottom:8px;">
+        <div class="sec-title ${cls}">${label}</div>
+        <ul class="ai-reason-list">${arr.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+      </div>` : "";
+    box.innerHTML = `<h3 style="margin:4px 0 8px;">📊 SWOT</h3>` +
+      quad(result.strengths, LANG === "ar" ? "✅ نقاط القوة" : "✅ Strengths", "good") +
+      quad(result.weaknesses, LANG === "ar" ? "⚠️ نقاط الضعف" : "⚠️ Weaknesses", "warn") +
+      quad(result.opportunities, LANG === "ar" ? "🚀 الفرص" : "🚀 Opportunities", "good") +
+      quad(result.threats, LANG === "ar" ? "🔴 التهديدات" : "🔴 Threats", "bad") +
+      (result.targetMarket ? `<div class="ai-section"><div class="sec-title">🎯 ${LANG === "ar" ? "السوق المستهدف" : "Target Market"}</div><div style="font-size:13px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result.targetMarket)}</div></div>` : "") +
+      listSection(result.validationQuestions, LANG === "ar" ? "⚠️ أسئلة عليك الإجابة عنها للتحقق" : "⚠️ Questions to Validate") +
+      listSection(result.nextSteps, LANG === "ar" ? "📋 الخطوات القادمة" : "📋 Next Steps");
   } catch (e) { box.innerHTML = `<div class="ai-error">${ta("errorGeneric")}</div>`; }
 }
 function listSection(arr, label) {

@@ -19,9 +19,11 @@ const AI_UI = {
     home: "🏠", close: "إغلاق",
     navStart: "ابدأ مشروعي", navRoadmap: "خطتي التنفيذية", navServices: "دوّر على خدماتي",
     navEligibility: "فحص الأهلية", navDocuments: "مستنداتي", navForms: "مساعد التعبئة",
-    navApplications: "طلباتي", navReminders: "التذكيرات", navIdea: "قيّم فكرتي",
+    navApplications: "طلباتي", navReminders: "التذكيرات", navIdea: "تحليل الفكرة",
     navPlan: "خطة العمل", navFinancial: "الحاسبة المالية", navFunding: "دوّر على تمويل",
     navExplain: "اشرح هذا", navGov: "الجهات الحكومية", navHuman: "تواصل مع إنسان", navVoice: "المساعد الصوتي",
+    navNames: "اسم المشروع", navBrand: "الهوية والشعار", navSuppliers: "الموردون",
+    navCompetitors: "المنافسون والموقع", navMarketing: "التسويق", navContent: "المحتوى",
     dashGreetingMorning: "صباح الخير 👋", dashGreetingEvening: "مساء الخير 👋",
     dashNoBusiness: "لم تبدأ مشروعك بعد", dashJourney: "مسار مشروعك",
     dashNextAction: "الخطوة التالية", dashRecommended: "مقترح لك",
@@ -38,9 +40,11 @@ const AI_UI = {
     home: "🏠", close: "Close",
     navStart: "Start My Business", navRoadmap: "My Action Plan", navServices: "Find My Services",
     navEligibility: "Eligibility Checker", navDocuments: "My Documents", navForms: "Form Assistant",
-    navApplications: "My Applications", navReminders: "Reminders", navIdea: "Evaluate My Idea",
+    navApplications: "My Applications", navReminders: "Reminders", navIdea: "Idea Analysis",
     navPlan: "Business Plan", navFinancial: "Financial Calculator", navFunding: "Funding Matcher",
     navExplain: "Explain This", navGov: "Government Services", navHuman: "Contact / Human Help", navVoice: "Voice Assistant",
+    navNames: "Business Name", navBrand: "Brand & Logo", navSuppliers: "Suppliers",
+    navCompetitors: "Competitors & Location", navMarketing: "Marketing", navContent: "Content",
     dashGreetingMorning: "Good morning 👋", dashGreetingEvening: "Good evening 👋",
     dashNoBusiness: "You haven't started your business yet", dashJourney: "Business journey",
     dashNextAction: "Next action", dashRecommended: "Recommended",
@@ -70,6 +74,12 @@ const NAV_ITEMS = [
   { id: "gov", icon: "🏛️", key: "navGov" },
   { id: "human", icon: "👤", key: "navHuman" },
   { id: "voice", icon: "🎙️", key: "navVoice" },
+  { id: "names", icon: "🏷️", key: "navNames" },
+  { id: "brand", icon: "🎨", key: "navBrand" },
+  { id: "suppliers", icon: "🏪", key: "navSuppliers" },
+  { id: "competitors", icon: "📍", key: "navCompetitors" },
+  { id: "marketing", icon: "📣", key: "navMarketing" },
+  { id: "content", icon: "📝", key: "navContent" },
 ];
 
 let aiCurrentView = "dashboard";
@@ -78,6 +88,7 @@ function getBusinessProfile() {
   const a = state.assistant || {};
   const pa = a.profileAnswers || {};
   return {
+    idea: state.idea || null,
     sector: state.sector || null,
     city: state.city || null,
     teamSize: state.team || null,
@@ -94,7 +105,7 @@ function ensureAssistantState() {
     state.assistant = {
       businessName: "", roadmapDone: {}, documents: {}, applications: [],
       reminders: [], businessPlan: {}, ideaEvaluations: [], financialInputs: {},
-      profileAnswers: {},
+      profileAnswers: {}, generatedNames: [], brandIdentity: null, generatedContent: null,
     };
   }
   return state.assistant;
@@ -186,7 +197,7 @@ async function computeNextAction() {
   return ta("naAllGood");
 }
 
-const QUICK_ACTIONS = ["start", "roadmap", "services", "eligibility", "documents", "applications", "plan", "financial", "funding", "explain"];
+const QUICK_ACTIONS = ["start", "roadmap", "names", "brand", "idea", "suppliers", "competitors", "marketing", "content", "financial", "funding", "documents", "applications"];
 
 async function renderDashboard(container) {
   const hour = new Date().getHours();
@@ -227,6 +238,15 @@ function editBusinessName() {
 function aiAskAndClose() {
   closeAssistant();
   document.getElementById("textInput")?.focus();
+}
+
+// يمنع أي ميزة تعتمد على فكرة المشروع (اسم/هوية/محتوى/منافسون...) من العمل
+// قبل معرفتها من المحادثة — بدل صندوق نص بديل، نوجّه المستخدم للمحادثة الرئيسية.
+function requireIdea(container) {
+  if (state.idea) return true;
+  container.innerHTML = `<div class="ai-empty">${LANG === "ar" ? "احكيلي عن فكرة مشروعك في المحادثة الرئيسية أولاً، وبعدها تكتمل هذي الميزة تلقائياً." : "Tell me about your business idea in the main chat first, then this feature fills in automatically."}</div>
+    <button class="ai-btn primary" onclick="switchAiView('start')">${ta("navStart")}</button>`;
+  return false;
 }
 
 function escapeHtml(s) {

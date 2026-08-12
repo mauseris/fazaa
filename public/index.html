@@ -92,6 +92,29 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 }
 .btn-reset:hover{border-color:var(--coral); color:var(--coral);}
 
+/* ---------- top nav (all-features bar) ---------- */
+.top-nav{
+  display:flex; gap:6px; align-items:center;
+  padding:8px 22px; border-bottom:1px solid var(--line);
+  overflow-x:auto; overflow-y:hidden; white-space:nowrap;
+  scrollbar-width:thin;
+  background:var(--navy-900);
+}
+.top-nav::-webkit-scrollbar{height:5px;}
+.top-nav::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
+.top-nav-item{
+  flex:none; display:inline-flex; align-items:center; gap:6px;
+  font-family:'Tajawal'; font-size:12.5px; color:var(--text-dim);
+  background:transparent; border:1px solid transparent; border-radius:8px;
+  padding:7px 12px; cursor:pointer; white-space:nowrap;
+}
+.top-nav-item:hover{border-color:var(--line); color:var(--text);}
+.top-nav-item.active{border-color:var(--gold); color:var(--text); background:var(--navy-800);}
+@media (max-width:720px){
+  .top-nav{padding:8px 12px;}
+  .top-nav-item{font-size:12px; padding:6px 10px;}
+}
+
 /* Palm theme (logo-inspired) — toggled via body.palm-theme */
 .palm-theme{
   --gold:#d9c49c;      /* robot-body tan */
@@ -145,7 +168,7 @@ body.palm-theme{
   display:grid;
   grid-template-columns: 300px 1fr 380px;
   gap:0;
-  min-height:calc(100vh - 71px);
+  min-height:calc(100vh - 114px);
   /* .app's track order is pinned ltr permanently (independent of page language)
      so the new journey panel — always the first grid item — stays physically
      leftmost in both languages, exactly like the mockup asked for. This is the
@@ -535,6 +558,7 @@ aside.rail{
     <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
   </div>
 </div>
+<nav class="top-nav" id="topNav"></nav>
 <div class="pattern-accent"></div>
 
 <div class="app">
@@ -747,6 +771,7 @@ function applyStaticTranslations(){
 // عند تغيير اللغة تلقائياً حسب لغة رسالة المستخدم، لا فقط عند الضغط اليدوي على الزر.
 function applyLangChange(){
   applyStaticTranslations();
+  renderTopNav();
   renderStageStrip();
   refreshBadge();
   if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
@@ -774,6 +799,64 @@ function toggleLang(){
   LANG = (LANG === 'ar') ? 'en' : 'ar';
   localStorage.setItem('mirshid_lang', LANG);
   applyLangChange();
+}
+
+/* ======================= TOP NAV (ALL-FEATURES BAR) =======================
+   شريط علوي واحد يجمع كل ميزات المنصة في مكان واحد ثابت — كل عنصر إما يفتح
+   طبقة "المساعد الذكي الكامل" على واجهة محددة (الأدوات الموجودة أصلاً هناك)،
+   أو يوجّه لميزة موجودة في الصفحة الرئيسية (رحلتي/دراسة الجدوى). لا يضيف أي
+   صندوق نص جديد — فقط تنقّل. */
+const TOP_NAV_ITEMS = [
+  { id:'home', icon:'🏠', ar:'الرئيسية', en:'Home', action:'home' },
+  { id:'dashboard', icon:'🤖', ar:'مساعد الأعمال', en:'Business Assistant', action:'assistant' },
+  { id:'journey', icon:'🗺️', ar:'رحلتي', en:'My Journey', action:'journey' },
+  { id:'names', icon:'🏷️', ar:'اسم المشروع', en:'Business Name', action:'assistant' },
+  { id:'brand', icon:'🎨', ar:'الهوية والشعار', en:'Brand & Logo', action:'assistant' },
+  { id:'idea', icon:'📊', ar:'تحليل الفكرة', en:'Idea Analysis', action:'assistant' },
+  { id:'feasibility', icon:'📋', ar:'دراسة الجدوى', en:'Feasibility Study', action:'report' },
+  { id:'gov', icon:'🏛️', ar:'الخدمات الحكومية', en:'Government Services', action:'assistant' },
+  { id:'documents', icon:'📄', ar:'المستندات', en:'Documents', action:'assistant' },
+  { id:'funding', icon:'💰', ar:'التمويل', en:'Funding', action:'assistant' },
+  { id:'financial', icon:'🧮', ar:'المالية', en:'Financial', action:'assistant' },
+  { id:'suppliers', icon:'🏪', ar:'الموردون', en:'Suppliers', action:'assistant' },
+  { id:'competitors', icon:'📍', ar:'المنافسون والموقع', en:'Competitors & Location', action:'assistant' },
+  { id:'marketing', icon:'📣', ar:'التسويق', en:'Marketing', action:'assistant' },
+  { id:'content', icon:'📝', ar:'المحتوى', en:'Content', action:'assistant' },
+  { id:'applications', icon:'📬', ar:'طلباتي', en:'My Applications', action:'assistant' },
+];
+function renderTopNav(){
+  const nav = document.getElementById('topNav');
+  if(!nav) return;
+  nav.innerHTML = TOP_NAV_ITEMS.map(item=>`
+    <button class="top-nav-item" onclick="topNavGo('${item.id}')">
+      <span>${item.icon}</span><span>${LANG==='ar'?item.ar:item.en}</span>
+    </button>
+  `).join('');
+}
+function topNavGo(id){
+  const item = TOP_NAV_ITEMS.find(x=>x.id===id);
+  if(!item) return;
+  if(item.action==='home'){
+    if(typeof closeAssistant==='function') closeAssistant();
+    closeReport();
+    document.getElementById('textInput')?.focus();
+    return;
+  }
+  if(item.action==='report'){
+    if(typeof closeAssistant==='function') closeAssistant();
+    openReport();
+    return;
+  }
+  if(item.action==='journey'){
+    if(typeof closeAssistant==='function') closeAssistant();
+    closeReport();
+    document.getElementById('journeyPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
+  // action==='assistant': يفتح طبقة المساعد الذكي على الواجهة المطابقة مباشرة
+  closeReport();
+  if(typeof openAssistant==='function') openAssistant();
+  if(typeof switchAiView==='function') switchAiView(id === 'dashboard' ? 'dashboard' : id);
 }
 
 /* ======================= MOCK DATA LAYER (تحاكي مصادر ريادة/تجارة الرسمية) ======================= */
@@ -1663,6 +1746,7 @@ function historyForCall(){
 /* ======================= CONVERSATION FLOW ======================= */
 
 function boot(fresh){
+  renderTopNav();
   renderStageStrip();
   refreshBadge();
   renderJourneyPanel();
@@ -2620,5 +2704,11 @@ function restoreUI(){
 <script src="/assistant/documents-forms.js"></script>
 <script src="/assistant/advisor.js"></script>
 <script src="/assistant/human-voice.js"></script>
+<script src="/assistant/names.js"></script>
+<script src="/assistant/brand.js"></script>
+<script src="/assistant/suppliers.js"></script>
+<script src="/assistant/competitors.js"></script>
+<script src="/assistant/marketing.js"></script>
+<script src="/assistant/content.js"></script>
 </body>
 </html>

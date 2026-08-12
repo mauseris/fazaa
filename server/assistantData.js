@@ -592,6 +592,177 @@ function computeFinancials(inputs = {}) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// فئات المنتجات (Suppliers & Products) — كتالوج تجريبي حسب القطاع، يُستخدم
+// لعرض فئات منتجات جاهزة بدل أن يكتبها المستخدم يدوياً.
+// ---------------------------------------------------------------------------
+const PRODUCT_CATEGORIES_BY_SECTOR = {
+  beauty: [
+    { id: "face-care", ar: "العناية بالوجه", en: "Face Care" }, { id: "body-care", ar: "العناية بالجسم", en: "Body Care" },
+    { id: "sunscreen", ar: "واقي شمس", en: "Sunscreen" }, { id: "cleansers", ar: "منظفات", en: "Cleansers" },
+    { id: "moisturizers", ar: "مرطبات", en: "Moisturizers" }, { id: "serums", ar: "سيرومات", en: "Serums" },
+    { id: "exfoliators", ar: "مقشرات", en: "Exfoliators" }, { id: "eye-care", ar: "العناية بالعين", en: "Eye Care" },
+    { id: "natural-oils", ar: "زيوت طبيعية", en: "Natural Oils" }, { id: "gift-sets", ar: "مجموعات هدايا", en: "Gift Sets" },
+  ],
+  food: [
+    { id: "main-dishes", ar: "الأطباق الرئيسية", en: "Main Dishes" }, { id: "appetizers", ar: "مقبلات", en: "Appetizers" },
+    { id: "desserts", ar: "حلويات", en: "Desserts" }, { id: "beverages", ar: "مشروبات", en: "Beverages" },
+    { id: "packaging", ar: "التغليف", en: "Packaging" }, { id: "raw-ingredients", ar: "مواد خام", en: "Raw Ingredients" },
+  ],
+  retail: [
+    { id: "apparel", ar: "ملابس", en: "Apparel" }, { id: "accessories", ar: "إكسسوارات", en: "Accessories" },
+    { id: "footwear", ar: "أحذية", en: "Footwear" }, { id: "packaging", ar: "التغليف", en: "Packaging" },
+    { id: "seasonal", ar: "تشكيلة موسمية", en: "Seasonal Collection" },
+  ],
+  ecommerce: [
+    { id: "electronics", ar: "إلكترونيات", en: "Electronics" }, { id: "home-goods", ar: "أدوات منزلية", en: "Home Goods" },
+    { id: "packaging", ar: "التغليف والشحن", en: "Packaging & Shipping" }, { id: "gadgets", ar: "أدوات ذكية", en: "Gadgets" },
+  ],
+  tech: [
+    { id: "hosting", ar: "استضافة وبنية تحتية", en: "Hosting & Infrastructure" }, { id: "design", ar: "تصميم وواجهات", en: "Design & UI" },
+    { id: "dev-tools", ar: "أدوات تطوير", en: "Dev Tools" },
+  ],
+  services: [
+    { id: "consulting", ar: "استشارات", en: "Consulting" }, { id: "packages", ar: "باقات خدمات", en: "Service Packages" },
+    { id: "equipment", ar: "معدات العمل", en: "Work Equipment" },
+  ],
+  education: [
+    { id: "curriculum", ar: "المناهج", en: "Curriculum Materials" }, { id: "supplies", ar: "أدوات تعليمية", en: "Teaching Supplies" },
+  ],
+  health: [
+    { id: "medical-supplies", ar: "مستلزمات طبية", en: "Medical Supplies" }, { id: "equipment", ar: "معدات", en: "Equipment" },
+  ],
+  manufact: [
+    { id: "raw-materials", ar: "مواد خام", en: "Raw Materials" }, { id: "machinery", ar: "آلات", en: "Machinery" },
+    { id: "packaging", ar: "التغليف", en: "Packaging" },
+  ],
+  agro: [
+    { id: "seeds-inputs", ar: "بذور ومدخلات زراعية", en: "Seeds & Farm Inputs" }, { id: "packaging", ar: "التغليف", en: "Packaging" },
+  ],
+  logistics: [
+    { id: "fleet", ar: "أسطول المركبات", en: "Vehicle Fleet" }, { id: "packaging", ar: "التغليف", en: "Packaging" },
+  ],
+};
+const DEFAULT_PRODUCT_CATEGORIES = [
+  { id: "core-offering", ar: "المنتج/الخدمة الأساسية", en: "Core Product/Service" },
+  { id: "packaging", ar: "التغليف", en: "Packaging" },
+  { id: "marketing-materials", ar: "مواد تسويقية", en: "Marketing Materials" },
+  { id: "equipment", ar: "معدات العمل", en: "Work Equipment" },
+];
+function getProductCategories(sector) {
+  return PRODUCT_CATEGORIES_BY_SECTOR[sector] || DEFAULT_PRODUCT_CATEGORIES;
+}
+
+// ---------------------------------------------------------------------------
+// الموردون (Suppliers) — كتالوج تجريبي (mock)، بيانات وهمية واقعية للعرض فقط.
+// ---------------------------------------------------------------------------
+const SUPPLIERS = [
+  { id: "sup-beauty-1", sectors: ["beauty"], nameAr: "شركة الجمال الطبيعي التجارية", nameEn: "Natural Beauty Trading LLC",
+    productsAr: ["العناية بالوجه", "العناية بالجسم", "زيوت طبيعية"], productsEn: ["Face Care", "Body Care", "Natural Oils"],
+    priceMin: 3, priceMax: 8, moq: 50, deliveryDays: "3-5", shippingCost: 15, city: "muscat",
+    contact: "info@naturalbeauty.om", website: "www.naturalbeauty.om" },
+  { id: "sup-beauty-2", sectors: ["beauty"], nameAr: "الخليج للعناية بالبشرة بالجملة", nameEn: "Gulf Skincare Wholesale",
+    productsAr: ["منظفات", "مرطبات", "سيرومات"], productsEn: ["Cleansers", "Moisturizers", "Serums"],
+    priceMin: 4, priceMax: 10, moq: 100, deliveryDays: "5-7", shippingCost: 20, city: "muscat",
+    contact: "sales@gulfskincare.com", website: "www.gulfskincare.com" },
+  { id: "sup-beauty-3", sectors: ["beauty"], nameAr: "المنتجات العُمانية العشبية", nameEn: "Omani Herbal Products",
+    productsAr: ["زيوت طبيعية", "مستخلصات عشبية"], productsEn: ["Natural Oils", "Herbal Extracts"],
+    priceMin: 2, priceMax: 6, moq: 30, deliveryDays: "2-3", shippingCost: 10, city: "nizwa",
+    contact: "info@omaniherbal.com", website: "www.omaniherbal.com" },
+  { id: "sup-food-1", sectors: ["food"], nameAr: "شركة التوريدات الغذائية العُمانية", nameEn: "Oman Food Supplies Co.",
+    productsAr: ["مواد خام", "مشروبات"], productsEn: ["Raw Ingredients", "Beverages"],
+    priceMin: 1, priceMax: 5, moq: 100, deliveryDays: "2-4", shippingCost: 12, city: "muscat",
+    contact: "sales@omanfoodsupplies.om", website: "www.omanfoodsupplies.om" },
+  { id: "sup-food-2", sectors: ["food"], nameAr: "مطابخ الخليج للتجهيزات", nameEn: "Gulf Kitchen Equipment",
+    productsAr: ["معدات مطبخ", "تغليف"], productsEn: ["Kitchen Equipment", "Packaging"],
+    priceMin: 20, priceMax: 500, moq: 1, deliveryDays: "5-10", shippingCost: 25, city: "sohar",
+    contact: "info@gulfkitchen.com", website: "www.gulfkitchen.com" },
+  { id: "sup-retail-1", sectors: ["retail", "ecommerce"], nameAr: "تجارة الأزياء الحديثة", nameEn: "Modern Apparel Trading",
+    productsAr: ["ملابس", "إكسسوارات"], productsEn: ["Apparel", "Accessories"],
+    priceMin: 3, priceMax: 15, moq: 50, deliveryDays: "4-6", shippingCost: 18, city: "muscat",
+    contact: "wholesale@modernapparel.om", website: "www.modernapparel.om" },
+  { id: "sup-retail-2", sectors: ["retail", "ecommerce"], nameAr: "مركز التغليف والشحن الخليجي", nameEn: "Gulf Packaging & Shipping Hub",
+    productsAr: ["التغليف", "مستلزمات الشحن"], productsEn: ["Packaging", "Shipping Supplies"],
+    priceMin: 1, priceMax: 4, moq: 100, deliveryDays: "2-3", shippingCost: 8, city: "muscat",
+    contact: "info@gulfpackaging.com", website: "www.gulfpackaging.com" },
+  { id: "sup-services-1", sectors: ["services", "tech", "education"], nameAr: "مورد المعدات المكتبية العُماني", nameEn: "Oman Office & Work Supplies",
+    productsAr: ["معدات العمل", "أدوات تعليمية"], productsEn: ["Work Equipment", "Teaching Supplies"],
+    priceMin: 5, priceMax: 200, moq: 1, deliveryDays: "3-5", shippingCost: 10, city: "muscat",
+    contact: "sales@omanofficesupplies.om", website: "www.omanofficesupplies.om" },
+];
+function matchSuppliers(sector, lang = "ar") {
+  const list = SUPPLIERS.filter((s) => !sector || s.sectors.includes(sector));
+  return (list.length ? list : SUPPLIERS.slice(0, 3)).map((s) => ({
+    id: s.id, name: lang === "ar" ? s.nameAr : s.nameEn, products: lang === "ar" ? s.productsAr : s.productsEn,
+    priceMin: s.priceMin, priceMax: s.priceMax, moq: s.moq, deliveryDays: s.deliveryDays, shippingCost: s.shippingCost,
+    city: s.city, contact: s.contact, website: s.website,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// المنافسون (Competitors & Location) — كتالوج تجريبي (mock)، مواقع ومسافات
+// تقريبية للعرض فقط وليست بيانات خرائط حقيقية.
+// ---------------------------------------------------------------------------
+const COMPETITORS = [
+  { id: "comp-beauty-1", sectors: ["beauty"], city: "muscat", nameAr: "نضرة بيوتي", nameEn: "Nudra Beauty", neighborhoodAr: "الخوير", neighborhoodEn: "Al Khuwair", distanceKm: 2.5, businessType: "physical+online", priceRange: "mid", rating: 4.2, reviews: 150, social: "@nudrabeauty", followers: "12K", website: "www.nudrabeauty.com", strengthsAr: "موقع جيد وحضور قوي في السوشال ميديا", strengthsEn: "Good location, strong social media presence", weaknessAr: "تشكيلة منتجات محدودة وأسعار أعلى", weaknessEn: "Limited product range, higher prices" },
+  { id: "comp-beauty-2", sectors: ["beauty"], city: "muscat", nameAr: "جلو سكين كير", nameEn: "Glow Skincare", neighborhoodAr: "القرم", neighborhoodEn: "Qurum", distanceKm: 3.8, businessType: "online", priceRange: "premium", rating: 4.0, reviews: 95, social: "@glowskincare.om", followers: "8.5K", website: "www.glowskincare.om", strengthsAr: "تغليف مميز وهوية بصرية قوية", strengthsEn: "Premium packaging and strong visual identity", weaknessAr: "أسعار مرتفعة نسبياً", weaknessEn: "Relatively high prices" },
+  { id: "comp-beauty-3", sectors: ["beauty"], city: "muscat", nameAr: "بيور بيوتي", nameEn: "Pure Beauty", neighborhoodAr: "مدينة السلطان قابوس", neighborhoodEn: "Madinat Sultan Qaboos", distanceKm: 4.2, businessType: "physical", priceRange: "budget", rating: 3.8, reviews: 60, social: "@purebeauty.om", followers: "4K", website: null, strengthsAr: "أسعار منافسة", strengthsEn: "Competitive pricing", weaknessAr: "حضور رقمي ضعيف", weaknessEn: "Weak digital presence" },
+  { id: "comp-food-1", sectors: ["food"], city: "muscat", nameAr: "مطعم الذواقة", nameEn: "Al Dhawaqa Restaurant", neighborhoodAr: "الخوير", neighborhoodEn: "Al Khuwair", distanceKm: 1.8, businessType: "physical", priceRange: "mid", rating: 4.3, reviews: 320, social: "@aldhawaqa", followers: "20K", website: "www.aldhawaqa.om", strengthsAr: "موقع مركزي وقاعدة عملاء واسعة", strengthsEn: "Central location, large customer base", weaknessAr: "أوقات انتظار طويلة في الذروة", weaknessEn: "Long wait times during peak hours" },
+  { id: "comp-food-2", sectors: ["food"], city: "muscat", nameAr: "كافيه المدينة", nameEn: "City Café", neighborhoodAr: "القرم", neighborhoodEn: "Qurum", distanceKm: 3.1, businessType: "physical", priceRange: "premium", rating: 4.5, reviews: 210, social: "@citycafe.om", followers: "15K", website: null, strengthsAr: "أجواء مميزة وجودة قهوة عالية", strengthsEn: "Great ambiance, high coffee quality", weaknessAr: "أسعار مرتفعة", weaknessEn: "High prices" },
+  { id: "comp-retail-1", sectors: ["retail", "ecommerce"], city: "muscat", nameAr: "متجر الأناقة", nameEn: "Elegance Store", neighborhoodAr: "روي", neighborhoodEn: "Ruwi", distanceKm: 5.0, businessType: "physical+online", priceRange: "mid", rating: 4.0, reviews: 140, social: "@elegance.om", followers: "10K", website: "www.elegance.om", strengthsAr: "تشكيلة متنوعة", strengthsEn: "Wide variety of options", weaknessAr: "توصيل بطيء أحياناً", weaknessEn: "Sometimes slow delivery" },
+];
+function matchCompetitors(sector, city, lang = "ar") {
+  let list = COMPETITORS.filter((c) => !sector || c.sectors.includes(sector));
+  if (city) list = list.filter((c) => c.city === city).concat(list.filter((c) => c.city !== city));
+  return list.slice(0, 4).map((c) => ({
+    id: c.id, name: lang === "ar" ? c.nameAr : c.nameEn, neighborhood: lang === "ar" ? c.neighborhoodAr : c.neighborhoodEn,
+    distanceKm: c.distanceKm, businessType: c.businessType, priceRange: c.priceRange, rating: c.rating, reviews: c.reviews,
+    social: c.social, followers: c.followers, website: c.website,
+    strengths: lang === "ar" ? c.strengthsAr : c.strengthsEn, weakness: lang === "ar" ? c.weaknessAr : c.weaknessEn,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// المواقع التجارية المتاحة (nearby commercial rentals) — تجريبي (mock)
+// ---------------------------------------------------------------------------
+const RENTALS = [
+  { id: "rent-muscat-1", city: "muscat", nameAr: "مساحة تجارية - الخوير", nameEn: "Al Khuwair Commercial Space", sizeSqm: 80, rent: 400, distanceM: 200, suitableAr: ["تجزئة", "مكتب", "معرض"], suitableEn: ["Retail", "Office", "Showroom"], contact: "property@omanrealestate.com", source: "Oman Real Estate" },
+  { id: "rent-muscat-2", city: "muscat", nameAr: "مركز القرم التجاري", nameEn: "Qurum Business Center", sizeSqm: 120, rent: 650, distanceM: 1200, suitableAr: ["مكتب", "تجزئة", "صالون تجميل"], suitableEn: ["Office", "Retail", "Beauty Salon"], contact: "info@qurumcenter.com", source: "Commercial Properties Oman" },
+  { id: "rent-sohar-1", city: "sohar", nameAr: "معرض تجاري - صحار", nameEn: "Sohar Retail Unit", sizeSqm: 60, rent: 220, distanceM: 500, suitableAr: ["تجزئة", "مخزن صغير"], suitableEn: ["Retail", "Small Storage"], contact: "leasing@soharproperties.om", source: "Sohar Properties" },
+  { id: "rent-nizwa-1", city: "nizwa", nameAr: "محل تجاري - نزوى", nameEn: "Nizwa Shop Unit", sizeSqm: 45, rent: 160, distanceM: 300, suitableAr: ["تجزئة", "ورشة صغيرة"], suitableEn: ["Retail", "Small Workshop"], contact: "info@nizwarealestate.om", source: "Nizwa Real Estate" },
+  { id: "rent-salalah-1", city: "salalah", nameAr: "وحدة تجارية - صلالة", nameEn: "Salalah Commercial Unit", sizeSqm: 70, rent: 240, distanceM: 400, suitableAr: ["تجزئة", "مطعم صغير"], suitableEn: ["Retail", "Small Restaurant"], contact: "leasing@salalahproperties.om", source: "Salalah Properties" },
+];
+function matchRentals(city, lang = "ar") {
+  let list = RENTALS.filter((r) => !city || r.city === city);
+  if (!list.length) list = RENTALS.slice(0, 3);
+  return list.map((r) => ({
+    id: r.id, name: lang === "ar" ? r.nameAr : r.nameEn, sizeSqm: r.sizeSqm, rent: r.rent, distanceM: r.distanceM,
+    suitableFor: lang === "ar" ? r.suitableAr : r.suitableEn, contact: r.contact, source: r.source,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// المؤثرون (Marketing & Influencer Finder) — كتالوج تجريبي (mock)
+// ---------------------------------------------------------------------------
+const INFLUENCERS = [
+  { id: "inf-beauty-1", sectors: ["beauty"], name: "ندى البلوشي", platforms: ["Instagram", "TikTok"], followers: "120K", audienceAr: "نساء شابات (عُمان + الخليج)", audienceEn: "Young women (Oman + GCC)", engagementRate: 4.2, contentAr: "تجميل، عناية بالبشرة، أسلوب حياة", contentEn: "Beauty, Skincare, Lifestyle", city: "muscat", contact: "nada@influencer.om", social: "@nada_beauty", priceMin: 80, priceMax: 150, campaignAr: "مراجعات منتجات، تعليمية، سحوبات", campaignEn: "Product reviews, tutorials, giveaways" },
+  { id: "inf-beauty-2", sectors: ["beauty"], name: "سارة الريامي", platforms: ["TikTok", "Snapchat"], followers: "85K", audienceAr: "مراهقات ونساء شابات (عُمان)", audienceEn: "Teenagers, young women (Oman)", engagementRate: 5.8, contentAr: "مكياج، عناية بالبشرة", contentEn: "Makeup, Skincare, Hauls", city: "seeb", contact: "sara@influencer.om", social: "@sara_skincare", priceMin: 50, priceMax: 100, campaignAr: "فتح الصناديق، يوم في حياتي، عرض المنتج", campaignEn: "Unboxing, day-in-the-life, product demos" },
+  { id: "inf-beauty-3", sectors: ["beauty"], name: "مريم الحارثي", platforms: ["YouTube", "Instagram"], followers: "65K", audienceAr: "نساء (25-45)، مهتمات بالتجميل", audienceEn: "Women (25-45), beauty enthusiasts", engagementRate: 3.5, contentAr: "مراجعات معمّقة، تعليمية", contentEn: "In-depth reviews, tutorials, natural beauty", city: "muscat", contact: "maryam@influencer.om", social: "@maryam_naturalbeauty", priceMin: 120, priceMax: 200, campaignAr: "مراجعات مفصّلة، تحليل المكونات", campaignEn: "Detailed reviews, ingredient analysis" },
+  { id: "inf-food-1", sectors: ["food"], name: "خالد الشحي", platforms: ["Instagram", "TikTok"], followers: "95K", audienceAr: "محبو الطعام (عُمان)", audienceEn: "Foodies (Oman)", engagementRate: 4.8, contentAr: "مراجعات مطاعم، وصفات", contentEn: "Restaurant reviews, recipes", city: "muscat", contact: "khalid@influencer.om", social: "@khalid_eats", priceMin: 70, priceMax: 130, campaignAr: "زيارة وتصوير، مراجعة صادقة", campaignEn: "On-site shoot, honest review" },
+  { id: "inf-food-2", sectors: ["food"], name: "منى الهنائية", platforms: ["Instagram"], followers: "40K", audienceAr: "عائلات (عُمان)", audienceEn: "Families (Oman)", engagementRate: 3.9, contentAr: "طبخ منزلي، عروض عائلية", contentEn: "Home cooking, family deals", city: "muscat", contact: "muna@influencer.om", social: "@muna_kitchen", priceMin: 40, priceMax: 90, campaignAr: "منشورات ستوريز، تجربة عائلية", campaignEn: "Story posts, family experience" },
+  { id: "inf-retail-1", sectors: ["retail", "ecommerce"], name: "علي البوسعيدي", platforms: ["Instagram", "TikTok"], followers: "75K", audienceAr: "شباب مهتمون بالموضة (عُمان)", audienceEn: "Fashion-conscious youth (Oman)", engagementRate: 4.1, contentAr: "إطلالات، تجارب تسوّق", contentEn: "Outfit ideas, shopping hauls", city: "muscat", contact: "ali@influencer.om", social: "@ali_style", priceMin: 60, priceMax: 120, campaignAr: "إطلالة كاملة، كود خصم", campaignEn: "Full outfit feature, discount code" },
+  { id: "inf-generic-1", sectors: ["tech", "services", "education", "health", "manufact", "agro", "logistics"], name: "فاطمة الكندية", platforms: ["Instagram", "LinkedIn"], followers: "30K", audienceAr: "رواد أعمال ومهنيون (عُمان)", audienceEn: "Entrepreneurs & professionals (Oman)", engagementRate: 3.2, contentAr: "محتوى أعمال وريادة", contentEn: "Business & entrepreneurship content", city: "muscat", contact: "fatma@influencer.om", social: "@fatma_biz", priceMin: 50, priceMax: 100, campaignAr: "منشور تعريفي، مقابلة قصيرة", campaignEn: "Intro post, short interview" },
+];
+function matchInfluencers(sector, lang = "ar") {
+  const list = INFLUENCERS.filter((i) => !sector || i.sectors.includes(sector));
+  return (list.length ? list : INFLUENCERS.slice(-1)).map((i) => ({
+    id: i.id, name: i.name, platforms: i.platforms, followers: i.followers,
+    audience: lang === "ar" ? i.audienceAr : i.audienceEn, engagementRate: i.engagementRate,
+    content: lang === "ar" ? i.contentAr : i.contentEn, city: i.city, contact: i.contact, social: i.social,
+    priceMin: i.priceMin, priceMax: i.priceMax, campaign: lang === "ar" ? i.campaignAr : i.campaignEn,
+  }));
+}
+
 module.exports = {
   SECTORS, CITIES, TEAM_FACTORS,
   GOV_BODIES, SECTOR_BODY,
@@ -602,4 +773,5 @@ module.exports = {
   FORM_FIELD_DEFS, explainFormField,
   seedApplications,
   computeFinancials,
+  getProductCategories, matchSuppliers, matchCompetitors, matchRentals, matchInfluencers,
 };

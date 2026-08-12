@@ -55,13 +55,21 @@ const ROADMAP_JSON_SCHEMA = {
   additionalProperties: false,
 };
 
+// خمس مراحل ثابتة الأسماء (تطابق تسمية "رحلة مشروعك" في الواجهة) — المهام
+// داخل كل مرحلة هي ما يختلف فعلياً حسب نوع المشروع، وليس عدد المراحل أو أسماؤها.
+const STAGE_TITLES = {
+  ar: ["فكرة المشروع", "تجهيز المشروع", "التأسيس", "التسويق", "الإطلاق"],
+  en: ["Business Idea", "Prepare the Business", "Establishment", "Marketing", "Launch"],
+};
+
 function buildRoadmapSystemPrompt(isAr) {
   const bodiesList = OFFICIAL_BODIES.map(b => `${b.id}: ${b.note}`).join("\n");
+  const stageTitles = STAGE_TITLES[isAr ? "ar" : "en"];
   return isAr
     ? `أنت مساعد متخصص في تصميم خرائط طريق عملية لأصحاب مشاريع صغيرة جدد في عُمان. مهمتك الوحيدة الآن: توليد خارطة طريق منظّمة (JSON) خاصة تحديداً بنوع المشروع المذكور — وليست قائمة عامة قابلة للتطبيق على أي مشروع.
 
 القواعد:
-- ٣ إلى ٤ مراحل منطقية بترتيب زمني واقعي (مثال: تجهيز المشروع → التجهيز للبيع → الإطلاق → ثم مرحلة نمو إن ناسب نوع المشروع).
+- بالضبط ٥ مراحل، بهذا الترتيب وهذه العناوين حرفياً (لا تغيّرها ولا تدمجها ولا تحذف منها): ${stageTitles.map((t, i) => `"${t}"`).join("، ")}.
 - كل مرحلة تحتوي مهام محددة وعملية خاصة بهذا النوع من المشاريع تحديداً (موردين، منتجات، تسعير، محتوى، معدات، قائمة طعام، سلامة غذائية، شحن، تغليف، MVP، تحقق من العملاء... حسب ما يناسب المشروع فعلاً)، وليست عبارات عامة مثل "خطط لمشروعك".
 - لكل مهمة: "why" (لماذا هي مهمة الآن، سطر أو سطران) و"how" (كيف تُنجَز عملياً، سطران-ثلاثة).
 - صنّف كل مهمة بدقة إلى واحدة من ثلاث فئات فقط: "verify_official" (مرتبطة بمتطلب رسمي/ترخيص — لا تؤكد أبداً أنها إلزامية بثقة، فقط أشر لضرورة التحقق من الجهة الرسمية)، "recommended" (ممارسة تجارية سليمة موصى بها لكن ليست رسمية)، أو "optional" (مفيدة لكن يمكن تأجيلها).
@@ -73,7 +81,7 @@ ${bodiesList}
     : `You are a specialist assistant that designs practical roadmaps for new small-business owners in Oman. Your only job right now: generate a structured roadmap (JSON) specific to the exact business type mentioned — not a generic checklist that could apply to any business.
 
 Rules:
-- 3 to 4 logical stages in realistic chronological order (e.g. Prepare the business → Prepare to sell → Launch → then a growth stage if it fits the business type).
+- Exactly 5 stages, in this order, with these exact titles (don't change, merge, or drop any): ${stageTitles.map(t => `"${t}"`).join(", ")}.
 - Each stage has concrete, practical tasks specific to this exact business type (suppliers, products, pricing, content, equipment, menu, food safety, shipping, packaging, MVP, customer validation... whatever genuinely fits), not generic phrases like "plan your business".
 - For each task: "why" (why it matters now, 1-2 lines) and "how" (how to actually do it, 2-3 lines).
 - Classify each task into exactly one of three categories: "verify_official" (tied to an official requirement/license — never confidently assert it's mandatory, just flag that it needs checking with the official body), "recommended" (sound business practice, not official), or "optional" (useful but can be deferred).
@@ -136,21 +144,27 @@ function attachResourceLinks(roadmap) {
 const FALLBACK_TEMPLATES = {
   skincare: {
     ar: { business_type: "مشروع منتجات عناية بالبشرة", stages: [
+      { title: "فكرة المشروع", tasks: [
+        { title: "تحديد العميل المستهدف بدقة", why: "منتجات العناية تختلف جذرياً حسب الفئة العمرية ونوع البشرة المستهدفة.", how: "حدد الفئة العمرية والاحتياج الأساسي (ترطيب، حب شباب، شيخوخة...) بدقة.", category: "recommended", ai_action_hint: "ساعدني أحدد عميلي المستهدف بدقة لمشروع عناية بالبشرة", resource_url: null },
+        { title: "دراسة المنافسين في السوق", why: "تفهم الفجوة اللي مشروعك يقدر يملأها قبل الاستثمار.", how: "راقب ٣-٥ حسابات منافسة، أسعارهم، ونوع المحتوى اللي يستخدمونه.", category: "recommended", ai_action_hint: "ساعدني أحلل منافسيني في سوق العناية بالبشرة", resource_url: null },
+        { title: "تحديد فئة المنتج (طبيعي/فاخر/اقتصادي)", why: "يحدد هويتك التسعيرية والتسويقية بالكامل.", how: "قارن بين طبيعي، فاخر، اقتصادي حسب ميزانيتك وجمهورك.", category: "recommended", ai_action_hint: null, resource_url: null },
+      ]},
       { title: "تجهيز المشروع", tasks: [
         { title: "اختيار اسم تجاري", why: "الاسم أساس هويتك وتسويقك لاحقاً.", how: "اختر اسماً واضحاً وسهل النطق، وتأكد أنه متاح كحساب سوشال ميديا.", category: "recommended", ai_action_hint: "ساعدني أختار اسم مناسب لمشروع عناية بالبشرة", resource_url: null },
         { title: "تحديد الموردين المحتملين", why: "التسعير والجودة يعتمدان على المورد قبل أي قرار آخر.", how: "ابحث عن ٣-٥ موردين، قارن الجودة وسعر الجملة والحد الأدنى للطلب.", category: "recommended", ai_action_hint: "ساعدني أعرف الأسئلة اللي أسألها مورد منتجات عناية بالبشرة", resource_url: null },
-        { title: "التحقق من متطلبات بيع المنتجات التجميلية", why: "بعض منتجات العناية قد تحتاج ترخيصاً أو موافقة صحية.", how: "تحقق من متطلبات وزارة الصحة قبل البيع الفعلي.", category: "verify_official", ai_action_hint: "وش متطلبات وزارة الصحة لبيع منتجات العناية بالبشرة؟", resource_url: null },
         { title: "إنشاء حساب سوشال ميديا للمشروع", why: "أول قناة تواصل مع عملائك المحتملين.", how: "أنشئ حساب إنستقرام مخصص للمشروع بمحتوى بصري بسيط.", category: "optional", ai_action_hint: "ساعدني أخطط أول ٥ منشورات لحساب المشروع", resource_url: null },
       ]},
-      { title: "التجهيز للبيع", tasks: [
-        { title: "التواصل مع الموردين المختارين", why: "تثبيت الاتفاق قبل فتح الطلبات.", how: "تواصل وتفاوض على السعر وكمية الطلب الأولى.", category: "recommended", ai_action_hint: "ساعدني أفاوض مورد على سعر أفضل", resource_url: null },
-        { title: "تجربة عينات المنتج", why: "التأكد من الجودة قبل عرضها للعملاء.", how: "اطلب عينات وجرّبها بنفسك أو مع مجموعة صغيرة.", category: "recommended", ai_action_hint: null, resource_url: null },
-        { title: "تحديد السعر المبدئي", why: "السعر يحدد جمهورك وهامش ربحك.", how: "احسب التكلفة + هامش ربح معقول، وقارن بمنافسين مشابهين.", category: "recommended", ai_action_hint: "ساعدني أحسب سعر منتج بهامش ربح مناسب", resource_url: null },
+      { title: "التأسيس", tasks: [
+        { title: "التحقق من متطلبات بيع المنتجات التجميلية", why: "بعض منتجات العناية قد تحتاج ترخيصاً أو موافقة صحية.", how: "تحقق من متطلبات وزارة الصحة قبل البيع الفعلي.", category: "verify_official", ai_action_hint: "وش متطلبات وزارة الصحة لبيع منتجات العناية بالبشرة؟", resource_url: null },
+        { title: "استخراج السجل التجاري", why: "خطوة رسمية أساسية لأي نشاط تجاري في عُمان.", how: "قدّم الطلب عبر بوابة Invest Easy.", category: "verify_official", ai_action_hint: null, resource_url: null },
+        { title: "فتح حساب بنكي تجاري", why: "يفصل حسابك الشخصي عن حركة المشروع المالية.", how: "افتح حساباً باسم المنشأة بعد صدور السجل التجاري.", category: "recommended", ai_action_hint: null, resource_url: null },
+      ]},
+      { title: "التسويق", tasks: [
         { title: "تجهيز كتالوج مبسط للمنتجات", why: "يسهّل على العميل اتخاذ قرار الشراء.", how: "صور واضحة + وصف مختصر + السعر لكل منتج.", category: "optional", ai_action_hint: null, resource_url: null },
+        { title: "بدء التسويق الأولي", why: "بدون تسويق لن يعرف أحد بمشروعك.", how: "استخدم إعلانات بسيطة أو تعاون مع صفحات محلية صغيرة.", category: "optional", ai_action_hint: "ساعدني أخطط لأول حملة تسويقية بسيطة", resource_url: null },
       ]},
       { title: "الإطلاق", tasks: [
         { title: "نشر أول منتجاتك", why: "بداية التواجد الفعلي أمام العملاء.", how: "انشر المنتجات بصور وأسعار واضحة على حساباتك.", category: "recommended", ai_action_hint: null, resource_url: null },
-        { title: "بدء التسويق الأولي", why: "بدون تسويق لن يعرف أحد بمشروعك.", how: "استخدم إعلانات بسيطة أو تعاون مع صفحات محلية صغيرة.", category: "optional", ai_action_hint: "ساعدني أخطط لأول حملة تسويقية بسيطة", resource_url: null },
         { title: "جمع أول ملاحظات العملاء", why: "يوجّهك لتحسين المنتج والخدمة.", how: "اسأل أول المشترين رأيهم مباشرة أو عبر استبيان قصير.", category: "optional", ai_action_hint: null, resource_url: null },
       ]},
     ]},
@@ -171,20 +185,27 @@ function getFallbackRoadmap(idea, sector, lang) {
   const base = tpl || {
     business_type: idea || (isAr ? "مشروعك" : "Your business"),
     stages: [
-      { title: isAr ? "تجهيز المشروع" : "Prepare the business", tasks: [
+      { title: isAr ? "فكرة المشروع" : "Business Idea", tasks: [
+        { title: isAr ? "تحديد عملائك المستهدفين بدقة" : "Define your target customers precisely", why: isAr ? "كل قرار لاحق (سعر، مكان، تسويق) يبنى على معرفة عميلك." : "Every later decision (price, location, marketing) builds on knowing your customer.", how: isAr ? "حدد الفئة العمرية والاحتياج الأساسي اللي مشروعك يحله." : "Define the age group and core need your business solves.", category: "recommended", ai_action_hint: isAr ? "ساعدني أحدد عميلي المستهدف بدقة" : "Help me define my target customer precisely", resource_url: null },
+        { title: isAr ? "دراسة المنافسين القريبين" : "Research nearby competitors", why: isAr ? "تفهم الفجوة اللي مشروعك يقدر يملأها." : "Understand the gap your business can actually fill.", how: isAr ? "راقب ٣-٥ منافسين، أسعارهم، ونقاط قوتهم وضعفهم." : "Study 3-5 competitors, their pricing, and their strengths/weaknesses.", category: "recommended", ai_action_hint: isAr ? "ساعدني أحلل منافسيني" : "Help me analyze my competitors", resource_url: null },
+        { title: isAr ? "تقدير الطلب المتوقع" : "Estimate expected demand", why: isAr ? "يمنعك من الاستثمار في فكرة بدون طلب حقيقي." : "Keeps you from investing in an idea without real demand.", how: isAr ? "قدّر عدد العملاء المحتملين يومياً أو شهرياً بواقعية." : "Realistically estimate potential daily/monthly customers.", category: "recommended", ai_action_hint: null, resource_url: null },
+      ]},
+      { title: isAr ? "تجهيز المشروع" : "Prepare the Business", tasks: [
         { title: isAr ? "اختيار اسم تجاري" : "Choose a business name", why: isAr ? "الاسم أساس هويتك التجارية." : "The name is the foundation of your brand identity.", how: isAr ? "اختر اسماً واضحاً وتحقق من توفره كحساب سوشال ميديا." : "Pick something clear and check it's available as a social handle.", category: "recommended", ai_action_hint: isAr ? "ساعدني أختار اسماً مناسباً لمشروعي" : "Help me choose a good name for my business", resource_url: null },
         { title: isAr ? "تحديد الموردين أو الأدوات اللازمة" : "Identify suppliers or tools you'll need", why: isAr ? "قرارات التسعير والجودة تعتمد عليهم." : "Pricing and quality decisions depend on them.", how: isAr ? "قارن ٣-٥ خيارات على الأقل من حيث السعر والجودة." : "Compare at least 3-5 options on price and quality.", category: "recommended", ai_action_hint: isAr ? "ساعدني أعرف أسئلة مهمة أسألها المورد" : "Help me know what to ask a supplier", resource_url: null },
-        { title: isAr ? "التحقق من المتطلبات الرسمية لنشاطك" : "Verify official requirements for your activity", why: isAr ? "بعض الأنشطة تحتاج ترخيصاً أو تسجيلاً محدداً." : "Some activities need a specific license or registration.", how: isAr ? "راجع الجهة الرسمية المعنية قبل البدء الفعلي." : "Check with the relevant official body before you actually start.", category: "verify_official", ai_action_hint: isAr ? "وش الجهات الرسمية اللي تخص نشاطي؟" : "Which official bodies are relevant to my activity?", resource_url: null },
-        { title: isAr ? "إنشاء حساب سوشال ميديا للمشروع" : "Create a social-media account for the business", why: isAr ? "أول قناة تواصل مع عملائك." : "Your first channel to reach customers.", how: isAr ? "أنشئ حساباً مخصصاً بمحتوى بصري بسيط يعكس مشروعك." : "Create a dedicated account with simple visual content.", category: "optional", ai_action_hint: null, resource_url: null },
-      ]},
-      { title: isAr ? "التجهيز للبيع" : "Prepare to sell", tasks: [
-        { title: isAr ? "التفاوض مع الموردين" : "Negotiate with suppliers", why: isAr ? "تثبيت السعر والكمية قبل الإطلاق." : "Lock in pricing and quantities before launch.", how: isAr ? "تفاوض على السعر وشروط الطلب الأولى." : "Negotiate price and first-order terms.", category: "recommended", ai_action_hint: isAr ? "ساعدني أفاوض على سعر أفضل" : "Help me negotiate a better price", resource_url: null },
         { title: isAr ? "تحديد السعر المبدئي" : "Set initial pricing", why: isAr ? "يحدد جمهورك وهامش ربحك." : "Determines your audience and profit margin.", how: isAr ? "احسب التكلفة الكاملة + هامش ربح معقول." : "Calculate full cost plus a reasonable margin.", category: "recommended", ai_action_hint: isAr ? "ساعدني أحسب سعر مناسب بهامش ربح جيد" : "Help me calculate a price with a good margin", resource_url: null },
-        { title: isAr ? "تجهيز طريقة الطلب والدفع" : "Decide how customers order/pay", why: isAr ? "بدونها لا يمكن للعميل الشراء فعلياً." : "Without it customers can't actually buy from you.", how: isAr ? "حدد قناة الطلب (سوشال ميديا/متجر) وطريقة الدفع." : "Decide the ordering channel and payment method.", category: "recommended", ai_action_hint: null, resource_url: null },
+      ]},
+      { title: isAr ? "التأسيس" : "Establishment", tasks: [
+        { title: isAr ? "التحقق من المتطلبات الرسمية لنشاطك" : "Verify official requirements for your activity", why: isAr ? "بعض الأنشطة تحتاج ترخيصاً أو تسجيلاً محدداً." : "Some activities need a specific license or registration.", how: isAr ? "راجع الجهة الرسمية المعنية قبل البدء الفعلي." : "Check with the relevant official body before you actually start.", category: "verify_official", ai_action_hint: isAr ? "وش الجهات الرسمية اللي تخص نشاطي؟" : "Which official bodies are relevant to my activity?", resource_url: null },
+        { title: isAr ? "استخراج السجل التجاري" : "Issue commercial registration", why: isAr ? "خطوة رسمية أساسية لأي نشاط تجاري في عُمان." : "A core official step for any business activity in Oman.", how: isAr ? "قدّم الطلب عبر بوابة Invest Easy." : "Submit the request via the Invest Easy portal.", category: "verify_official", ai_action_hint: null, resource_url: null },
+        { title: isAr ? "فتح حساب بنكي تجاري" : "Open a business bank account", why: isAr ? "يفصل حسابك الشخصي عن حركة المشروع المالية." : "Separates your personal finances from the business's.", how: isAr ? "افتح حساباً باسم المنشأة بعد صدور السجل التجاري." : "Open an account under the business name once registration is issued.", category: "recommended", ai_action_hint: null, resource_url: null },
+      ]},
+      { title: isAr ? "التسويق" : "Marketing", tasks: [
+        { title: isAr ? "إنشاء حساب سوشال ميديا للمشروع" : "Create a social-media account for the business", why: isAr ? "أول قناة تواصل مع عملائك." : "Your first channel to reach customers.", how: isAr ? "أنشئ حساباً مخصصاً بمحتوى بصري بسيط يعكس مشروعك." : "Create a dedicated account with simple visual content.", category: "optional", ai_action_hint: null, resource_url: null },
+        { title: isAr ? "بدء التسويق الأولي" : "Start initial marketing", why: isAr ? "بدون تسويق لن يعرف أحد بمشروعك." : "Without marketing, no one will know about you.", how: isAr ? "استخدم إعلانات بسيطة أو تعاون مع صفحات محلية." : "Use simple ads or collaborate with local pages.", category: "optional", ai_action_hint: isAr ? "ساعدني أخطط لحملة تسويقية بسيطة" : "Help me plan a simple marketing push", resource_url: null },
       ]},
       { title: isAr ? "الإطلاق" : "Launch", tasks: [
         { title: isAr ? "نشر أول منتجاتك أو خدماتك" : "Publish your first products/services", why: isAr ? "بداية تواجدك الفعلي أمام العملاء." : "The start of your real presence in front of customers.", how: isAr ? "انشر بصور ووصف وأسعار واضحة." : "Publish with clear photos, descriptions and prices.", category: "recommended", ai_action_hint: null, resource_url: null },
-        { title: isAr ? "بدء التسويق الأولي" : "Start initial marketing", why: isAr ? "بدون تسويق لن يعرف أحد بمشروعك." : "Without marketing, no one will know about you.", how: isAr ? "استخدم إعلانات بسيطة أو تعاون مع صفحات محلية." : "Use simple ads or collaborate with local pages.", category: "optional", ai_action_hint: isAr ? "ساعدني أخطط لحملة تسويقية بسيطة" : "Help me plan a simple marketing push", resource_url: null },
         { title: isAr ? "جمع أول ملاحظات العملاء" : "Collect your first customer feedback", why: isAr ? "يوجهك لتحسين المنتج والخدمة." : "Guides you to improve the product and service.", how: isAr ? "اسأل أول المشترين مباشرة أو عبر استبيان قصير." : "Ask your first buyers directly or via a short survey.", category: "optional", ai_action_hint: null, resource_url: null },
       ]},
     ],
