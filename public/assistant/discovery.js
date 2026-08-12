@@ -105,7 +105,7 @@ async function runEligibilityCheck() {
   box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
   try {
     const result = await AssistantAPI.checkEligibility(answers, LANG);
-    const verdictClass = result.verdict === "likely" ? "good" : result.verdict === "unlikely" ? "bad" : "warn";
+    const verdictClass = result.verdict === "likely" ? "good" : result.verdict === "unlikely" ? "bad" : "info";
     const verdictLabel = {
       likely: LANG === "ar" ? "✅ أهلية محتملة" : "✅ Likely eligible",
       maybe: LANG === "ar" ? "ℹ️ تحتاج معلومات إضافية" : "ℹ️ More information needed",
