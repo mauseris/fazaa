@@ -1,0 +1,169 @@
+/* ============================================================================
+   المساعد الذكي الكامل (AI Business Assistant) — طبقة CSS منفصلة، لا تُعدّل أي
+   قاعدة موجودة في index.html. تعتمد حصراً على متغيرات الألوان الموجودة فعلياً
+   (--navy-*, --gold, --coral, --teal, --good/--warn, --text*) لتبقى متجانسة مع
+   السمة الحالية (الداكنة والفاتحة/palm-theme) دون أي تكرار لقيم لون خام.
+   ============================================================================ */
+
+.assistant-overlay{ align-items:center; padding:18px; }
+.ai-shell{
+  width:100%; max-width:1180px; height:92vh; max-height:920px;
+  background:var(--navy-900); border:1px solid var(--line); border-radius:16px;
+  box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden;
+  font-family:'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+}
+html[lang="en"] .ai-shell{ font-family:'Inter', 'Segoe UI', sans-serif; }
+
+.ai-header{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:16px 22px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+}
+.ai-header-title{ display:flex; flex-direction:column; gap:2px; }
+.ai-header-title .h1{ font-family:'Cairo'; font-weight:800; font-size:17px; color:var(--text); display:flex; align-items:center; gap:8px; }
+.ai-header-title .h2{ font-size:12px; color:var(--text-faint); }
+.ai-header-progress{ display:flex; align-items:center; gap:10px; min-width:180px; }
+.ai-header-progress .pct{ font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--text); white-space:nowrap; }
+.ai-header-progress .gauge-track{ margin:0; width:120px; }
+.ai-close-btn{
+  padding:9px 16px; border-radius:9px; cursor:pointer; font-family:'Tajawal'; font-weight:700; font-size:12.5px;
+  border:1px solid var(--line); background:var(--navy-800); color:var(--text); flex:none;
+}
+.ai-close-btn:hover{ border-color:var(--coral); color:var(--coral); }
+
+.ai-body{ flex:1; display:flex; overflow:hidden; }
+@media (max-width:820px){ .ai-body{ flex-direction:column; } }
+
+.ai-nav{
+  width:250px; flex:none; border-inline-end:1px solid var(--line);
+  padding:14px 10px; overflow-y:auto; display:flex; flex-direction:column; gap:3px;
+  background:var(--navy-950);
+}
+@media (max-width:820px){
+  .ai-nav{ width:100%; flex-direction:row; overflow-x:auto; overflow-y:hidden; border-inline-end:none; border-bottom:1px solid var(--line); padding:8px; gap:6px; }
+  .ai-nav-item{ flex:none; white-space:nowrap; }
+  .ai-nav-item .lbl{ display:none; }
+}
+.ai-nav-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px;
+  cursor:pointer; font-size:13px; color:var(--text-dim); border:1px solid transparent; transition:.15s;
+  background:none; text-align:start; width:100%; font-family:inherit;
+}
+.ai-nav-item:hover{ background:var(--navy-800); color:var(--text); }
+.ai-nav-item.active{
+  background:color-mix(in srgb, var(--gold) 16%, var(--navy-800)); border-color:color-mix(in srgb, var(--gold) 40%, transparent);
+  color:var(--text); font-weight:700;
+}
+.ai-nav-item .ic{ font-size:15px; flex:none; }
+
+.ai-content{ flex:1; overflow-y:auto; padding:22px 26px 40px 26px; }
+.ai-content h2.ai-view-title{ font-family:'Cairo'; font-size:17px; margin:0 0 4px 0; color:var(--text); display:flex; align-items:center; gap:8px; }
+.ai-view-sub{ font-size:12.5px; color:var(--text-faint); margin:0 0 18px 0; line-height:1.7; }
+
+/* ---- generic building blocks reused across every feature view ---- */
+.ai-card{
+  background:var(--navy-800); border:1px solid var(--line); border-radius:14px;
+  padding:16px 18px; margin-bottom:14px; box-shadow:var(--shadow-sm);
+}
+.ai-card h3{ font-family:'Cairo'; font-size:13.5px; margin:0 0 10px 0; color:var(--text); display:flex; align-items:center; gap:8px; }
+.ai-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:10px; }
+.ai-btn{
+  padding:10px 16px; border-radius:10px; border:1px solid var(--line); background:var(--navy-800);
+  color:var(--text); font-size:13px; cursor:pointer; font-family:'Tajawal'; font-weight:700; transition:.15s;
+}
+.ai-btn:hover{ border-color:var(--gold); background:color-mix(in srgb, var(--gold) 16%, var(--navy-800)); }
+.ai-btn.primary{ background:linear-gradient(135deg, var(--gold), var(--coral)); color:#1a1204; border:none; }
+.ai-btn.primary:hover{ filter:brightness(1.05); }
+.ai-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.ai-input, .ai-textarea, select.ai-input{
+  width:100%; background:var(--navy-900); border:1px solid var(--line); border-radius:10px;
+  padding:11px 13px; color:var(--text); font-family:'Tajawal'; font-size:13.5px; outline:none; box-sizing:border-box;
+}
+.ai-input:focus, .ai-textarea:focus{ border-color:var(--gold); }
+.ai-textarea{ resize:vertical; min-height:90px; line-height:1.7; }
+.ai-field{ margin-bottom:12px; }
+.ai-field label{ display:block; font-size:12px; color:var(--text-faint); margin-bottom:5px; }
+.ai-row{ display:flex; gap:10px; flex-wrap:wrap; }
+.ai-row > *{ flex:1; min-width:140px; }
+
+/* ---- dashboard ---- */
+.ai-dash-greeting{ font-family:'Cairo'; font-size:19px; font-weight:800; margin-bottom:2px; }
+.ai-dash-business{ font-size:13px; color:var(--text-dim); margin-bottom:18px; }
+.ai-dash-progress-wrap{ margin-bottom:18px; }
+.ai-next-action{
+  background:linear-gradient(90deg, color-mix(in srgb, var(--gold) 14%, transparent), transparent);
+  border:1px solid color-mix(in srgb, var(--gold) 35%, transparent); border-radius:14px;
+  padding:16px 18px; margin-bottom:18px;
+}
+.ai-next-action .lbl{ font-size:11.5px; color:var(--text); font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px; }
+.ai-next-action .txt{ font-size:14.5px; color:var(--text); line-height:1.7; }
+.ai-quick-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin-bottom:18px; }
+.ai-quick-btn{
+  display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 10px; border-radius:12px;
+  border:1px solid var(--line); background:var(--navy-800); color:var(--text); cursor:pointer; font-family:'Tajawal'; font-size:12px; text-align:center;
+}
+.ai-quick-btn:hover{ border-color:var(--gold); background:color-mix(in srgb, var(--gold) 14%, var(--navy-800)); }
+.ai-quick-btn .ic{ font-size:20px; }
+.ai-reco-list{ display:flex; flex-direction:column; gap:8px; }
+
+/* ---- roadmap (Action Plan) ---- */
+.ai-phase{ margin-bottom:18px; }
+.ai-phase-title{ font-family:'Cairo'; font-weight:700; font-size:13.5px; color:var(--text); margin-bottom:10px; }
+.ai-task-row{ display:flex; gap:9px; align-items:flex-start; font-size:13px; padding:8px 0; border-bottom:1px solid var(--line); }
+.ai-task-row:last-child{ border-bottom:none; }
+.ai-task-row .box{
+  width:17px; height:17px; border-radius:5px; border:1px solid var(--line); flex:none; margin-top:2px;
+  display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;
+}
+.ai-task-row.done .box{ background:var(--teal); border-color:var(--teal); color:#04241d; }
+.ai-task-row.done .txt{ color:var(--text-faint); text-decoration:line-through; }
+.ai-level-tag{
+  font-size:10px; padding:2px 8px; border-radius:999px; flex:none; font-weight:700; align-self:flex-start; margin-top:1px;
+}
+.ai-level-tag.required{ background:color-mix(in srgb, var(--coral) 16%, transparent); color:var(--coral); border:1px solid color-mix(in srgb, var(--coral) 40%, transparent); }
+.ai-level-tag.recommended{ background:color-mix(in srgb, var(--gold) 20%, transparent); color:var(--text); border:1px solid color-mix(in srgb, var(--gold) 45%, transparent); }
+.ai-level-tag.optional{ background:var(--navy-900); color:var(--text-faint); border:1px solid var(--line); }
+
+/* ---- match cards (services / funding / gov bodies) ---- */
+.ai-match-card{ background:var(--navy-900); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+.ai-match-card .title{ font-family:'Cairo'; font-weight:700; font-size:13.5px; color:var(--text); margin-bottom:6px; }
+.ai-match-card .why{ font-size:12.5px; color:var(--text-dim); line-height:1.7; margin-bottom:8px; }
+.ai-match-card .req-list{ font-size:12px; color:var(--text-faint); margin:0 0 10px 0; padding-inline-start:18px; }
+.ai-match-card .req-list li{ margin-bottom:3px; }
+.ai-match-card .next{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+
+/* ---- eligibility verdict ---- */
+.ai-disclaimer{ font-size:11px; color:var(--text-faint); background:var(--navy-900); border:1px solid var(--line); border-radius:9px; padding:9px 11px; margin-top:12px; line-height:1.6; }
+.ai-reason-list{ font-size:13px; color:var(--text-dim); line-height:1.8; margin:10px 0; padding-inline-start:18px; }
+
+/* ---- documents ---- */
+.ai-doc-item{ background:var(--navy-900); border:1px solid var(--line); border-radius:12px; margin-bottom:8px; overflow:hidden; }
+.ai-doc-head{ display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; }
+.ai-doc-head .box{ width:17px; height:17px; border-radius:5px; border:1px solid var(--line); flex:none; display:flex; align-items:center; justify-content:center; font-size:10px; }
+.ai-doc-head .box.have{ background:var(--good); border-color:var(--good); color:#04241d; }
+.ai-doc-head .title{ flex:1; font-size:13px; font-weight:700; }
+.ai-doc-body{ padding:0 14px 14px 14px; font-size:12px; color:var(--text-dim); line-height:1.8; display:none; }
+.ai-doc-item.open .ai-doc-body{ display:block; }
+.ai-doc-body b{ color:var(--text); }
+
+/* ---- applications / reminders ---- */
+.ai-app-item, .ai-reminder-item{ background:var(--navy-900); border:1px solid var(--line); border-radius:12px; padding:13px 15px; margin-bottom:9px; }
+.ai-app-status{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; display:inline-block; margin-bottom:6px; }
+.ai-app-status.under_review{ background:color-mix(in srgb, var(--warn) 16%, transparent); color:var(--warn); }
+.ai-app-status.action_required{ background:color-mix(in srgb, var(--coral) 16%, transparent); color:var(--coral); }
+.ai-app-status.approved{ background:color-mix(in srgb, var(--good) 16%, transparent); color:var(--good); }
+.ai-reminder-item{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.ai-reminder-item .txt{ font-size:13px; }
+.ai-reminder-item .acts{ display:flex; gap:6px; flex:none; }
+.ai-reminder-item .acts button{ font-size:11px; padding:5px 10px; border-radius:7px; border:1px solid var(--line); background:var(--navy-800); color:var(--text-dim); cursor:pointer; }
+
+/* ---- business plan / idea evaluator sections ---- */
+.ai-section{ margin-bottom:14px; }
+.ai-section .sec-title{ font-family:'Cairo'; font-weight:700; font-size:12.5px; color:var(--text); margin-bottom:6px; }
+.ai-section textarea.ai-textarea{ min-height:70px; }
+
+/* ---- misc ---- */
+.ai-loading{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-faint); padding:10px 0; }
+.ai-loading .dot{ width:6px; height:6px; border-radius:50%; background:var(--gold); animation:blink 1s infinite; }
+.ai-empty{ font-size:12.5px; color:var(--text-faint); padding:16px 0; text-align:center; }
+.ai-error{ font-size:12.5px; color:var(--coral); background:color-mix(in srgb, var(--coral) 10%, transparent); border:1px solid color-mix(in srgb, var(--coral) 30%, transparent); border-radius:9px; padding:10px 12px; margin:10px 0; }

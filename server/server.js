@@ -4,6 +4,7 @@ const path = require("path");
 const db = require("./db");
 const rag = require("./rag");
 const tools = require("./tools");
+const { createAssistantRouter } = require("./assistantRoutes");
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -413,6 +414,18 @@ app.delete("/api/state/:sessionId", (req, res) => {
   db.remove(req.params.sessionId);
   res.json({ ok: true });
 });
+
+/**
+ * طبقة API للمساعد الذكي الكامل (AI Business Assistant) — راجع
+ * server/assistantRoutes.js و server/assistantData.js. معزولة تماماً عن حلقة
+ * الوكيل أعلاه؛ تعيد استخدام نفس إعدادات المزوّد (gateway/Anthropic/HF) فقط.
+ */
+app.use("/api/assistant", createAssistantRouter({
+  usingGateway, usingDirectAnthropic, usingHuggingFace,
+  GATEWAY_BASE_URL, GATEWAY_API_KEY, MODEL_NAME,
+  ANTHROPIC_API_KEY, ANTHROPIC_MODEL_NAME, ANTHROPIC_VERSION,
+  HF_API_TOKEN, HF_MODEL, HF_ROUTER_BASE_URL,
+}));
 
 /**
  * GET /api/rag-status — للتشخيص: هل RAG يعمل بـ embeddings حقيقية أم TF-IDF؟ وما وضع

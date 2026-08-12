@@ -427,6 +427,7 @@ aside.rail{
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="/assistant/assistant.css">
 </head>
 <body>
 
@@ -446,6 +447,7 @@ aside.rail{
     <button class="btn-reset" id="langToggle" onclick="toggleLang()" style="font-family:'IBM Plex Mono';">EN / عربي</button>
     <button class="btn-reset" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌴</button>
     <div class="pill"><span class="dot"></span> <span data-t="connectedPill">متصل — بيانات تجريبية (Mock)</span></div>
+    <button class="btn-reset" onclick="openAssistant()" style="background:linear-gradient(135deg, var(--gold), var(--coral)); color:#1a1204; border:none; font-weight:800;">🧠 <span data-t="assistantBtn">المساعد الذكي الكامل</span></button>
     <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
   </div>
 </div>
@@ -528,6 +530,27 @@ aside.rail{
   </div>
 </div>
 
+<div class="overlay assistant-overlay" id="assistantOverlay">
+  <div class="ai-shell">
+    <div class="ai-header">
+      <div class="ai-header-title">
+        <div class="h1" id="aiHeaderTitle">المساعد الذكي لريادة الأعمال</div>
+        <div class="h2" id="aiHeaderSub">قل لي وش تبي تسوي، وأنا بمشي معك خطوة بخطوة.</div>
+      </div>
+      <div class="ai-header-progress">
+        <div class="gauge-track"><div class="gauge-fill good" id="aiProgressFill" style="width:0%;"></div></div>
+        <span class="pct" id="aiProgressPct">0%</span>
+      </div>
+      <button class="ai-close-btn" id="aiHomeBtn" onclick="switchAiView('dashboard')">🏠</button>
+      <button class="ai-close-btn" id="aiCloseBtn" onclick="closeAssistant()">إغلاق</button>
+    </div>
+    <div class="ai-body">
+      <nav class="ai-nav" id="aiNav"></nav>
+      <div class="ai-content" id="aiContent"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ======================= LANGUAGE / i18n ======================= */
 let LANG = (localStorage.getItem('mirshid_lang')) || 'ar';
@@ -536,6 +559,7 @@ const UI = {
   ar: {
     brandSub:"— وكيل ريادة الذكي", brandTag:"من الفكرة إلى السجل التجاري، خطوة بخطوة",
     connectedPill:"متصل — جهات رسمية موثّقة + تكاليف تقديرية", newSession:"جلسة جديدة ↺",
+    assistantBtn:"المساعد الذكي الكامل",
     composerPh:"اكتب سؤالك أو فكرتك هنا…",
     statusHeader:"حالة المشروع", logoSub:"شعار مبدئي تلقائي — مؤقت",
     costHeader:"حاسبة التكلفة التقديرية", totalLbl:"إجمالي التأسيس التقديري",
@@ -559,6 +583,7 @@ const UI = {
   en: {
     brandSub:"— Riyada AI Agent", brandTag:"From idea to commercial registration, step by step",
     connectedPill:"Connected — Verified bodies + estimated costs", newSession:"New session ↺",
+    assistantBtn:"AI Business Assistant",
     composerPh:"Type your question or idea here…",
     statusHeader:"Project status", logoSub:"Auto-generated placeholder logo",
     costHeader:"Estimated cost calculator", totalLbl:"Estimated total setup cost",
@@ -612,6 +637,7 @@ function applyLangChange(){
     showStepChips(state.step);
   }
   if(typeof setMicState === 'function' && micState !== MIC_STATE.RECORDING) setMicState(micState);
+  if(typeof refreshAssistantOnLangChange === 'function') refreshAssistantOnLangChange();
 }
 
 function toggleLang(){
@@ -1817,6 +1843,20 @@ function getSpeechRecognitionCtor(){
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+// خطاف صغير (hook) يسمح لميزات جديدة (مثل "المساعد الصوتي" في المساعد الذكي
+// الكامل) باستقبال نص التفريغ الصوتي دون إعادة بناء التعرف الصوتي نفسه. عند
+// عدم تسجيل أي مستمع، السلوك مطابق تماماً لما كان عليه سابقاً (يملأ صندوق
+// المحادثة ويرسل مباشرة).
+function handleVoiceTranscript(text){
+  if(typeof window.onAssistantVoiceTranscript === 'function'){
+    window.onAssistantVoiceTranscript(text);
+    return;
+  }
+  const input = document.getElementById('textInput');
+  input.value = text;
+  sendFree();
+}
+
 function toggleVoiceInput(){
   if(micState === MIC_STATE.RECORDING){
     if(recognition) recognition.stop(); // triggers onend below
@@ -1859,9 +1899,7 @@ function toggleVoiceInput(){
       setVoiceStatus(t('voiceNoSpeech'));
       return;
     }
-    const input = document.getElementById('textInput');
-    input.value = text;
-    sendFree();
+    handleVoiceTranscript(text);
   };
 
   recognition.onerror = (e) => {
@@ -2218,5 +2256,12 @@ function restoreUI(){
   }
 }
 </script>
+<script src="/assistant/api.js"></script>
+<script src="/assistant/core.js"></script>
+<script src="/assistant/profile-roadmap.js"></script>
+<script src="/assistant/discovery.js"></script>
+<script src="/assistant/documents-forms.js"></script>
+<script src="/assistant/advisor.js"></script>
+<script src="/assistant/human-voice.js"></script>
 </body>
 </html>
