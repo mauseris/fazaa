@@ -47,10 +47,10 @@ if (!usingGateway && !usingDirectAnthropic && !usingHuggingFace) {
     "   خيار مؤقت آخر للتطوير فقط:    HF_API_TOKEN (مفتاحك من huggingface.co/settings/tokens)\n"
   );
 } else if (usingDirectAnthropic) {
-  console.warn(
-    "\n⚠️  أنت متصل حالياً بمفتاحك الشخصي مباشرة عبر Anthropic (وضع تطوير محلي) — هذا غير مطابق\n" +
-    "   لمتطلبات الحوكمة الرسمية للتحدي (البوابة المركزية إلزامية). قبل التسليم للتحكيم، اضبط\n" +
-    "   GATEWAY_BASE_URL و GATEWAY_API_KEY بدلاً من ذلك.\n"
+  console.log(
+    `\n✅ متصل مباشرة بـ Anthropic (وضع تطوير محلي) — النموذج: ${ANTHROPIC_MODEL_NAME}\n` +
+    "   ملاحظة: هذا مسار تطوير محلي بمفتاح شخصي. إذا احتجتم لاحقاً البوابة المركزية للفريق،\n" +
+    "   اضبط GATEWAY_BASE_URL و GATEWAY_API_KEY وسيتحول الاتصال إليها تلقائياً.\n"
   );
 } else if (usingHuggingFace) {
   console.warn(
@@ -212,9 +212,10 @@ async function runAnthropicAgentLoop(system, userMessages, onEvent) {
         "anthropic-version": ANTHROPIC_VERSION,
       },
       body: JSON.stringify({
+        // لا نرسل temperature: نماذج Sonnet 5 / Opus 5 وما بعدها ترفضها (400) —
+        // التحكم بالأسلوب الآن عبر الصياغة داخل system بدل معاملات العينة.
         model: ANTHROPIC_MODEL_NAME,
         max_tokens: 900,
-        temperature: 0.4,
         system: system || undefined,
         messages,
         tools: tools.ANTHROPIC_TOOLS,
@@ -250,7 +251,6 @@ async function runAnthropicAgentLoop(system, userMessages, onEvent) {
   throw new Error("تجاوز الوكيل الحد الأقصى لجولات استدعاء الأدوات");
 }
 
-<<<<<<< HEAD
 // ---------------------------------------------------------------------------
 // حلقة الوكيل عبر Hugging Face Inference Providers (مسار تطوير محلي/تعليمي ثالث)
 // نفس صيغة OpenAI المتوافقة (router.huggingface.co)، لكن دعم tool calling غير مضمون
@@ -362,7 +362,8 @@ async function runHuggingFaceAgentLoop(system, userMessages, onEvent) {
     return { text, tools: toolLog };
   }
   throw new Error("تجاوز الوكيل الحد الأقصى لجولات استدعاء الأدوات");
-=======
+}
+
 // Lightweight local fallback that uses the tools and RAG synchronously to craft
 // a deterministic reply when no external LLM is configured. This is intended
 // for development and smoke-testing only.
@@ -393,7 +394,6 @@ async function runLocalFallback(system, userMessages) {
   }
 
   return { text: "Local fallback: I don't have a live LLM configured. Provide GATEWAY_API_KEY or ANTHROPIC_API_KEY to enable full agent responses.", tools: toolsUsed };
->>>>>>> a255ddd (UI: use uploaded logo as chat avatar and switch with theme; update prompts to introduce agent as Rayid/رائد; add logo assets and docs)
 }
 
 /**

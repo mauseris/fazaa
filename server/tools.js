@@ -67,6 +67,20 @@ async function searchKnowledge(query, ragOpts = {}){
   return results.map(r => ({ text: r.text, url: r.url, relevance: Number(r.score.toFixed(3)) }));
 }
 
+// استخراج بنيوي لحقول ملف المشروع من نص حر — لا يحسب أي شيء، فقط يتحقق أن القيم
+// ضمن القوائم المعروفة ويعيدها كما هي؛ التطبيق (الواجهة) هو من يقرر كيف يحدّث الحالة.
+function updateBusinessProfile(args = {}){
+  const out = {};
+  if (typeof args.idea === "string" && args.idea.trim()) out.idea = args.idea.trim().slice(0, 200);
+  if (args.sector && SECTORS[args.sector]) out.sector = args.sector;
+  if (args.city && CITIES[args.city]) out.city = args.city;
+  if (args.teamSize && TEAM_FACTORS[args.teamSize]) out.teamSize = args.teamSize;
+  if (typeof args.budgetOmr === "number" && isFinite(args.budgetOmr) && args.budgetOmr >= 0) {
+    out.budgetOmr = Math.round(args.budgetOmr);
+  }
+  return { updated: out };
+}
+
 // ---- تعريف الأدوات بصيغة OpenAI (تُستخدم مع البوابة المركزية) ----
 const OPENAI_TOOLS = [
   {
@@ -101,12 +115,17 @@ const OPENAI_TOOLS = [
   {
     type: "function",
     function: {
-      name: "identify_stage",
-      description: "صنّف رسالة المستخدم إلى مرحلة رحلته الريادية: idea (فكرة)، registration (تسجيل)، funding (تمويل)، أو growth (نمو).",
+      name: "update_business_profile",
+      description: "استخرج أي حقول من ملف مشروع المستخدم يذكرها في رسالته الحالية — الفكرة، القطاع، المدينة، حجم الفريق، أو الميزانية المتاحة بالريال العُماني — حتى لو ذكر عدة حقول بجملة واحدة أو ذكرها ضمن سؤال آخر. استدعِها بأي حقل واثق منه تجده في الرسالة؛ لا تستدعِها إن لم تذكر الرسالة أي معلومة جديدة عن المشروع. لا تخترع قيماً غير مذكورة صراحة.",
       parameters: {
         type: "object",
-        properties: { message: { type: "string" } },
-        required: ["message"],
+        properties: {
+          idea: { type: "string", description: "وصف مختصر لفكرة المشروع إن ذُكرت أو أُعيدت صياغتها" },
+          sector: { type: "string", enum: Object.keys(SECTORS) },
+          city: { type: "string", enum: Object.keys(CITIES) },
+          teamSize: { type: "string", enum: Object.keys(TEAM_FACTORS) },
+          budgetOmr: { type: "number", description: "الميزانية المتاحة لدى المستخدم بالريال العُماني، إن ذكر رقماً تقريبياً" },
+        },
       },
     },
   },
@@ -124,6 +143,7 @@ async function executeTool(name, args, ragOpts){
     if (name === "search_knowledge") return await searchKnowledge(args.query, ragOpts);
     if (name === "calculate_cost") return calculateCost(args);
     if (name === "identify_stage") return { stage: identifyStage(args.message) };
+    if (name === "update_business_profile") return updateBusinessProfile(args);
     return { error: `unknown tool: ${name}` };
   }catch(e){
     return { error: e.message };
@@ -132,6 +152,6 @@ async function executeTool(name, args, ragOpts){
 
 module.exports = {
   OPENAI_TOOLS, ANTHROPIC_TOOLS, executeTool,
-  calculateCost, identifyStage, searchKnowledge,
-  SECTORS, CITIES,
+  calculateCost, identifyStage, searchKnowledge, updateBusinessProfile,
+  SECTORS, CITIES, TEAM_FACTORS,
 };

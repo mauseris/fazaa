@@ -432,58 +432,62 @@ aside.rail{
 
 <div class="topbar">
   <div class="brand">
-<<<<<<< HEAD
     <div class="mark">
       <img id="logoLight" class="logo-light" src="/logo-light.svg" alt="logo light" style="display:none">
       <img id="logoDark" class="logo-dark" src="/logo-dark.svg" alt="logo dark" style="display:none">
       <span class="mark-fallback">ف</span>
     </div>
-=======
-    function checkLogo(){
-      const light = document.getElementById('logoLight');
-      const dark = document.getElementById('logoDark');
-      const fallback = document.querySelector('.mark-fallback');
-      if(!light && !dark) return;
-      // probe candidate filenames (svg then png) and show/hide based on theme preference
-      let anyLoaded = false;
-      const probeCandidates = (el, candidates, cb) => {
-        if(!el) return cb(false);
-        let i = 0;
-        const tryNext = () => {
-          if(i >= candidates.length) return cb(false);
-          const path = candidates[i++];
-          const p = new Image();
-          p.onload = () => { el.src = path; cb(true); };
-          p.onerror = () => { tryNext(); };
-          p.src = path + '?ts=' + Date.now();
-        };
-        tryNext();
-      };
+    <div>
+      <div class="name">فزعة <span style="color:var(--text-faint); font-weight:500; font-size:13px;" data-t="brandSub">— وكيل ريادة الذكي</span></div>
+      <div class="tag" data-t="brandTag">من الفكرة إلى السجل التجاري، خطوة بخطوة</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="btn-reset" id="langToggle" onclick="toggleLang()" style="font-family:'IBM Plex Mono';">EN / عربي</button>
+    <button class="btn-reset" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌴</button>
+    <div class="pill"><span class="dot"></span> <span data-t="connectedPill">متصل — بيانات تجريبية (Mock)</span></div>
+    <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
+  </div>
+</div>
+<div class="pattern-accent"></div>
 
-      // prefer uploaded raster images first so user-supplied JPG/PNG take precedence
-      probeCandidates(light, ['/logo-light.jpg','/logo-light.png','/logo-light.webp','/logo-light.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
-      probeCandidates(dark, ['/logo-dark.jpg','/logo-dark.png','/logo-dark.webp','/logo-dark.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
+<div class="app">
+  <main class="chatcol">
+    <div class="stage-strip" id="stageStrip"></div>
+    <div id="resumeBanner"></div>
+    <div class="messages" id="messages"></div>
+    <div class="chips" id="chips"></div>
+    <div class="voice-status" id="voiceStatus"></div>
+    <div class="composer">
+      <input id="textInput" type="text" data-t-ph="composerPh" placeholder="اكتب سؤالك أو فكرتك هنا…" onkeydown="if(event.key==='Enter')sendFree()">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="تسجيل صوتي"><span class="mic-ic">🎤</span></button>
+      <button onclick="sendFree()" id="sendBtn">↩</button>
+    </div>
+  </main>
 
-      function updateVisibility(){
-        const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
-        if(light) light.style.display = preferLight && light.src ? 'block' : 'none';
-        if(dark) dark.style.display = !preferLight && dark.src ? 'block' : 'none';
-        if(fallback) fallback.style.display = anyLoaded ? 'none' : 'inline-block';
-        // also update message avatars to match
-        setMessageAvatars();
-      }
+  <aside class="rail">
+    <div class="card">
+      <h3><span class="ic">📍</span> <span data-t="statusHeader">حالة المشروع</span></h3>
+      <span class="badge-stage" id="stageBadge">صياغة الفكرة</span>
+      <div class="logo-preview" id="logoPreview" style="display:none;">
+        <svg width="46" height="46" viewBox="0 0 46 46" id="logoSvg"></svg>
+        <div>
+          <div class="logo-name" id="logoName"></div>
+          <div class="logo-sub" data-t="logoSub">شعار مبدئي تلقائي — مؤقت</div>
+        </div>
+      </div>
+    </div>
 
-      // respond to OS theme changes
-      if(window.matchMedia){
-        try{
-          window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateVisibility);
-          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateVisibility);
-        }catch(e){ /* some older browsers use addListener */
-          try{ window.matchMedia('(prefers-color-scheme: light)').addListener(updateVisibility); }catch(e){}
-          try{ window.matchMedia('(prefers-color-scheme: dark)').addListener(updateVisibility); }catch(e){}
-        }
-      }
-    }
+    <div class="card" id="costCard" style="display:none;">
+      <h3><span class="ic">💰</span> <span data-t="costHeader">حاسبة التكلفة التقديرية</span></h3>
+      <div class="donut-wrap">
+        <svg width="104" height="104" viewBox="0 0 104 104" id="donutSvg"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="total-line">
+        <span class="lbl" data-t="totalLbl">إجمالي التأسيس التقديري</span>
+        <span class="val mono" id="totalVal">— ر.ع</span>
+      </div>
       <div class="slider-row">
         <div class="row-between"><span data-t="scenarioLbl">سيناريو الميزانية</span><b id="budgetLbl">متوسط</b></div>
         <input type="range" id="budgetSlider" min="0" max="100" value="50" oninput="onBudgetChange()">
@@ -544,6 +548,7 @@ const UI = {
     stepLabels:{ idea:"الفكرة", sector:"القطاع", city:"الموقع", team:"الفريق", budget:"الميزانية", review:"دراسة الجدوى" },
     stageBadge:{ idea:"صياغة الفكرة", collect:"جمع بيانات المشروع", review:"دراسة الجدوى جاهزة", done:"جاهز للتسجيل" },
     reChooseHint:"تقدر تجاوبني بكلامك العادي أو تختار من القائمة تحت 👇",
+    continueSetup:"↩️ متابعة إعداد المشروع",
     micTitleIdle:"تسجيل صوتي", micTitleRecording:"إيقاف التسجيل", micTitleProcessing:"جاري المعالجة…",
     voiceListening:"🎙️ يستمع… اضغط على الميكروفون للإيقاف",
     voiceNoSpeech:"⚠️ لم يتم التقاط أي كلام — حاول مرة أخرى",
@@ -566,6 +571,7 @@ const UI = {
     stepLabels:{ idea:"Idea", sector:"Sector", city:"Location", team:"Team", budget:"Budget", review:"Feasibility" },
     stageBadge:{ idea:"Shaping the idea", collect:"Collecting project data", review:"Feasibility study ready", done:"Ready to register" },
     reChooseHint:"You can reply in your own words, or pick from the list below 👇",
+    continueSetup:"↩️ Continue business setup",
     micTitleIdle:"Voice input", micTitleRecording:"Stop recording", micTitleProcessing:"Processing…",
     voiceListening:"🎙️ Listening… click the mic to stop",
     voiceNoSpeech:"⚠️ No speech detected — try again",
@@ -955,55 +961,17 @@ const HELP_REQUEST_STRONG = [
 // أطول تحوي هذا الجذر قد تكون فكرة حقيقية ملتفّة حول طلب مساعدة، فتُترك للتصنيف بالنموذج.
 const HELP_REQUEST_SHORT_ONLY = ['مساعدة','مساعده','ساعدني','ساعديني'];
 
-// يطلب من الباك-إند تصنيفاً خفيفاً (IDEA / NOT_IDEA) للرسائل القصيرة الغامضة التي لا
-// تحسمها قوائم الكلمات أعلاه — أدق من قائمة كلمات متنامية لا تكتمل أبداً. عند فشل
-// الطلب (شبكة/مهلة/رد غير متوقع) يرجع null فيعتمد المستدعي على قرار الكلمات كخط رجوع.
-async function classifyIsBusinessIdea(text, rl){
-  try{
-    const controller = new AbortController();
-    const timer = setTimeout(()=>controller.abort(), 6000);
-    const sys = rl==='ar'
-      ? `صنّف الرسالة التالية: هل تصف فكرة مشروع تجاري حقيقية، أم أنها مجرد تحية أو طلب مساعدة عام أو رسالة خارج الموضوع؟ رد بكلمة واحدة فقط بالضبط: IDEA أو NOT_IDEA. بدون أي شرح إضافي.`
-      : `Classify the following message: does it describe an actual business idea, or is it just a greeting / a generic help-request / an off-topic message? Reply with exactly one word: IDEA or NOT_IDEA. No explanation.`;
-    let resp;
-    try{
-      resp = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: controller.signal,
-        body: JSON.stringify({ system: sys, message: text })
-      });
-    } finally { clearTimeout(timer); }
-    if(!resp.ok) return null;
-    const data = await resp.json();
-    const verdict = (data.text || "").trim().toUpperCase();
-    if(verdict.startsWith("NOT_IDEA")) return "NOT_IDEA";
-    if(verdict.startsWith("IDEA")) return "IDEA";
-    return null; // رد غير متوقع — لا نخمّن
-  }catch(e){
-    return null; // خطأ شبكة أو مهلة — المستدعي يرجع لقرار الكلمات
-  }
-}
-
-async function isGreetingOrTooShort(text){
+// فحص محلي فوري (بدون أي استدعاء شبكة) لتحيات/طلبات مساعدة عامة واضحة فقط — أي شيء
+// غامض أو أطول يُترك للمكالمة الموحّدة مع النموذج (respondViaAgent)، لأنها الآن قادرة
+// على تصنيف النية والرد المناسب في طلب واحد، بدل استدعاء تصنيف منفصل مسبق يهدر التوكنز.
+function isPureGreeting(text){
   const t = text.trim().toLowerCase().replace(/[!.؟?]/g,'');
   if(t.length < 2) return true;
   const greetings = ['hi','hello','hey','yo','sup','howdy','مرحبا','مرحباً','هلا','هلو','هاي','السلام عليكم','سلام','صباح الخير','مساء الخير','اهلين','أهلين','اهلا','أهلا','مرحبتين','هلابك'];
   if(greetings.includes(t)) return true;
-  const words = t.split(/\s+/).filter(Boolean);
-  const hasArabicOrLatinWord = /[a-zA-Zء-ي]{4,}/.test(t);
-  if(words.length <= 2 && !hasArabicOrLatinWord) return true;
-
   if(HELP_REQUEST_STRONG.some(p => t.includes(p))) return true;
+  const words = t.split(/\s+/).filter(Boolean);
   if(words.length <= 3 && HELP_REQUEST_SHORT_ONLY.some(p => t.includes(p))) return true;
-
-  // منطقة رمادية: رسالة قصيرة نسبياً لم تحسمها أي قائمة كلمات — تصنيف خفيف بالنموذج
-  // بدل تخمين محلي أعمى، مع رجوع فوري لقرار الكلمات (اعتبارها فكرة) لو فشل الطلب.
-  if(words.length <= 6){
-    const verdict = await classifyIsBusinessIdea(text, detectLang(text));
-    if(verdict === 'NOT_IDEA') return true;
-    if(verdict === 'IDEA') return false;
-  }
   return false;
 }
 
@@ -1069,7 +1037,34 @@ function showStepChips(step){
   else if(step==='city') setChips(Object.entries(CITIES).map(([key,c])=>({ label:`${L(c)} · ${LANG==='ar'?'إيجار':'Rent'} ${LANG==='ar'?c.tier:c.tier_en}`, onClick:()=>chooseCity(key) })));
   else if(step==='team') setChips(Object.entries(TEAM_SIZES).map(([key,tm])=>({ label:L(tm), onClick:()=>chooseTeam(key) })));
   else if(step==='budget') setChips(BUDGET_RANGES.map(r=>({ label:L(r), onClick:()=>chooseBudget(r) })));
-  else if(step==='review') setChips([{ label: LANG==='ar'?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() }]);
+  else if(step==='review') setChips([
+    { label: LANG==='ar'?"📊 وضّح لي تفاصيل التكلفة":"📊 Break down the cost for me", onClick: ()=> explainCosts() },
+    { label: LANG==='ar'?"🏛️ الجهات الحكومية المناسبة لي؟":"🏛️ Which government bodies fit me?", onClick: ()=> explainBodies() },
+    { label: LANG==='ar'?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() },
+  ]);
+}
+
+// أي حقل من ملف المشروع لا يزال ناقصاً بحسب الحالة الحالية — idea أولاً، ثم القطاع
+// والمدينة والفريق والميزانية بالترتيب، أو null إذا كانت كل الحقول معروفة (جاهز للمراجعة).
+function nextMissingField(){
+  if(!state.idea) return 'idea';
+  if(!state.sector) return 'sector';
+  if(!state.city) return 'city';
+  if(!state.team) return 'team';
+  if(state.userBudget==null) return 'budget';
+  return null;
+}
+
+// يعرض بطاقات التكلفة/القرار المالي/الجهات/الخطوات على اليمين — منطق عرض بحت
+// بدون أي استدعاء LLM، يُستخدم سواء اكتمل الملف عبر أزرار الاختيار أو عبر محادثة حرة.
+function showReviewCard(){
+  document.getElementById('costCard').style.display = "block";
+  const costs = calcCosts();
+  drawDonut(costs);
+  renderFeasibility();
+  renderBodies();
+  renderChecklist();
+  document.getElementById('reportBtn').disabled = false;
 }
 
 function stageBadgeText(){
@@ -1404,6 +1399,7 @@ async function askLLMStream(systemPrompt, userText, opts={}){
     const timer = setTimeout(()=>controller.abort(), timeoutMs);
     const toolLog = [];
     const citations = [];
+    const profileUpdates = {};
     let finalText = null;
 
     try{
@@ -1441,6 +1437,9 @@ async function askLLMStream(systemPrompt, userText, opts={}){
             if(evt.name === 'search_knowledge' && Array.isArray(evt.result)){
               evt.result.forEach(r=>{ if(r && r.text) citations.push(r); });
             }
+            if(evt.name === 'update_business_profile' && evt.result && evt.result.updated){
+              Object.assign(profileUpdates, evt.result.updated);
+            }
           } else if(evt.type === 'text'){
             setLiveStatus(live.statusEl, null);
             finalText = (evt.text || "").trim();
@@ -1454,7 +1453,7 @@ async function askLLMStream(systemPrompt, userText, opts={}){
       }
       clearTimeout(timer);
       if(!finalText) throw new Error("empty stream response");
-      return { text: finalText, citations, wrap: live.wrap };
+      return { text: finalText, citations, wrap: live.wrap, profileUpdates };
     }catch(e){
       clearTimeout(timer);
       live.wrap.remove();
@@ -1488,38 +1487,129 @@ function boot(fresh){
   }
 }
 
-async function handleIdea(text){
-  const rl = detectLang(text); // اللغة الفعلية التي كتب بها المستخدم — الرد يتبعها تلقائياً
-  if(await isGreetingOrTooShort(text)){
-    const msg = rl==='ar'
-      ? `<p>أهلاً فيك 👋 قبل ما نبدأ، احكيلي عن فكرة مشروعك بجملة أو جملتين — مثلاً "أبي أفتح مقهى صغير في صور" أو "فكرة تطبيق لتوصيل الطلبات". اكتبها هنا وأنا أتكفل بالباقي.</p>`
-      : `<p>Hi there 👋 Before we start, tell me about your business idea in a sentence or two — e.g. "I want to open a small café in Sur" or "an idea for a delivery app". Type it here and I'll take it from there.</p>`;
-    addMessage('agent', msg, {skipHistory:true});
+// يبني نظام تعليمات موحّد واحد يستخدمه أي رد حر (فكرة أولى، سؤال جانبي، معلومة إضافية
+// أثناء الجمع...) بدل نظام منفصل لكل خطوة — يخبر النموذج بما هو معروف فعلاً عن المشروع
+// (فلا يعيد سؤال ما هو معروف) ويطلب منه استخراج أي حقول جديدة عبر update_business_profile
+// مهما كان ترتيب الرسالة أو شكلها، مع الرد على سؤال المستخدم مباشرة دائماً أولاً.
+function buildSystemPrompt(rl){
+  const isAr = rl==='ar';
+  const known = [];
+  if(state.idea) known.push((isAr?'الفكرة':'Idea')+': "'+state.idea+'"');
+  if(state.sector) known.push((isAr?'القطاع':'Sector')+': '+(isAr?SECTORS[state.sector].label:SECTORS[state.sector].label_en));
+  if(state.city) known.push((isAr?'المدينة':'City')+': '+(isAr?CITIES[state.city].label:CITIES[state.city].label_en));
+  if(state.team) known.push((isAr?'حجم الفريق':'Team size')+': '+(isAr?TEAM_SIZES[state.team].label:TEAM_SIZES[state.team].label_en));
+  if(state.userBudget!=null) known.push((isAr?'الميزانية المتاحة':'Available budget')+': '+state.userBudget+' OMR');
+  const knownStr = known.length ? known.join(' | ') : (isAr?'لا يوجد بعد':'none yet');
+
+  let costsNote = '';
+  if(nextMissingField()===null){
+    const costs = calcCosts(), f = feasibility();
+    if(costs && f){
+      costsNote = isAr
+        ? ` التكلفة التقديرية الإجمالية المحسوبة فعلياً="${costs.total} ر.ع"، القرار المالي="${f.verdict}". استخدم هذه الأرقام تحديداً إن ذكرتها، لا تخترع أرقاماً غيرها.`
+        : ` The actually-computed total estimated cost="${costs.total} OMR", financial decision="${f.verdict}". Use these exact numbers if you mention any — never invent different ones.`;
+    }
+  }
+
+  const sectorList = Object.entries(SECTORS).map(([k,s])=>`${k}=${isAr?s.label:s.label_en}`).join(', ');
+  const cityList = Object.entries(CITIES).map(([k,c])=>`${k}=${isAr?c.label:c.label_en}`).join(', ');
+
+  return isAr
+    ? `أنت "رائد"، وكيل عُماني ذكي يساعد رواد أعمال في عُمان على تحويل فكرة مشروع إلى مشروع مسجّل رسمياً. لديك مهمتان تعملان معاً بلا ترتيب صارم للأسئلة:
+1) أجب على أي سؤال يطرحه المستخدم مباشرة وبإيجاز (٣-٥ أسطر). لا تجبره أبداً على اتباع ترتيب أسئلة ثابت. إن سأل عن معلومة رسمية (رسوم، جهة حكومية، إجراء)، استخدم أداة search_knowledge أولاً بدل التخمين؛ وإن لم تجد معلومة دقيقة، انصحه صراحة بمراجعة الجهة الرسمية بدل اختلاق رقم.
+2) كلما ذكر المستخدم أي معلومة عن مشروعه (فكرة، قطاع، مدينة، حجم فريق، أو ميزانية بالريال العُماني) — حتى ضمن رسالة تحوي سؤالاً آخر أيضاً — استدعِ أداة update_business_profile بكل حقل واثق منه فوراً. إن كانت "الفكرة" غير معروفة بعد (غير مذكورة في بيانات المشروع أدناه) وذكرت الرسالة أي نشاط تجاري يريده المستخدم — ولو ضمنياً عبر القطاع فقط، كطلب فتح مقهى أو متجر — استخرج idea أيضاً كوصف قصير من كلام المستخدم نفسه، لا تتركها فارغة. القطاعات المتاحة: ${sectorList}. المدن المتاحة: ${cityList}. حجم الفريق: solo=فردي (شخص واحد)، small=فريق صغير (٢-٤ أشخاص)، mid=فريق متوسط (٥-١٠).
+بيانات المشروع المعروفة حالياً: ${knownStr}.${costsNote} لا تطلب أبداً معلومة معروفة مسبقاً من هذه القائمة. إن كانت كل الحقول معروفة، اذكر التكلفة والقرار المالي أعلاه بإيجاز عند مناسبة السياق.`
+    : `You are "Rayid", an Omani AI agent helping entrepreneurs turn a business idea into an officially registered venture. You have two jobs working together with no fixed question order:
+1) Directly and concisely (3-5 lines) answer whatever the user asks. Never force them through a fixed order of questions. If they ask about an official fact (fees, a government body, a procedure), use the search_knowledge tool first instead of guessing; if you can't find an accurate answer, explicitly recommend checking the official body instead of inventing a number.
+2) Whenever the user states any info about their project (idea, sector, city, team size, or budget in OMR) — even inside a message that also asks something else — immediately call the update_business_profile tool with every field you're confident about. If "idea" is still unknown (not listed in the known project data below) and the message implies any business activity — even only implicitly through the sector, like wanting to open a café or shop — also extract idea as a short description in the user's own words; never leave it empty in that case. Available sectors: ${sectorList}. Available cities: ${cityList}. Team size: solo=just one person, small=2-4 people, mid=5-10 people.
+Currently known project data: ${knownStr}.${costsNote} Never ask again for information already in this list. If every field is known, mention the cost and financial decision above concisely when contextually relevant.`;
+}
+
+// يطبّق أي حقول استخرجها update_business_profile على الحالة المحلية (منطق تطبيق حتمي،
+// بدون أي استدعاء إضافي)، ويحرّك الخطوة الحالية تلقائياً إلى أول حقل ما زال ناقصاً.
+function applyProfileUpdates(updates){
+  if(!updates) return false;
+  let changed = false;
+  if(updates.idea && !state.idea){
+    state.idea = updates.idea;
+    renderLogo(updates.idea.split(/\s+/).slice(0,2).join(" ") || (LANG==='ar'?"مشروعي":"My Project"));
+    changed = true;
+  }
+  if(updates.sector && SECTORS[updates.sector] && state.sector !== updates.sector){ state.sector = updates.sector; changed = true; }
+  if(updates.city && CITIES[updates.city] && state.city !== updates.city){ state.city = updates.city; changed = true; }
+  if(updates.teamSize && TEAM_SIZES[updates.teamSize] && state.team !== updates.teamSize){ state.team = updates.teamSize; changed = true; }
+  if(typeof updates.budgetOmr === 'number' && state.userBudget !== updates.budgetOmr){ state.userBudget = updates.budgetOmr; changed = true; }
+  if(changed){
+    state.step = nextMissingField() || "review";
+    renderStageStrip(); refreshBadge();
+  }
+  return changed;
+}
+
+// بعد أي رد حر: لو اكتمل الملف يعرض بطاقة المراجعة، ولو بقي حقل ناقص يعرض خياراته،
+// ولو كان الرد مجرد إجابة على سؤال جانبي وسط إعداد لم يكتمل بعد يعرض زر "متابعة الإعداد"
+// صراحة بدل إجبار المستخدم على العودة للترتيب القديم بنفسه.
+function afterAgentTurn(profileChanged){
+  const nm = nextMissingField();
+  if(nm === null){
+    if(state.step !== 'done') state.step = 'review';
+    showReviewCard();
+    renderStageStrip(); refreshBadge();
+    showStepChips('review');
     return;
   }
-  state.idea = text;
-  state.step = "sector";
-  renderLogo(text.split(/\s+/).slice(0,2).join(" ") || (LANG==='ar'?"مشروعي":"My Project"));
-  renderStageStrip(); refreshBadge();
+  if(!profileChanged && state.idea){
+    setChips([{ label: t('continueSetup'), onClick: ()=> continueSetupFlow() }]);
+    return;
+  }
+  if(['sector','city','team','budget'].includes(nm)) showStepChips(nm);
+  else clearChips();
+}
 
-  const sys = rl==='ar'
-    ? `أنت وكيل عُماني اسمه "رائد" يساعد رواد أعمال مبتدئين في عُمان. رحّب بفكرة المستخدم بجملتين فقط بالعربية الفصحى البسيطة (لهجة خليجية مقبولة)، بدون رموز تعبيرية كثيرة، ثم اسأله عن قطاع نشاطه. لا تذكر أرقاماً أو تكاليف الآن.`
-    : `You are an Omani AI agent named "Rayid" helping first-time entrepreneurs in Oman. Welcome the user's idea in two sentences only, in clear professional English, then ask about their business sector. Do not mention any numbers or costs yet.`;
-  const streamed = await askLLMStream(sys, rl==='ar'?`فكرة المستخدم: "${text}"`:`User's idea: "${text}"`, {history: historyForCall(), replyLang: rl});
+// يستأنف الإعداد من نفس النقطة المحفوظة — بدون أي استدعاء LLM — بعد ما ضغط المستخدم
+// على زر "متابعة إعداد المشروع" عقب سؤال جانبي.
+function continueSetupFlow(){
+  clearChips();
+  const nm = nextMissingField();
+  if(!nm || nm==='idea') return;
+  const isAr = LANG==='ar';
+  const prompts = {
+    sector: { ar:"تمام، نكمل 👍 وش قطاع نشاطك؟", en:"Sure, let's continue 👍 What's your business sector?" },
+    city:   { ar:"تمام، نكمل 👍 وين موقع مشروعك تقريباً؟", en:"Sure, let's continue 👍 Roughly where will your business be located?" },
+    team:   { ar:"تمام، نكمل 👍 كم حجم فريقك المتوقع بالبداية؟", en:"Sure, let's continue 👍 How big is your expected team at the start?" },
+    budget: { ar:"تمام، نكمل 👍 كم الميزانية المتوفرة لديك تقريباً لإطلاق المشروع؟", en:"Sure, let's continue 👍 Roughly how much budget do you have available to launch?" },
+  };
+  addMessage('agent', `<p>${isAr?prompts[nm].ar:prompts[nm].en}</p>`);
+  showStepChips(nm);
+}
+
+// المسار الموحّد لأي رسالة حرة (فكرة أولى، سؤال جانبي، أو معلومة أثناء الجمع) — مكالمة
+// واحدة للنموذج تجيب على السؤال وتستخرج أي حقول جديدة معاً، بدل مكالمتين منفصلتين.
+async function respondViaAgent(text){
+  const rl = detectLang(text);
+  const isAr = LANG==='ar';
+  const sys = buildSystemPrompt(rl);
+  const snippets = retrieve(text, rl); // احتياطي محلي فقط عند فشل الاتصال بالنموذج
+  const streamed = await askLLMStream(sys, text, {history: historyForCall(), replyLang: rl});
   hideTyping();
 
-  const fallback = rl==='ar'
-    ? `<p>فكرة حلوة! "${text}" — واضح إنك بديت تفكر فيها بجدية.</p><p>عشان أقدر أحسب لك التكلفة التقريبية والخطوات الصح، وش قطاع نشاطك الأقرب؟</p>`
-    : `<p>Nice idea! "${text}" — sounds like you're already thinking about it seriously.</p><p>So I can estimate the right cost and steps for you, which sector best fits your business?</p>`;
-  const finalHtml = streamed
-    ? `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml(streamed.citations)}`
-    : fallback;
-  addMessage('agent', finalHtml, { existingWrap: streamed ? streamed.wrap : undefined, src: streamed ? null : toolsUsedBadge() });
+  let profileChanged = false;
+  if(streamed && streamed.profileUpdates) profileChanged = applyProfileUpdates(streamed.profileUpdates);
 
-  setChips(Object.entries(SECTORS).map(([key,s])=>({
-    label: `${s.icon} ${L(s)}`,
-    onClick: ()=> chooseSector(key)
-  })));
+  if(streamed){
+    const finalHtml = `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml(streamed.citations)}`;
+    addMessage('agent', finalHtml, { existingWrap: streamed.wrap });
+  } else if(snippets.length){
+    addMessage('agent', isAr
+      ? `<p>ما عندي اتصال حالياً بالنموذج الكامل، بس من مصادري المتوفرة:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`
+      : `<p>I don't have a live connection to the full model right now, but from my available sources:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`, {src: isAr?"معلومات مؤسسية موثّقة":"Verified institutional information"});
+  } else {
+    addMessage('agent', isAr
+      ? `<p>تعذّر الاتصال بالنموذج حالياً. تأكد من تشغيل السيرفر وضبط مفتاح Anthropic، ثم حاول مرة أخرى.</p>`
+      : `<p>Couldn't reach the model right now. Make sure the server is running with a valid Anthropic key configured, then try again.</p>`);
+  }
+
+  afterAgentTurn(profileChanged);
 }
 
 function chooseSector(key, opts={}){
@@ -1568,13 +1658,8 @@ async function chooseBudget(range, opts={}){
   state.step = "review";
   renderStageStrip(); refreshBadge();
 
-  document.getElementById('costCard').style.display = "block";
+  showReviewCard();
   const costs = calcCosts();
-  drawDonut(costs);
-  renderFeasibility();
-  renderBodies();
-  renderChecklist();
-  document.getElementById('reportBtn').disabled = false;
 
   const f = feasibility();
   const snippets = retrieve(L(SECTORS[state.sector]) + " " + state.idea);
@@ -1597,11 +1682,7 @@ async function chooseBudget(range, opts={}){
     : fallback;
   addMessage('agent', finalHtml, { existingWrap: streamed ? streamed.wrap : undefined, src: srcParts1.length? srcParts1.join(' · '): null });
 
-  setChips([
-    { label: isAr?"📊 وضّح لي تفاصيل التكلفة":"📊 Break down the cost for me", onClick: ()=> explainCosts() },
-    { label: isAr?"🏛️ الجهات الحكومية المناسبة لي؟":"🏛️ Which government bodies fit me?", onClick: ()=> explainBodies() },
-    { label: isAr?"📄 جهّز تقرير الجدوى":"📄 Generate feasibility report", onClick: ()=> openReport() },
-  ]);
+  showStepChips('review');
 }
 
 function explainCosts(){
@@ -1642,15 +1723,22 @@ async function sendFree(){
   if(!text) return;
   input.value = "";
 
-  if(state.step === "idea"){
+  // تحية أو طلب مساعدة عام واضح في بداية الجلسة — رد محلي فوري بدون أي استدعاء API.
+  if(state.step === "idea" && !state.idea && isPureGreeting(text)){
     addMessage('user', text);
-    await handleIdea(text);
+    const rl = detectLang(text);
+    const msg = rl==='ar'
+      ? `<p>أهلاً فيك 👋 قبل ما نبدأ، احكيلي عن فكرة مشروعك بجملة أو جملتين — مثلاً "أبي أفتح مقهى صغير في صور" أو "فكرة تطبيق لتوصيل الطلبات". اكتبها هنا وأنا أتكفل بالباقي.</p>`
+      : `<p>Hi there 👋 Before we start, tell me about your business idea in a sentence or two — e.g. "I want to open a small café in Sur" or "an idea for a delivery app". Type it here and I'll take it from there.</p>`;
+    addMessage('agent', msg, {skipHistory:true});
     return;
   }
 
   addMessage('user', text);
   clearChips();
 
+  // مطابقة محلية سريعة بدون أي استدعاء API لرد بسيط مطابق لأحد خيارات الخطوة الحالية
+  // (تماماً كالضغط على شريحة) — أي شيء أعقد أو مركّب من عدة حقول يمرّ للنموذج مباشرة.
   if(["sector","city","team","budget"].includes(state.step)){
     const matched = matchOption(text, state.step);
     if(matched){
@@ -1661,37 +1749,7 @@ async function sendFree(){
     }
   }
 
-  const isAr = LANG==='ar';       // لغة الواجهة (للأزرار وإعادة عرض الخيارات)
-  const rl = detectLang(text);     // اللغة الفعلية التي كتب بها المستخدم — الرد يتبعها تلقائياً
-  const rlAr = rl==='ar';
-  const snippets = retrieve(text, rl);
-  const contextStr = snippets.map(s=>s.text).join(" | ");
-  const sys = rlAr
-    ? `أنت وكيل عُماني اسمه "رائد" يساعد رائد أعمال في مشروع من نوع "${state.sector?L(SECTORS[state.sector]):'غير محدد'}". أجب بإيجاز (٣-٤ أسطر) بالعربية على سؤاله. إن توفرت معلومات ذات صلة استخدمها: "${contextStr || 'لا يوجد'}". إن لم تكن متأكداً من معلومة رسمية دقيقة، انصح بمراجعة الجهة الرسمية مباشرة صراحة بدل اختلاق رقم.`
-    : `You are an Omani AI agent named "Rayid" helping an entrepreneur with a "${state.sector?L(SECTORS[state.sector]):'unspecified'}" project. Answer concisely (3-4 lines) in English. If relevant info is available, use it: "${contextStr || 'none'}". If you're unsure of an exact official fact, explicitly recommend checking the official body directly instead of inventing a number.`;
-  const streamed = await askLLMStream(sys, text, {history: historyForCall(), replyLang: rl});
-  hideTyping();
-
-  const srcLabel = rlAr?"معلومات مؤسسية موثّقة":"Verified institutional information";
-  if(streamed){
-    const finalHtml = `<p>${streamed.text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>${citationsHtml([...streamed.citations, ...snippets])}`;
-    addMessage('agent', finalHtml, { existingWrap: streamed.wrap });
-  } else if(snippets.length){
-    addMessage('agent', rlAr
-      ? `<p>ما عندي اتصال حالياً بالنموذج الكامل، بس من مصادري المتوفرة:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`
-      : `<p>I don't have a live connection to the full model right now, but from my available sources:</p><p>${snippets.map(s=>s.text).join('<br>')}</p>`, {src:srcLabel});
-  } else {
-    addMessage('agent', rlAr
-      ? `<p>ما عندي معلومات كافية عن هذا تحديداً من مصادري المتوفرة حالياً — أنصحك تراجع الجهة الرسمية المعنية مباشرة. تقدر تكمل معي خطوات دراسة الجدوى بدل ذلك؟</p>`
-      : `<p>I don't have enough information on this specific point from my available sources right now — I'd recommend checking the relevant official body directly. Want to continue with the feasibility study steps instead?</p>`);
-  }
-
-  if(["sector","city","team","budget","review"].includes(state.step)){
-    if(["sector","city","team","budget"].includes(state.step)){
-      addMessage('agent', `<p>${t('reChooseHint')}</p>`, {skipSave:true, skipHistory:true});
-    }
-    showStepChips(state.step);
-  }
+  await respondViaAgent(text);
 }
 
 /* ======================= VOICE INPUT (Web Speech API) =======================
@@ -2018,16 +2076,6 @@ function toggleTheme(){
 // /logo-dark.png (used on the navy default theme) — so the mark always has contrast against
 // its background. Falls back to the "ف" letter mark if the matching file isn't present.
 function checkLogo(){
-<<<<<<< HEAD
-  const img = document.getElementById('logoImg'); const fallback = document.querySelector('.mark-fallback');
-  if(!img) return;
-  const isPalm = document.body.classList.contains('palm-theme');
-  const path = isPalm ? '/logo-light.png' : '/logo-dark.png';
-  const probe = new Image();
-  probe.onload = ()=>{ img.src = path; img.style.display='block'; if(fallback) fallback.style.display='none'; };
-  probe.onerror = ()=>{ img.style.display='none'; img.removeAttribute('src'); if(fallback) fallback.style.display='inline-block'; };
-  probe.src = path + '?ts=' + Date.now();
-=======
   const light = document.getElementById('logoLight');
   const dark = document.getElementById('logoDark');
   const fallback = document.querySelector('.mark-fallback');
@@ -2071,7 +2119,6 @@ function checkLogo(){
       try{ window.matchMedia('(prefers-color-scheme: dark)').addListener(updateVisibility); }catch(e){}
     }
   }
->>>>>>> a255ddd (UI: use uploaded logo as chat avatar and switch with theme; update prompts to introduce agent as Rayid/رائد; add logo assets and docs)
 }
 
 /* ======================= INIT ======================= */
