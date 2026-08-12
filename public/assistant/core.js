@@ -25,7 +25,7 @@ const AI_UI = {
     dashGreetingMorning: "صباح الخير 👋", dashGreetingEvening: "مساء الخير 👋",
     dashNoBusiness: "لم تبدأ مشروعك بعد", dashJourney: "مسار مشروعك",
     dashNextAction: "الخطوة التالية", dashRecommended: "مقترح لك",
-    dashAskPlaceholder: "اسألني: وش أسوي بعدين؟", dashAskSend: "إرسال",
+    dashAskPlaceholder: "اسألني: وش أسوي بعدين؟", dashAskSend: "💬 اسأل في المحادثة",
     naStart: "ابدأ بإخباري عن فكرة مشروعك من «ابدأ مشروعي»", naFinishProfile: "أكمل بيانات مشروعك (القطاع/الموقع/الفريق) من «ابدأ مشروعي»",
     naAllGood: "كل شيء تمام حالياً — استكشف الميزات المقترحة أدناه",
     loading: "...جاري التحميل", errorGeneric: "تعذّر التحميل، حاول مرة أخرى",
@@ -44,7 +44,7 @@ const AI_UI = {
     dashGreetingMorning: "Good morning 👋", dashGreetingEvening: "Good evening 👋",
     dashNoBusiness: "You haven't started your business yet", dashJourney: "Business journey",
     dashNextAction: "Next action", dashRecommended: "Recommended",
-    dashAskPlaceholder: "Ask AI: what should I do next?", dashAskSend: "Send",
+    dashAskPlaceholder: "Ask AI: what should I do next?", dashAskSend: "💬 Ask in the chat",
     naStart: "Start by telling me about your business idea in \"Start My Business\"", naFinishProfile: "Finish your business profile (sector/location/team) in \"Start My Business\"",
     naAllGood: "Everything looks good right now — explore the recommended features below",
     loading: "Loading…", errorGeneric: "Couldn't load — try again",
@@ -203,10 +203,7 @@ async function renderDashboard(container) {
     }).join("")}</div>
     <div class="ai-card">
       <h3>💬 ${ta("dashAskPlaceholder")}</h3>
-      <div class="ai-row">
-        <input type="text" class="ai-input" id="aiAskInput" placeholder="${ta("dashAskPlaceholder")}" onkeydown="if(event.key==='Enter')aiAskAndClose()">
-        <button class="ai-btn primary" style="flex:none;" onclick="aiAskAndClose()">${ta("dashAskSend")}</button>
-      </div>
+      <button class="ai-btn primary" onclick="aiAskAndClose()">${ta("dashAskSend")}</button>
     </div>
   `;
   computeNextAction().then((txt) => {
@@ -225,13 +222,11 @@ function editBusinessName() {
   renderDashboard(document.getElementById("aiContent"));
 }
 
+// يفتح المحادثة الرئيسية مباشرة بدل صندوق نص منفصل داخل لوحة التحكم — كل نص
+// يكتبه المستخدم يمر حصراً عبر composer الحقيقي (#textInput).
 function aiAskAndClose() {
-  const input = document.getElementById("aiAskInput");
-  const text = (input?.value || "").trim();
-  if (!text) return;
   closeAssistant();
-  const composer = document.getElementById("textInput");
-  if (composer) { composer.value = text; sendFree(); }
+  document.getElementById("textInput")?.focus();
 }
 
 function escapeHtml(s) {

@@ -2300,7 +2300,7 @@ function buildReportHTML(){
   const verdictColor = f ? (f.tone==='good'?'#2fa370':f.tone==='warn'?'#b3860f':'#a33d2f') : '#999';
 
   const financeSection = f ? (isAr ? `
-    <h2>٦. القرار المالي</h2>
+    <h2>٥. القرار المالي</h2>
     <p>بمقارنة ميزانيتك المتاحة (<b>${state.userBudget} ر.ع</b>) بالتكلفة التقديرية للتأسيس (<b>${c.total} ر.ع</b>)، التقييم الآلي للجدوى المالية هو:</p>
     <p style="font-weight:800; color:${verdictColor};">${f.tone==='good'?'✅':f.tone==='warn'?'⚠️':'❌'} ${f.verdict}</p>
     <table style="margin-bottom:4px;">
@@ -2309,7 +2309,7 @@ function buildReportHTML(){
     </table>
     ${f.gap>0 ? `<p>الفجوة التمويلية التقديرية: <b>${f.gap} ر.ع</b>. المصدر الأنسب حسب حجم الفجوة: ${linkOf(f.source)} — ${f.source.desc}.</p>` : `<p>ميزانيتك تغطي التكلفة التقديرية مع هامش أمان، ما يسمح بالبدء دون الحاجة لتمويل خارجي فوري.</p>`}
   ` : `
-    <h2>6. Financial decision</h2>
+    <h2>5. Financial decision</h2>
     <p>Comparing your available budget (<b>${state.userBudget} OMR</b>) against the estimated setup cost (<b>${c.total} OMR</b>), the automated feasibility assessment is:</p>
     <p style="font-weight:800; color:${verdictColor};">${f.tone==='good'?'✅':f.tone==='warn'?'⚠️':'❌'} ${f.verdict}</p>
     <table style="margin-bottom:4px;">
@@ -2348,7 +2348,7 @@ function buildReportHTML(){
 
       ${financeSection}
 
-      <h2>٥. الخطوة التالية</h2>
+      <h2>٦. الخطوة التالية</h2>
       <p>يُنصح بالبدء بحجز الاسم التجاري عبر بوابة ${linkOf(GOV_LINKS.invest)}${f && f.gap>0 ? `، والتقديم على ${linkOf(f.source)} لسد الفجوة التمويلية قبل الإطلاق الرسمي` : ''}. راجع الجهات الحكومية المذكورة أعلاه للتأكد من متطلبات نشاطك تحديداً.</p>
 
       <div class="disc">⚠️ أسماء الجهات الحكومية وروابطها الرسمية أعلاه حقيقية ومُتحقَّق منها. أما أرقام الرسوم والتكاليف فتقديرية توضيحية أُعدَّت لأغراض تحدي AI Agent MVP Challenge، ولا تمثّل تسعيرة رسمية معتمدة — يُرجى التحقق من الأرقام الدقيقة عبر الجهات المذكورة مباشرة.</div>
@@ -2383,7 +2383,7 @@ function buildReportHTML(){
 
     ${financeSection}
 
-    <h2>5. Next step</h2>
+    <h2>6. Next step</h2>
     <p>We recommend starting by reserving your trade name via the ${linkOf(GOV_LINKS.invest)} portal${f && f.gap>0 ? `, and applying to ${linkOf(f.source)} to close the funding gap before official launch` : ''}. Review the government bodies listed above to confirm your activity's specific requirements.</p>
 
     <div class="disc">⚠️ The government body names and official links above are real and verified. The fee and cost figures are illustrative estimates prepared for the AI Agent MVP Challenge and do not represent an official approved rate card — please verify exact figures directly with the bodies listed.</div>

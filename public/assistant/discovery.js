@@ -31,21 +31,24 @@ async function runServiceMatch() {
 }
 
 // ------------------------------- Funding Matcher ----------------------------
+// المبلغ المطلوب لم يعد يُكتب هنا — يُشتق مباشرة من الميزانية التي ذكرها
+// المستخدم في المحادثة الرئيسية (state.userBudget عبر getBusinessProfile).
 AiViews.funding = async function (container) {
   const p = getBusinessProfile();
+  if (typeof p.fundingNeeded !== "number") {
+    container.innerHTML = `<h2 class="ai-view-title">💵 ${ta("navFunding")}</h2>` + profileSummaryHtml() +
+      `<div class="ai-empty">${LANG === "ar" ? "قل لي ميزانيتك المتاحة في المحادثة الرئيسية أولاً حتى أقدر أدوّر لك على تمويل مناسب." : "Tell me your available budget in the main chat first, so I can find matching funding for you."}</div>
+      <button class="ai-btn primary" onclick="switchAiView('start')">${ta("navStart")}</button>`;
+    return;
+  }
   container.innerHTML = `<h2 class="ai-view-title">💵 ${ta("navFunding")}</h2>` + profileSummaryHtml() +
     `<div class="ai-card"><h3>${LANG === "ar" ? "احتياجك التمويلي" : "Your funding need"}</h3>
-      <div class="ai-field"><label>${LANG === "ar" ? "المبلغ المطلوب (ر.ع)" : "Amount needed (OMR)"}</label>
-      <input type="number" class="ai-input" id="aiFundingAmount" value="${p.fundingNeeded || ""}" min="0"></div>
-      <button class="ai-btn primary" onclick="runFundingMatch()">${LANG === "ar" ? "دوّر على تمويل مناسب" : "Find matching funding"}</button>
+      <div class="row-between"><span>${LANG === "ar" ? "المبلغ (ر.ع)" : "Amount (OMR)"}</span><b>${p.fundingNeeded}</b></div>
+      <button class="ai-btn primary" style="margin-top:8px;" onclick="runFundingMatch()">${LANG === "ar" ? "دوّر على تمويل مناسب" : "Find matching funding"}</button>
     </div>
     <div id="aiFundingResults"></div>`;
 };
 async function runFundingMatch() {
-  ensureAssistantState();
-  const amount = Number(document.getElementById("aiFundingAmount").value) || null;
-  state.assistant.profileAnswers.fundingNeeded = amount;
-  if (typeof saveState === "function") saveState();
   const box = document.getElementById("aiFundingResults");
   box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
   try {
@@ -65,8 +68,17 @@ function matchCardHtml(m) {
 }
 
 // ------------------------------- Eligibility Checker ------------------------
+// كل الإجابات هنا اختيارات بالنقر فقط (لا كتابة حرة): يس/لا، وفئات مدة تشغيل
+// جاهزة بدل رقم يُكتب يدوياً. مبلغ التمويل يُشتق من ميزانية المحادثة الرئيسية.
+const MONTHS_OPTIONS = [
+  { value: 0, ar: "لم يبدأ بعد", en: "Not started yet" },
+  { value: 3, ar: "أقل من 6 أشهر", en: "Under 6 months" },
+  { value: 9, ar: "6 – 12 شهر", en: "6 – 12 months" },
+  { value: 18, ar: "أكثر من سنة", en: "Over a year" },
+];
 AiViews.eligibility = function (container) {
   const pa = (state.assistant && state.assistant.profileAnswers) || {};
+  const p = getBusinessProfile();
   container.innerHTML = `<h2 class="ai-view-title">✅ ${ta("navEligibility")}</h2>
     <p class="ai-view-sub">${LANG === "ar" ? "أجب عن هذه الأسئلة القصيرة للحصول على تقييم أولي." : "Answer these short questions for a preliminary assessment."}</p>
     <div class="ai-card">
@@ -74,14 +86,21 @@ AiViews.eligibility = function (container) {
         ${yesNoRadio("aiElIsOmani", pa.isOmani)}</div>
       <div class="ai-field"><label>${LANG === "ar" ? "هل مشروعك مسجّل رسمياً؟" : "Is your business already registered?"}</label>
         ${yesNoRadio("aiElRegistered", pa.registered)}</div>
-      <div class="ai-field"><label>${LANG === "ar" ? "منذ كم شهر يعمل مشروعك؟ (0 إن لم يبدأ بعد)" : "How many months has it been operating? (0 if not yet)"}</label>
-        <input type="number" class="ai-input" id="aiElMonths" min="0" value="${pa.monthsOperating ?? ""}"></div>
-      <div class="ai-field"><label>${LANG === "ar" ? "كم التمويل الذي تحتاجه؟ (ر.ع، اختياري)" : "How much funding do you need? (OMR, optional)"}</label>
-        <input type="number" class="ai-input" id="aiElFunding" min="0" value="${pa.fundingNeeded ?? ""}"></div>
+      <div class="ai-field"><label>${LANG === "ar" ? "منذ كم شهر يعمل مشروعك؟" : "How long has it been operating?"}</label>
+        <div class="ai-row" id="aiElMonthsRow">${MONTHS_OPTIONS.map((o) => `<button type="button" class="ai-btn${pa.monthsOperating === o.value ? " primary" : ""}" data-months="${o.value}" onclick="pickMonthsOperating(${o.value})">${LANG === "ar" ? o.ar : o.en}</button>`).join("")}</div></div>
+      ${typeof p.fundingNeeded === "number" ? `<div class="ai-field"><label>${LANG === "ar" ? "التمويل الذي تحتاجه" : "Funding you need"}</label><div style="font-size:13px;">${p.fundingNeeded} ${LANG === "ar" ? "ر.ع" : "OMR"}</div></div>` : ""}
       <button class="ai-btn primary" onclick="runEligibilityCheck()">${LANG === "ar" ? "افحص أهليتي" : "Check my eligibility"}</button>
     </div>
     <div id="aiEligibilityResult"></div>`;
 };
+function pickMonthsOperating(value) {
+  ensureAssistantState();
+  state.assistant.profileAnswers.monthsOperating = value;
+  if (typeof saveState === "function") saveState();
+  document.querySelectorAll("#aiElMonthsRow .ai-btn").forEach((btn) => {
+    btn.classList.toggle("primary", Number(btn.dataset.months) === value);
+  });
+}
 function yesNoRadio(name, current) {
   const yes = current === true, no = current === false;
   return `<div class="ai-row">
@@ -95,8 +114,8 @@ async function runEligibilityCheck() {
   const answers = {
     isOmani: getRadio("aiElIsOmani"),
     registered: getRadio("aiElRegistered"),
-    monthsOperating: Number(document.getElementById("aiElMonths").value) || 0,
-    fundingNeeded: Number(document.getElementById("aiElFunding").value) || undefined,
+    monthsOperating: state.assistant.profileAnswers.monthsOperating ?? 0,
+    fundingNeeded: getBusinessProfile().fundingNeeded ?? undefined,
   };
   Object.assign(state.assistant.profileAnswers, answers);
   if (typeof saveState === "function") saveState();
