@@ -595,9 +595,10 @@ function applyStaticTranslations(){
   });
 }
 
-function toggleLang(){
-  LANG = (LANG === 'ar') ? 'en' : 'ar';
-  localStorage.setItem('mirshid_lang', LANG);
+// يعيد رسم كل عناصر الواجهة الديناميكية المرتبطة بـ LANG (تسميات، شريط المراحل،
+// الشريحة، بطاقات التكلفة/الجدوى...) — مستخرجة من toggleLang() عشان تُستخدم أيضاً
+// عند تغيير اللغة تلقائياً حسب لغة رسالة المستخدم، لا فقط عند الضغط اليدوي على الزر.
+function applyLangChange(){
   applyStaticTranslations();
   renderStageStrip();
   refreshBadge();
@@ -611,6 +612,12 @@ function toggleLang(){
     showStepChips(state.step);
   }
   if(typeof setMicState === 'function' && micState !== MIC_STATE.RECORDING) setMicState(micState);
+}
+
+function toggleLang(){
+  LANG = (LANG === 'ar') ? 'en' : 'ar';
+  localStorage.setItem('mirshid_lang', LANG);
+  applyLangChange();
 }
 
 /* ======================= MOCK DATA LAYER (تحاكي مصادر ريادة/تجارة الرسمية) ======================= */
@@ -883,19 +890,25 @@ function stripHtml(html){
   return (tmp.textContent || tmp.innerText || "").replace(/\s+/g,' ').trim();
 }
 
+// شعار الوكيل نفسه المستخدم في أول رسالة — نفس الحساب، معاد استخدامه في كل مكان
+// يُعرض فيه أفاتار رسالة وكيل (رسالة عادية، فقاعة بث حيّ، أو رسالة مُستعادة من جلسة
+// محفوظة) عشان يبقى نفس الشعار ثابتاً طوال المحادثة، بدل أي أيقونة أخرى.
+function agentAvatarHtml(){
+  const preferLightNow = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  const curLightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
+  const curDarkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
+  const chosenSrc = preferLightNow ? curLightSrc : curDarkSrc;
+  return `<img class="msgLogo" src="${chosenSrc}" alt="agent logo">`;
+}
+
 function addMessage(role, html, opts={}){
   let wrap = opts.existingWrap;
   if(wrap){
     wrap.querySelector('.bubble').innerHTML = `${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}`;
   } else {
-    // choose initial avatar src according to current theme preference
-    const preferLightNow = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
-    const curLightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
-    const curDarkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
-    const chosenSrc = preferLightNow ? curLightSrc : curDarkSrc;
     wrap = el(`
       <div class="msg ${role}">
-        <div class="avatar">${role==='agent' ? `<img class="msgLogo" src="${chosenSrc}" alt="agent logo">` : '🙂'}</div>
+        <div class="avatar">${role==='agent' ? agentAvatarHtml() : '🙂'}</div>
         <div class="bubble">${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}</div>
       </div>`);
     document.getElementById('messages').appendChild(wrap);
@@ -1276,6 +1289,18 @@ function detectLang(text){
   return arabicChars >= latinChars ? 'ar' : 'en';
 }
 
+// يقفل لغة الجلسة كاملة (ردود الوكيل + الأزرار + التسميات + القوائم + المدن/القطاعات)
+// على لغة أول رسالة يكتبها المستخدم فعلياً، ويحافظ عليها لاحقاً دون تغيير عشوائي —
+// لا تتغير إلا إذا كتب المستخدم رسالة واضحة بلغة مختلفة صراحة (تبديل صريح).
+function syncLangFromMessage(text){
+  const detected = detectLang(text);
+  if(detected !== LANG){
+    LANG = detected;
+    localStorage.setItem('mirshid_lang', LANG);
+    applyLangChange();
+  }
+}
+
 function langInstruction(forLang){
   const lang = forLang || LANG;
   return lang==='ar'
@@ -1340,7 +1365,7 @@ function citationsHtml(citations){
 function createLiveBubble(){
   const wrap = el(`
     <div class="msg agent">
-      <div class="avatar">🧭</div>
+      <div class="avatar">${agentAvatarHtml()}</div>
       <div class="bubble">
         <div class="live-status empty"></div>
         <div class="live-text"></div>
@@ -1586,7 +1611,7 @@ function continueSetupFlow(){
 // المسار الموحّد لأي رسالة حرة (فكرة أولى، سؤال جانبي، أو معلومة أثناء الجمع) — مكالمة
 // واحدة للنموذج تجيب على السؤال وتستخرج أي حقول جديدة معاً، بدل مكالمتين منفصلتين.
 async function respondViaAgent(text){
-  const rl = detectLang(text);
+  const rl = LANG; // اللغة مقفولة مسبقاً في sendFree() عبر syncLangFromMessage()
   const isAr = LANG==='ar';
   const sys = buildSystemPrompt(rl);
   const snippets = retrieve(text, rl); // احتياطي محلي فقط عند فشل الاتصال بالنموذج
@@ -1723,11 +1748,14 @@ async function sendFree(){
   if(!text) return;
   input.value = "";
 
+  // يقفل لغة الجلسة كاملة على لغة هذه الرسالة (أول رسالة، أو تبديل صريح لاحقاً)
+  // قبل أي رد أو عرض واجهة، عشان كل شيء (الردّ + الأزرار + التسميات) يتبعها فوراً.
+  syncLangFromMessage(text);
+
   // تحية أو طلب مساعدة عام واضح في بداية الجلسة — رد محلي فوري بدون أي استدعاء API.
   if(state.step === "idea" && !state.idea && isPureGreeting(text)){
     addMessage('user', text);
-    const rl = detectLang(text);
-    const msg = rl==='ar'
+    const msg = LANG==='ar'
       ? `<p>أهلاً فيك 👋 قبل ما نبدأ، احكيلي عن فكرة مشروعك بجملة أو جملتين — مثلاً "أبي أفتح مقهى صغير في صور" أو "فكرة تطبيق لتوصيل الطلبات". اكتبها هنا وأنا أتكفل بالباقي.</p>`
       : `<p>Hi there 👋 Before we start, tell me about your business idea in a sentence or two — e.g. "I want to open a small café in Sur" or "an idea for a delivery app". Type it here and I'll take it from there.</p>`;
     addMessage('agent', msg, {skipHistory:true});
@@ -2167,7 +2195,7 @@ function restoreUI(){
   renderStageStrip(); refreshBadge();
   document.getElementById('messages').innerHTML = "";
   state.messages.forEach(m=>{
-    const wrap = el(`<div class="msg ${m.role}"><div class="avatar">${m.role==='agent'?'🧭':'🙂'}</div><div class="bubble">${m.html}${m.src?`<span class="src">📚 ${m.src}</span>`:''}</div></div>`);
+    const wrap = el(`<div class="msg ${m.role}"><div class="avatar">${m.role==='agent'?agentAvatarHtml():'🙂'}</div><div class="bubble">${m.html}${m.src?`<span class="src">📚 ${m.src}</span>`:''}</div></div>`);
     document.getElementById('messages').appendChild(wrap);
   });
   scrollDown();
