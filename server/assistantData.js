@@ -656,6 +656,97 @@ function computeFinancials(inputs = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// محاكاة التدفق النقدي قبل الإطلاق (Pre-Launch Cash Flow Simulation) — حساب
+// حتمي بحت لستة أشهر، مع سيناريوهات "ماذا لو" وتوصيات مبنية على قواعد بسيطة.
+// نقطة التعادل تُعرَّف هنا بأول شهر يكون فيه صافي التدفق موجباً (وليس الرصيد
+// التراكمي) — التعريف المالي القياسي.
+// ---------------------------------------------------------------------------
+function simulateCashFlowMonths(base) {
+  const growth = base.monthlyGrowthPct / 100;
+  const months = [];
+  let balance = base.startingCash - base.startupCosts;
+  for (let m = 1; m <= 6; m++) {
+    const revenue = Math.round(base.month1Revenue * Math.pow(1 + growth, m - 1));
+    const totalCosts = base.inventoryCost + base.marketingCost + base.deliveryCost + base.otherCost;
+    const netFlow = revenue - totalCosts;
+    balance = Math.round(balance + netFlow);
+    months.push({ month: m, revenue, inventoryCost: base.inventoryCost, marketingCost: base.marketingCost, deliveryCost: base.deliveryCost, otherCost: base.otherCost, totalCosts, netFlow, balance });
+  }
+  return months;
+}
+
+function scenarioSummary(base, growthPct) {
+  const months = simulateCashFlowMonths({ ...base, monthlyGrowthPct: growthPct });
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  return {
+    breakEvenMonth: firstProfitable ? firstProfitable.month : null,
+    month6Balance: months[5].balance,
+    month6NetFlow: months[5].netFlow,
+  };
+}
+
+function computeCashFlowSimulation(inputs = {}) {
+  const num = (v, def = 0) => (typeof v === "number" && isFinite(v) ? v : def);
+  const base = {
+    startingCash: num(inputs.startingCash),
+    startupCosts: num(inputs.startupCosts),
+    month1Revenue: num(inputs.month1Revenue),
+    monthlyGrowthPct: num(inputs.monthlyGrowthPct, 10),
+    inventoryCost: num(inputs.inventoryCost),
+    marketingCost: num(inputs.marketingCost),
+    deliveryCost: num(inputs.deliveryCost),
+    otherCost: num(inputs.otherCost),
+  };
+
+  const months = simulateCashFlowMonths(base);
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  const breakEvenMonth = firstProfitable ? firstProfitable.month : null;
+  const lowestBalanceMonth = months.reduce((min, mo) => (mo.balance < min.balance ? mo : min), months[0]);
+
+  const recommendations = [];
+  const month1 = months[0];
+  if (month1.netFlow < 0) {
+    const cut = Math.round(base.marketingCost * 0.2);
+    if (cut > 0) {
+      recommendations.push({
+        ar: `خفض تكاليف التسويق بنسبة 20% في الشهر الأول (توفير ${cut} ر.ع) يقلّل الخسارة إلى ${month1.netFlow + cut} ر.ع.`,
+        en: `Cutting marketing costs by 20% in month 1 (saves ${cut} OMR) reduces the loss to ${month1.netFlow + cut} OMR.`,
+      });
+    }
+  }
+  if (base.startupCosts > base.startingCash * 0.5) {
+    recommendations.push({
+      ar: "التكاليف الأولية مرتفعة نسبة لرصيدك الحالي — فكّر بتأجيل شراء المعدات غير الضرورية للشهر الثالث أو الرابع.",
+      en: "Startup costs are high relative to your current cash — consider deferring non-essential equipment purchases to month 3 or 4.",
+    });
+  }
+  recommendations.push({
+    ar: "التفاوض مع الموردين لتمديد فترة السداد 30 يوماً إضافياً يحسّن السيولة دون تغيير الأرقام الفعلية.",
+    en: "Negotiating an extra 30-day payment term with suppliers improves liquidity without changing the underlying numbers.",
+  });
+  if (lowestBalanceMonth.balance < 0) {
+    recommendations.push({
+      ar: `⚠️ خطر نفاد السيولة في الشهر ${lowestBalanceMonth.month} (الرصيد المتوقع: ${lowestBalanceMonth.balance} ر.ع) — تحتاج تمويلاً إضافياً أو تقليل التكاليف قبل ذلك.`,
+      en: `⚠️ Cash-out risk in month ${lowestBalanceMonth.month} (projected balance: ${lowestBalanceMonth.balance} OMR) — you'll need extra funding or lower costs before then.`,
+    });
+  }
+
+  return {
+    months,
+    breakEvenMonth,
+    lowestBalanceMonth: lowestBalanceMonth.month,
+    lowestBalance: lowestBalanceMonth.balance,
+    recommendations,
+    scenarios: {
+      optimistic: scenarioSummary(base, base.monthlyGrowthPct + 20),
+      realistic: scenarioSummary(base, base.monthlyGrowthPct),
+      pessimistic: scenarioSummary(base, Math.max(base.monthlyGrowthPct - 20, -50)),
+    },
+    note: { ar: "محاكاة تقديرية مبنية على افتراضاتك — ليست ضماناً لنتيجة فعلية.", en: "An illustrative simulation based on your assumptions — not a guarantee of actual results." },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // فئات المنتجات (Suppliers & Products) — كتالوج تجريبي حسب القطاع، يُستخدم
 // لعرض فئات منتجات جاهزة بدل أن يكتبها المستخدم يدوياً.
 // ---------------------------------------------------------------------------
@@ -939,6 +1030,63 @@ function matchFreelancers(category, lang = "ar") {
   }));
 }
 
+// ---------------------------------------------------------------------------
+// شبكة رواد الأعمال (Entrepreneur Network) — كتالوج تجريبي (mock)، أغلبه في
+// قطاع العناية بالبشرة/التجميل مع أمثلة من قطاعات أخرى (تجارة إلكترونية،
+// تسويق، تصوير) للمطابقة العامة. "تواصل" يعرض معلومات الاتصال المتاحة فقط —
+// لا يوجد نظام رسائل حقيقي، بنفس منطق بقية الكتالوجات التجريبية بالمشروع.
+// ---------------------------------------------------------------------------
+const ENTREPRENEURS = [
+  { id: "e1", name: "سارة العريمي", sectors: ["beauty"], businessAr: "منتجات عناية بالبشرة طبيعية", businessEn: "Natural skincare products", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ 8 أشهر", stageEn: "Operating (8 months)", operating: true, specialtyAr: "عناية طبيعية/عضوية", specialtyEn: "Natural/Organic Skincare", monthlyRevenueAr: "1,200-2,000 ر.ع", monthlyRevenueEn: "1,200-2,000 OMR", customers: 500, followers: 2000, rating: 4.8, skillsAr: ["تسويق رقمي", "اختيار الموردين", "إدارة المخزون", "خدمة العملاء"], skillsEn: ["Digital Marketing", "Supplier Selection", "Inventory Management", "Customer Service"], lookingForAr: ["مستثمرين", "شراكات محلية", "نصائح تصدير"], lookingForEn: ["Investors", "Local Partnerships", "Export Advice"], experienceAr: "5 سنوات تسويق، إدارة أعمال", experienceEn: "5 years marketing, Business Management", availableForMentoring: true, contact: "sara@email.com", social: "@sara_skincare" },
+  { id: "e2", name: "خالد البلوشي", sectors: ["ecommerce", "beauty"], businessAr: "متجر إلكتروني لمنتجات العناية", businessEn: "Online store for skincare products", cityAr: "صلالة", cityEn: "Salalah", stageAr: "يخطط للإطلاق خلال شهر", stageEn: "Planning (launching in 1 month)", operating: false, specialtyAr: "عناية طبيعية", specialtyEn: "Natural Skincare", monthlyRevenueAr: "0 ر.ع (قبل الإطلاق)", monthlyRevenueEn: "0 OMR (Pre-launch)", customers: 0, followers: 0, rating: 0, skillsAr: ["تطوير مواقع", "اختيار المنتجات"], skillsEn: ["Web Development", "Product Selection"], lookingForAr: ["بيانات موردين", "نصائح تسويق", "نصائح تغليف"], lookingForEn: ["Supplier Info", "Marketing Tips", "Packaging Advice"], experienceAr: "3 سنوات تجارة إلكترونية", experienceEn: "3 years e-commerce", availableForMentoring: false, contact: "khalid@email.com", social: "@khalid_skincare" },
+  { id: "e3", name: "نورة الحارثية", sectors: ["beauty"], businessAr: "منتجات عضوية للبشرة", businessEn: "Organic skincare products", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "عناية عضوية", specialtyEn: "Organic Skincare", monthlyRevenueAr: "5,000-8,000 ر.ع", monthlyRevenueEn: "5,000-8,000 OMR", customers: 1500, followers: 10000, rating: 4.9, skillsAr: ["نمو الأعمال", "إدارة الفريق", "التصدير", "بناء العلامة"], skillsEn: ["Business Growth", "Team Management", "Export", "Branding"], lookingForAr: ["توسع دولي", "تطوير منتجات جديدة"], lookingForEn: ["International Expansion", "New Product Development"], experienceAr: "7 سنوات في صناعة التجميل", experienceEn: "7 years beauty industry", availableForMentoring: true, contact: "noura@email.com", social: "@noura_organic" },
+  { id: "e4", name: "أحمد الراشدي", sectors: ["ecommerce"], businessAr: "متجر إلكتروني", businessEn: "Online store", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "تجارة إلكترونية", specialtyEn: "E-commerce", monthlyRevenueAr: "3,000-4,000 ر.ع", monthlyRevenueEn: "3,000-4,000 OMR", customers: 800, followers: 5000, rating: 4.7, skillsAr: ["إنشاء المواقع", "SEO", "استراتيجية المبيعات", "تسويق رقمي"], skillsEn: ["Website Creation", "SEO", "Sales Strategy", "Digital Marketing"], lookingForAr: ["شركاء تسويق", "توسيع الأعمال"], lookingForEn: ["Marketing Partners", "Business Scaling"], experienceAr: "4 سنوات تجارة إلكترونية", experienceEn: "4 years e-commerce", availableForMentoring: true, contact: "ahmed@email.com", social: "@ahmed_ecommerce" },
+  { id: "e5", name: "نورة العبرية", sectors: ["beauty"], businessAr: "مشروع عناية بالبشرة", businessEn: "Skincare business", cityAr: "الخوير", cityEn: "Al Khuwair", stageAr: "تخطط (مرحلة بحث)", stageEn: "Planning (researching)", operating: false, specialtyAr: "عناية طبيعية", specialtyEn: "Natural Skincare", monthlyRevenueAr: "0 ر.ع (قبل الإطلاق)", monthlyRevenueEn: "0 OMR (Pre-launch)", customers: 0, followers: 0, rating: 0, skillsAr: ["أبحاث السوق", "تطوير المنتجات"], skillsEn: ["Market Research", "Product Development"], lookingForAr: ["استراتيجية تسويق", "اختيار الموردين"], lookingForEn: ["Marketing Strategy", "Supplier Selection"], experienceAr: "سنتان في صناعة التجميل", experienceEn: "2 years beauty industry", availableForMentoring: false, contact: "noura_ab@email.com", social: "@noura_ab_skincare" },
+  { id: "e6", name: "عبدالله الحسيني", sectors: ["retail", "beauty"], businessAr: "متجر منتجات طبيعية", businessEn: "Natural products store", cityAr: "السيب", cityEn: "Seeb", stageAr: "تعمل منذ سنة", stageEn: "Operating (1 year)", operating: true, specialtyAr: "منتجات طبيعية", specialtyEn: "Natural Products", monthlyRevenueAr: "1,500-2,500 ر.ع", monthlyRevenueEn: "1,500-2,500 OMR", customers: 300, followers: 1500, rating: 4.5, skillsAr: ["توريد المنتجات", "إدارة التجزئة"], skillsEn: ["Product Sourcing", "Retail Management"], lookingForAr: ["التوسع أونلاين", "تسويق رقمي"], lookingForEn: ["Online Expansion", "Digital Marketing"], experienceAr: "5 سنوات تجزئة", experienceEn: "5 years retail", availableForMentoring: true, contact: "abdullah@email.com", social: "@abdullah_natural" },
+  { id: "e7", name: "مريم القاسمية", sectors: ["beauty"], businessAr: "مشروع تجميل طبيعي", businessEn: "Natural beauty business", cityAr: "بركاء", cityEn: "Barka", stageAr: "تعمل منذ 6 أشهر", stageEn: "Operating (6 months)", operating: true, specialtyAr: "تجميل طبيعي", specialtyEn: "Natural Beauty", monthlyRevenueAr: "800-1,200 ر.ع", monthlyRevenueEn: "800-1,200 OMR", customers: 150, followers: 800, rating: 4.3, skillsAr: ["سوشال ميديا", "تسويق المنتجات"], skillsEn: ["Social Media", "Product Marketing"], lookingForAr: ["نمو الأعمال", "التواصل مع رياديين"], lookingForEn: ["Business Growth", "Networking"], experienceAr: "3 سنوات علاج تجميلي", experienceEn: "3 years beauty therapy", availableForMentoring: true, contact: "maryam@email.com", social: "@maryam_naturalbeauty" },
+  { id: "e8", name: "سعيد الرواحي", sectors: ["beauty", "agro"], businessAr: "مشروع زيوت طبيعية", businessEn: "Natural oils business", cityAr: "نزوى", cityEn: "Nizwa", stageAr: "تعمل منذ 9 أشهر", stageEn: "Operating (9 months)", operating: true, specialtyAr: "زيوت طبيعية", specialtyEn: "Natural Oils", monthlyRevenueAr: "1,000-1,800 ر.ع", monthlyRevenueEn: "1,000-1,800 OMR", customers: 200, followers: 1000, rating: 4.6, skillsAr: ["تطوير المنتجات", "التوريد المحلي"], skillsEn: ["Product Development", "Local Sourcing"], lookingForAr: ["فرص تصدير", "حضور إلكتروني"], lookingForEn: ["Export Opportunities", "Online Presence"], experienceAr: "10 سنوات زراعة", experienceEn: "10 years agriculture", availableForMentoring: true, contact: "said@email.com", social: "@said_naturaloils" },
+  { id: "e9", name: "فاطمة المسكرية", sectors: ["beauty"], businessAr: "مشروع منتجات بشرة عضوية", businessEn: "Organic skincare business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تخطط (مرحلة الفكرة)", stageEn: "Planning (idea stage)", operating: false, specialtyAr: "عناية عضوية", specialtyEn: "Organic Skincare", monthlyRevenueAr: "0 ر.ع (فكرة)", monthlyRevenueEn: "0 OMR (Idea)", customers: 0, followers: 0, rating: 0, skillsAr: ["معرفة بالمنتج"], skillsEn: ["Product Knowledge"], lookingForAr: ["إرشاد", "بيانات موردين", "تأسيس المشروع"], lookingForEn: ["Mentorship", "Supplier Info", "Business Setup"], experienceAr: "بدون خبرة سابقة", experienceEn: "None", availableForMentoring: false, contact: "fatima@email.com", social: "@fatima_organic" },
+  { id: "e10", name: "حمد العوفي", sectors: ["beauty"], businessAr: "متجر عناية بالبشرة للرجال", businessEn: "Men's skincare store", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ 5 أشهر", stageEn: "Operating (5 months)", operating: true, specialtyAr: "عناية رجالية", specialtyEn: "Men's Skincare", monthlyRevenueAr: "600-1,000 ر.ع", monthlyRevenueEn: "600-1,000 OMR", customers: 100, followers: 500, rating: 4.2, skillsAr: ["عناية رجالية", "سوشال ميديا"], skillsEn: ["Men's Grooming", "Social Media"], lookingForAr: ["نصائح تسويق", "استراتيجية نمو"], lookingForEn: ["Marketing Tips", "Growth Strategy"], experienceAr: "سنتان في صناعة التجميل", experienceEn: "2 years beauty industry", availableForMentoring: true, contact: "hamad@email.com", social: "@hamad_menscare" },
+  { id: "e11", name: "ليلى البلوشية", sectors: ["manufact", "beauty"], businessAr: "مشروع تغليف مستدام", businessEn: "Sustainable packaging business", cityAr: "الخوير", cityEn: "Al Khuwair", stageAr: "تعمل منذ سنة", stageEn: "Operating (1 year)", operating: true, specialtyAr: "تغليف مستدام", specialtyEn: "Sustainable Packaging", monthlyRevenueAr: "2,000-3,500 ر.ع", monthlyRevenueEn: "2,000-3,500 OMR", customers: 400, followers: 2000, rating: 4.8, skillsAr: ["حلول مستدامة", "تطوير الأعمال"], skillsEn: ["Sustainable Solutions", "Business Development"], lookingForAr: ["شراكات", "رأس مال للنمو"], lookingForEn: ["Partnerships", "Growth Capital"], experienceAr: "4 سنوات استدامة", experienceEn: "4 years sustainability", availableForMentoring: true, contact: "laila@email.com", social: "@laila_packaging" },
+  { id: "e12", name: "يوسف الهاشمي", sectors: ["services"], businessAr: "مشروع تسويق رقمي", businessEn: "Digital marketing business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "تسويق رقمي", specialtyEn: "Digital Marketing", monthlyRevenueAr: "5,000-7,000 ر.ع", monthlyRevenueEn: "5,000-7,000 OMR", customers: 300, followers: 5000, rating: 4.7, skillsAr: ["استراتيجية تسويق", "تسويق بالمؤثرين", "إنشاء محتوى"], skillsEn: ["Marketing Strategy", "Influencer Marketing", "Content Creation"], lookingForAr: ["شراكات", "عملاء جدد"], lookingForEn: ["Partnerships", "New Clients"], experienceAr: "8 سنوات تسويق", experienceEn: "8 years marketing", availableForMentoring: true, contact: "yousuf@email.com", social: "@yousuf_digital" },
+  { id: "e13", name: "شيماء الكيومية", sectors: ["services"], businessAr: "مشروع تصوير منتجات", businessEn: "Product photography business", cityAr: "السيب", cityEn: "Seeb", stageAr: "تعمل منذ 7 أشهر", stageEn: "Operating (7 months)", operating: true, specialtyAr: "تصوير منتجات", specialtyEn: "Product Photography", monthlyRevenueAr: "800-1,500 ر.ع", monthlyRevenueEn: "800-1,500 OMR", customers: 120, followers: 1200, rating: 4.5, skillsAr: ["تصوير فوتوغرافي", "إنتاج فيديو"], skillsEn: ["Photography", "Video Production"], lookingForAr: ["عملاء أكثر", "شراكات"], lookingForEn: ["More Clients", "Partnerships"], experienceAr: "5 سنوات تصوير", experienceEn: "5 years photography", availableForMentoring: true, contact: "shaima@email.com", social: "@shaima_photography" },
+  { id: "e14", name: "طارق السالمي", sectors: ["ecommerce"], businessAr: "مشروع تجارة إلكترونية", businessEn: "E-commerce business", cityAr: "صحار", cityEn: "Sohar", stageAr: "تعمل منذ سنة ونصف", stageEn: "Operating (1.5 years)", operating: true, specialtyAr: "تجارة إلكترونية", specialtyEn: "E-commerce", monthlyRevenueAr: "2,500-4,000 ر.ع", monthlyRevenueEn: "2,500-4,000 OMR", customers: 600, followers: 3000, rating: 4.4, skillsAr: ["إدارة تجارة إلكترونية", "لوجستيات"], skillsEn: ["E-commerce Management", "Logistics"], lookingForAr: ["توسع", "أتمتة"], lookingForEn: ["Expansion", "Automation"], experienceAr: "6 سنوات لوجستيات", experienceEn: "6 years logistics", availableForMentoring: true, contact: "tariq@email.com", social: "@tariq_ecommerce" },
+  { id: "e15", name: "أمل الريامية", sectors: ["beauty"], businessAr: "مشروع عناية طبيعية للأطفال", businessEn: "Children's natural skincare business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تخطط (منذ 6 أشهر)", stageEn: "Planning (6 months)", operating: false, specialtyAr: "عناية طبيعية للأطفال", specialtyEn: "Children's Natural Care", monthlyRevenueAr: "0 ر.ع (تخطيط)", monthlyRevenueEn: "0 OMR (Planning)", customers: 0, followers: 200, rating: 0, skillsAr: ["أبحاث المنتجات", "خبرة الأمومة"], skillsEn: ["Product Research", "Parenting Expertise"], lookingForAr: ["تطوير منتجات", "بيانات موردين"], lookingForEn: ["Product Development", "Supplier Info"], experienceAr: "3 سنوات تطوير منتجات", experienceEn: "3 years product development", availableForMentoring: false, contact: "amal@email.com", social: "@amal_kidskincare" },
+];
+
+function matchEntrepreneurs(sector, cityLabel, lang = "ar") {
+  const scored = ENTREPRENEURS.map((e) => {
+    let score = 1;
+    if (sector && e.sectors.includes(sector)) score += 3;
+    if (cityLabel && (lang === "ar" ? e.cityAr : e.cityEn).includes(cityLabel)) score += 2;
+    return { ...e, score };
+  }).sort((a, b) => b.score - a.score);
+  return scored.slice(0, 10).map((e) => entrepreneurView(e, lang));
+}
+
+function entrepreneurView(e, lang) {
+  return {
+    id: e.id, name: e.name, business: lang === "ar" ? e.businessAr : e.businessEn,
+    city: lang === "ar" ? e.cityAr : e.cityEn, stage: lang === "ar" ? e.stageAr : e.stageEn, operating: e.operating,
+    specialty: lang === "ar" ? e.specialtyAr : e.specialtyEn, monthlyRevenue: lang === "ar" ? e.monthlyRevenueAr : e.monthlyRevenueEn,
+    customers: e.customers, followers: e.followers, rating: e.rating,
+    skills: lang === "ar" ? e.skillsAr : e.skillsEn, lookingFor: lang === "ar" ? e.lookingForAr : e.lookingForEn,
+    experience: lang === "ar" ? e.experienceAr : e.experienceEn, availableForMentoring: e.availableForMentoring,
+    contact: e.contact, social: e.social,
+  };
+}
+
+function getMentors(lang = "ar") {
+  return ENTREPRENEURS.filter((e) => e.availableForMentoring).map((e) => entrepreneurView(e, lang));
+}
+
+function getSuccessStories(lang = "ar") {
+  return ENTREPRENEURS.filter((e) => e.operating && e.rating >= 4.6)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 4)
+    .map((e) => entrepreneurView(e, lang));
+}
+
 module.exports = {
   SECTORS, CITIES, TEAM_FACTORS,
   GOV_BODIES, SECTOR_BODY,
@@ -949,5 +1097,7 @@ module.exports = {
   FORM_FIELD_DEFS, explainFormField,
   seedApplications,
   computeFinancials,
+  computeCashFlowSimulation,
+  matchEntrepreneurs, getMentors, getSuccessStories,
   getProductCategories, matchSuppliers, matchCompetitors, matchRentals, matchInfluencers, matchFreelancers,
 };

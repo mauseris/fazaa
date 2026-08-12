@@ -25,6 +25,7 @@ const AI_UI = {
     navNames: "اسم المشروع", navBrand: "الهوية والشعار", navSuppliers: "الموردون",
     navCompetitors: "المنافسون والموقع", navMarketing: "التسويق", navContent: "المحتوى",
     navFreelancers: "المستقلون",
+    navCashflow: "محاكاة مالية", navNetwork: "شبكة رواد الأعمال",
     dashGreetingMorning: "صباح الخير 👋", dashGreetingEvening: "مساء الخير 👋",
     dashNoBusiness: "لم تبدأ مشروعك بعد", dashJourney: "مسار مشروعك",
     dashNextAction: "الخطوة التالية", dashRecommended: "مقترح لك",
@@ -47,6 +48,7 @@ const AI_UI = {
     navNames: "Business Name", navBrand: "Brand & Logo", navSuppliers: "Suppliers",
     navCompetitors: "Competitors & Location", navMarketing: "Marketing", navContent: "Content",
     navFreelancers: "Freelancers",
+    navCashflow: "Cash Flow Simulation", navNetwork: "Entrepreneur Network",
     dashGreetingMorning: "Good morning 👋", dashGreetingEvening: "Good evening 👋",
     dashNoBusiness: "You haven't started your business yet", dashJourney: "Business journey",
     dashNextAction: "Next action", dashRecommended: "Recommended",
@@ -83,6 +85,8 @@ const NAV_ITEMS = [
   { id: "marketing", icon: "📣", key: "navMarketing" },
   { id: "content", icon: "📝", key: "navContent" },
   { id: "freelancers", icon: "🧑‍💻", key: "navFreelancers" },
+  { id: "cashflow", icon: "📈", key: "navCashflow" },
+  { id: "network", icon: "🤝", key: "navNetwork" },
 ];
 
 let aiCurrentView = "dashboard";

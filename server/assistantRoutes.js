@@ -179,6 +179,23 @@ function createAssistantRouter(cfg) {
     res.json({ freelancers: data.matchFreelancers(category || null, lang || "ar") });
   });
 
+  router.post("/cashflow-simulation", (req, res) => {
+    res.json(data.computeCashFlowSimulation((req.body || {}).inputs || {}));
+  });
+
+  router.post("/entrepreneurs", (req, res) => {
+    const { sector, city, lang } = req.body || {};
+    res.json({ entrepreneurs: data.matchEntrepreneurs(sector || null, city || null, lang || "ar") });
+  });
+
+  router.get("/mentors", (req, res) => {
+    res.json({ mentors: data.getMentors(req.query.lang || "ar") });
+  });
+
+  router.get("/success-stories", (req, res) => {
+    res.json({ stories: data.getSuccessStories(req.query.lang || "ar") });
+  });
+
   // ---- توليدي، يستدعي النموذج مرة واحدة (بدون حلقة أدوات) ----
 
   router.post("/evaluate-idea", async (req, res) => {
