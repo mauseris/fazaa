@@ -143,34 +143,44 @@ body.palm-theme{
 /* ---------- layout ---------- */
 .app{
   display:grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 300px 1fr 380px;
   gap:0;
   min-height:calc(100vh - 71px);
+  /* .app's track order is pinned ltr permanently (independent of page language)
+     so the new journey panel — always the first grid item — stays physically
+     leftmost in both languages, exactly like the mockup asked for. This is the
+     ONLY thing direction:ltr controls here; it does not affect text. Each
+     column restores its own correct reading direction below via the
+     html[dir="rtl"] rules, so Arabic content still reads right-to-left exactly
+     as before this panel was added. */
+  direction:ltr;
 }
 @media (max-width:900px){
   .app{grid-template-columns:1fr;}
+  .journey-rail{order:-2; border-right:none; border-bottom:1px solid var(--line); height:auto; max-height:70vh;}
   aside.rail{order:-1; border-left:none; border-bottom:1px solid var(--line);}
 }
 
 /* ---------- business journey panel (new left panel) ----------
-   Wrapped in its own dir="ltr" flex row so it always renders on the true
-   physical left edge, in both languages, without touching .app's existing
-   RTL-aware grid behavior at all — each child re-asserts its own reading
-   direction via JS (see applyStaticTranslations) so text still flows
-   correctly per language; only the macro left/right slot order is fixed. */
-.journey-layout{
-  display:flex;
-  min-height:calc(100vh - 71px);
-}
-.journey-layout > .app{ flex:1; min-width:0; }
+   Sits as .app's first grid column (see grid-template-columns above), always
+   physically leftmost regardless of language. */
 .journey-rail{
-  width:300px; flex:none; overflow-y:auto; height:calc(100vh - 71px);
+  overflow-y:auto; height:calc(100vh - 71px);
   border-right:1px solid var(--line);
   padding:18px 16px;
   display:flex; flex-direction:column; gap:14px;
   background:linear-gradient(180deg, rgba(19,28,66,.35), transparent);
 }
 .palm-theme .journey-rail{ background:linear-gradient(180deg, rgba(232,217,182,.35), transparent); }
+/* Restore natural per-language text direction inside all three columns, since
+   .app itself is forced ltr above purely for column ordering. Unscoped
+   (English-mode) content already inherits ltr from .app with no extra rule
+   needed — this only re-asserts rtl when the page is actually in Arabic. */
+html[dir="rtl"] .journey-rail,
+html[dir="rtl"] .app > main.chatcol,
+html[dir="rtl"] .app > aside.rail{
+  direction:rtl;
+}
 .jp-title{font-family:'Cairo'; font-weight:800; font-size:13.5px; letter-spacing:.02em;}
 .jp-subtitle{font-size:12px; color:var(--text-dim); margin-top:2px;}
 .jp-progress-track{width:100%; height:8px; border-radius:999px; background:var(--navy-900); overflow:hidden; margin-top:10px;}
@@ -224,11 +234,7 @@ body.palm-theme{
 .jp-change:hover{color:var(--coral);}
 .jp-loading{font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;}
 .jp-loading .spin{width:8px;height:8px;border-radius:50%; background:var(--gold); animation:blink 1s infinite;}
-@media (max-width:1100px){ .journey-rail{width:260px;} }
-@media (max-width:900px){
-  .journey-layout{flex-direction:column; min-height:0;}
-  .journey-rail{width:auto; height:auto; max-height:70vh; border-right:none; border-bottom:1px solid var(--line); order:-2;}
-}
+@media (max-width:1100px){ .app{grid-template-columns:260px 1fr 380px;} }
 
 /* ---------- chat column ---------- */
 main.chatcol{
@@ -529,7 +535,7 @@ aside.rail{
 </div>
 <div class="pattern-accent"></div>
 
-<div class="journey-layout" dir="ltr">
+<div class="app">
   <aside class="journey-rail" id="journeyPanel">
     <div>
       <div class="jp-title" data-t="jpTitle">Your Business Journey</div>
@@ -545,7 +551,6 @@ aside.rail{
     <div id="jpBody"></div>
   </aside>
 
-  <div class="app">
   <main class="chatcol">
     <div class="stage-strip" id="stageStrip"></div>
     <div id="resumeBanner"></div>
@@ -607,7 +612,6 @@ aside.rail{
     <button class="report-btn" id="reportBtn" onclick="openReport()" disabled>📄 <span data-t="reportBtnLbl">توليد تقرير الجدوى الكامل</span></button>
     <div class="hint" data-t="reportHint">التقرير يُبنى من إجاباتك + جدول تكاليف عُمانية تقريبي (بيانات تجريبية للعرض فقط) ويمكن تصديره PDF مباشرة من نافذة الطباعة.</div>
   </aside>
-  </div>
 </div>
 
 <div class="overlay" id="reportOverlay">
@@ -698,13 +702,11 @@ function t(key){ return UI[LANG][key]; }
 function applyStaticTranslations(){
   document.documentElement.lang = (LANG==='ar' ? 'ar' : 'en');
   document.documentElement.dir = (LANG==='ar' ? 'rtl' : 'ltr');
-  // .journey-layout يبقى دائماً dir="ltr" عشان تثبيت لوحة الرحلة فعلياً على اليسار
-  // بغض النظر عن اللغة؛ نعيد فرض اتجاه القراءة الصحيح داخلياً على كل من اللوحة
-  // والمحتوى الأصلي (.app) عشان النص والتخطيط الداخلي يبقيان كما كانا تماماً.
-  const jpEl = document.getElementById('journeyPanel');
-  const appEl = document.querySelector('.journey-layout > .app');
-  if(jpEl) jpEl.dir = document.documentElement.dir;
-  if(appEl) appEl.dir = document.documentElement.dir;
+  // ملاحظة: .app مقفولة CSS على direction:ltr دائماً (لتثبيت لوحة الرحلة فعلياً
+  // على اليسار)، واتجاه القراءة الصحيح للنص العربي داخل أعمدتها الثلاثة يُعاد
+  // تلقائياً عبر قاعدة CSS ‎html[dir="rtl"] .journey-rail/.chatcol/.rail‎ —
+  // بما أن السطر أعلاه هو من يضبط ‎document.documentElement.dir‎، لا حاجة لأي
+  // جافاسكربت إضافي هنا.
   document.querySelectorAll('[data-t]').forEach(elm=>{
     const key = elm.getAttribute('data-t');
     if(UI[LANG][key] !== undefined) elm.textContent = UI[LANG][key];
