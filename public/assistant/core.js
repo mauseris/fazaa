@@ -24,6 +24,7 @@ const AI_UI = {
     navExplain: "اشرح هذا", navGov: "الجهات الحكومية", navHuman: "تواصل مع إنسان", navVoice: "المساعد الصوتي",
     navNames: "اسم المشروع", navBrand: "الهوية والشعار", navSuppliers: "الموردون",
     navCompetitors: "المنافسون والموقع", navMarketing: "التسويق", navContent: "المحتوى",
+    navFreelancers: "المستقلون",
     dashGreetingMorning: "صباح الخير 👋", dashGreetingEvening: "مساء الخير 👋",
     dashNoBusiness: "لم تبدأ مشروعك بعد", dashJourney: "مسار مشروعك",
     dashNextAction: "الخطوة التالية", dashRecommended: "مقترح لك",
@@ -45,6 +46,7 @@ const AI_UI = {
     navExplain: "Explain This", navGov: "Government Services", navHuman: "Contact / Human Help", navVoice: "Voice Assistant",
     navNames: "Business Name", navBrand: "Brand & Logo", navSuppliers: "Suppliers",
     navCompetitors: "Competitors & Location", navMarketing: "Marketing", navContent: "Content",
+    navFreelancers: "Freelancers",
     dashGreetingMorning: "Good morning 👋", dashGreetingEvening: "Good evening 👋",
     dashNoBusiness: "You haven't started your business yet", dashJourney: "Business journey",
     dashNextAction: "Next action", dashRecommended: "Recommended",
@@ -80,6 +82,7 @@ const NAV_ITEMS = [
   { id: "competitors", icon: "📍", key: "navCompetitors" },
   { id: "marketing", icon: "📣", key: "navMarketing" },
   { id: "content", icon: "📝", key: "navContent" },
+  { id: "freelancers", icon: "🧑‍💻", key: "navFreelancers" },
 ];
 
 let aiCurrentView = "dashboard";

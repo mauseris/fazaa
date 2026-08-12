@@ -174,6 +174,11 @@ function createAssistantRouter(cfg) {
     res.json({ influencers: data.matchInfluencers(sector || null, lang || "ar") });
   });
 
+  router.post("/freelancers", (req, res) => {
+    const { category, lang } = req.body || {};
+    res.json({ freelancers: data.matchFreelancers(category || null, lang || "ar") });
+  });
+
   // ---- توليدي، يستدعي النموذج مرة واحدة (بدون حلقة أدوات) ----
 
   router.post("/evaluate-idea", async (req, res) => {

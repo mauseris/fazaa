@@ -36,6 +36,7 @@ const AssistantAPI = (function () {
     matchSuppliers: (sector, lang) => post("/suppliers", { sector, lang }),
     matchCompetitors: (sector, city, lang) => post("/competitors", { sector, city, lang }),
     matchInfluencers: (sector, lang) => post("/influencers", { sector, lang }),
+    matchFreelancers: (category, lang) => post("/freelancers", { category, lang }),
     generateBusinessNames: (profile, lang) => post("/business-names", { profile, lang }),
     generateBrandIdentity: (profile, lang) => post("/brand-identity", { profile, lang }),
     generateContent: (profile, lang) => post("/content", { profile, lang }),
