@@ -6,27 +6,32 @@
 // ============================================================================
 
 // ------------------------------- Human Handoff -------------------------------
+// لا صندوق نص هنا — نبني "المشكلة" من محادثتك الفعلية مع الوكيل (state.chatHistory)
+// بدل أن تشرحها من جديد في صندوق منفصل، فالملخص يعكس ما ناقشته فعلاً.
 AiViews.human = function (container) {
+  const hasHistory = (state.chatHistory || []).length > 0;
   container.innerHTML = `<h2 class="ai-view-title">👤 ${ta("navHuman")}</h2>
-    <p class="ai-view-sub">${LANG === "ar" ? "اشرح مشكلتك، وبنجهّز لك ملخص جاهز ترسله لموظف ريادة بدل ما تعيد الشرح من الصفر." : "Describe your issue, and we'll prepare a ready summary to send to a Riyada staff member instead of re-explaining everything."}</p>
-    <div class="ai-card">
-      <textarea class="ai-textarea" id="aiHumanIssue" placeholder="${LANG === "ar" ? "مثال: مو متأكد إذا أستحق تمويل أو لا" : "Example: Not sure whether I qualify for funding"}"></textarea>
-      <button class="ai-btn primary" style="margin-top:10px;" onclick="generateCaseSummary()">${LANG === "ar" ? "جهّز ملخص الحالة" : "Prepare case summary"}</button>
-    </div>
+    <p class="ai-view-sub">${LANG === "ar" ? "بنجهّز لك ملخص جاهز من محادثتك الحالية ترسله لموظف ريادة بدل ما تعيد الشرح من الصفر." : "We'll prepare a ready summary from your current chat to send to a Riyada staff member instead of re-explaining everything."}</p>
+    ${hasHistory
+      ? `<div class="ai-card"><button class="ai-btn primary" onclick="generateCaseSummary()">${LANG === "ar" ? "جهّز ملخص الحالة" : "Prepare case summary"}</button></div>`
+      : `<div class="ai-empty">${LANG === "ar" ? "احكيلي أولاً عن وضعك أو مشكلتك في المحادثة الرئيسية، وبعدها أقدر أجهّز لك الملخص." : "Tell me about your situation or issue in the main chat first, then I can prepare the summary."}</div>
+         <button class="ai-btn primary" onclick="askInChat('')">${LANG === "ar" ? "💬 اذهب للمحادثة" : "💬 Go to the chat"}</button>`}
     <div id="aiHumanResult"></div>`;
 };
 async function generateCaseSummary() {
-  const issue = (document.getElementById("aiHumanIssue").value || "").trim();
-  if (!issue) return;
+  const transcript = (state.chatHistory || [])
+    .map((m) => `${m.role === "assistant" ? (LANG === "ar" ? "الوكيل" : "Agent") : (LANG === "ar" ? "المستخدم" : "User")}: ${m.content}`)
+    .join("\n");
+  if (!transcript) return;
   const box = document.getElementById("aiHumanResult");
   box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
   try {
-    const { result } = await AssistantAPI.generateCaseSummary(getBusinessProfile(), issue, LANG);
+    const { result } = await AssistantAPI.generateCaseSummary(getBusinessProfile(), transcript, LANG);
     if (result.raw) { box.innerHTML = `<div class="ai-card" style="white-space:pre-wrap;">${escapeHtml(result.raw)}</div>`; return; }
     const summaryText = buildSummaryText(result);
     box.innerHTML = `<div class="ai-card">
       <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشروع" : "Business"}</div><div style="font-size:13px;">${escapeHtml(result.business || "")}</div></div>
-      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشكلة" : "Issue"}</div><div style="font-size:13px;">${escapeHtml(result.issue || issue)}</div></div>
+      <div class="ai-section"><div class="sec-title">${LANG === "ar" ? "المشكلة" : "Issue"}</div><div style="font-size:13px;">${escapeHtml(result.issue || "")}</div></div>
       ${listSection(result.infoCollected, LANG === "ar" ? "المعلومات المجموعة" : "Information collected")}
       ${listSection(result.documents, LANG === "ar" ? "المستندات" : "Documents")}
       ${listSection(result.questionsForStaff, LANG === "ar" ? "أسئلة لموظف ريادة" : "Questions for Riyada staff")}

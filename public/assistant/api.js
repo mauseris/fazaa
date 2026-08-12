@@ -32,5 +32,13 @@ const AssistantAPI = (function () {
     generateBusinessPlan: (profile, answers, lang) => post("/business-plan", { profile, answers, lang }),
     explainTerm: (term, lang) => post("/explain", { term, lang }),
     generateCaseSummary: (profile, issue, lang) => post("/case-summary", { profile, issue, lang }),
+    getProductCategories: (sector) => get(`/product-categories?sector=${encodeURIComponent(sector || "")}`),
+    matchSuppliers: (sector, lang) => post("/suppliers", { sector, lang }),
+    matchCompetitors: (sector, city, lang) => post("/competitors", { sector, city, lang }),
+    matchInfluencers: (sector, lang) => post("/influencers", { sector, lang }),
+    generateBusinessNames: (profile, lang) => post("/business-names", { profile, lang }),
+    generateBrandIdentity: (profile, lang) => post("/brand-identity", { profile, lang }),
+    generateContent: (profile, lang) => post("/content", { profile, lang }),
+    generateMarketingStrategy: (profile, lang) => post("/marketing-strategy", { profile, lang }),
   };
 })();

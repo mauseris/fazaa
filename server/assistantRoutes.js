@@ -152,6 +152,28 @@ function createAssistantRouter(cfg) {
     res.json({ applications: data.seedApplications({ sector: req.query.sector || null }) });
   });
 
+  router.get("/product-categories", (req, res) => {
+    res.json({ categories: data.getProductCategories(req.query.sector || null) });
+  });
+
+  router.post("/suppliers", (req, res) => {
+    const { sector, lang } = req.body || {};
+    res.json({ suppliers: data.matchSuppliers(sector || null, lang || "ar") });
+  });
+
+  router.post("/competitors", (req, res) => {
+    const { sector, city, lang } = req.body || {};
+    res.json({
+      competitors: data.matchCompetitors(sector || null, city || null, lang || "ar"),
+      rentals: data.matchRentals(city || null, lang || "ar"),
+    });
+  });
+
+  router.post("/influencers", (req, res) => {
+    const { sector, lang } = req.body || {};
+    res.json({ influencers: data.matchInfluencers(sector || null, lang || "ar") });
+  });
+
   // ---- توليدي، يستدعي النموذج مرة واحدة (بدون حلقة أدوات) ----
 
   router.post("/evaluate-idea", async (req, res) => {
@@ -159,10 +181,82 @@ function createAssistantRouter(cfg) {
       const { text, lang } = req.body || {};
       if (!text || !text.trim()) return res.status(400).json({ error: "الفكرة مطلوبة" });
       const useAr = (lang || "ar") === "ar";
+      // تحليل SWOT كامل بدل تقييم عام — أقرب لما يحتاجه صاحب مشروع فعلياً قبل البدء.
       const system = useAr
-        ? "أنت مستشار أعمال عُماني. قيّم فكرة المستخدم بواقعية دون المبالغة أو ضمان النجاح. أعد الجواب حصراً كـ JSON بالمفاتيح التالية (نص عربي بسيط، جمل قصيرة): targetCustomers, demand, competition, requirements (مصفوفة نصوص), risks (مصفوفة نصوص), costs, questions (مصفوفة أسئلة على المستخدم الإجابة عليها قبل البدء). لا تكتب أي نص خارج كائن الـ JSON."
-        : "You are an Omani business advisor. Evaluate the user's idea realistically, without hype or guaranteeing success. Reply strictly as JSON with keys: targetCustomers, demand, competition, requirements (array), risks (array), costs, questions (array). No text outside the JSON object.";
-      const raw = await callModelOnce(system, text, cfg, 1200);
+        ? "أنت مستشار أعمال عُماني. حلّل فكرة المستخدم بواقعية عبر تحليل SWOT دون المبالغة أو ضمان النجاح. أعد الجواب حصراً كـ JSON بالمفاتيح التالية (نص عربي بسيط، جمل قصيرة): strengths (مصفوفة نقاط قوة), weaknesses (مصفوفة نقاط ضعف), opportunities (مصفوفة فرص), threats (مصفوفة تهديدات), targetMarket (فقرة عن حجم السوق والعميل المستهدف والموقع والسعر المناسب), validationQuestions (مصفوفة أسئلة على المستخدم الإجابة عنها قبل البدء), nextSteps (مصفوفة خطوات عملية قادمة). لا تكتب أي نص خارج كائن الـ JSON."
+        : "You are an Omani business advisor. Analyze the user's idea realistically via a SWOT analysis, without hype or guaranteeing success. Reply strictly as JSON with keys: strengths (array), weaknesses (array), opportunities (array), threats (array), targetMarket (a paragraph on market size, target customer, location, and suitable price point), validationQuestions (array of questions the user should answer before starting), nextSteps (array of concrete next actions). No text outside the JSON object.";
+      const raw = await callModelOnce(system, text, cfg, 3000);
+      res.json({ result: safeParseJson(raw) });
+    } catch (e) {
+      res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });
+    }
+  });
+
+  router.post("/business-names", async (req, res) => {
+    try {
+      const { profile, lang } = req.body || {};
+      if (!profile || !profile.idea) return res.status(400).json({ error: "بيانات المشروع مطلوبة" });
+      const useAr = (lang || "ar") === "ar";
+      const contextText = JSON.stringify(profile);
+      const system = useAr
+        ? "أنت خبير تسمية علامات تجارية عُماني. بناءً على بيانات المشروع المُعطاة، ولّد ١٠ اقتراحات أسماء تجارية مناسبة. أعد الجواب حصراً كـ JSON بالمفتاح names: مصفوفة من ١٠ عناصر، كل عنصر بالمفاتيح: arabicName, englishName, transliteration, meaning (شرح مختصر لمعنى الاسم), whyItFits (سطر واحد يشرح ملاءمته لهذا المشروع تحديداً), memorabilityScore (رقم من ١ إلى ١٠), suggestedInstagramHandle, suggestedTiktokHandle. لا تكتب أي نص خارج كائن الـ JSON."
+        : "You are an Omani brand-naming expert. Based on the given business data, generate 10 suitable business-name suggestions. Reply strictly as JSON with key names: an array of 10 items, each with keys: arabicName, englishName, transliteration, meaning (a short explanation of what the name means), whyItFits (one line on why it fits this specific business), memorabilityScore (a number 1-10), suggestedInstagramHandle, suggestedTiktokHandle. No text outside the JSON object.";
+      const raw = await callModelOnce(system, contextText, cfg, 3200);
+      const result = safeParseJson(raw);
+      if (Array.isArray(result.names)) {
+        result.names = result.names.map((n) => ({
+          ...n,
+          domainAvailable: null, // لا يوجد اتصال حقيقي بمزوّد نطاقات — لا نؤكد التوفر أبداً
+        }));
+      }
+      res.json({ result });
+    } catch (e) {
+      res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });
+    }
+  });
+
+  router.post("/brand-identity", async (req, res) => {
+    try {
+      const { profile, lang } = req.body || {};
+      if (!profile || !profile.idea) return res.status(400).json({ error: "بيانات المشروع مطلوبة" });
+      const useAr = (lang || "ar") === "ar";
+      const contextText = JSON.stringify(profile);
+      const system = useAr
+        ? "أنت مصمم هوية تجارية عُماني. بناءً على بيانات المشروع، اقترح هوية بصرية متكاملة. أعد الجواب حصراً كـ JSON بالمفاتيح: brandStyle (كلمة أو كلمتين تصف الأسلوب), brandVoice (نبرة الصوت التسويقية بجملة), colors: كائن بالمفاتيح primary, secondary, accent (كل قيمة كائن {hex, nameAr} بألوان متناسقة فعلياً وأكواد hex صحيحة), concepts: مصفوفة من ٣ عناصر لمفاهيم شعار مختلفة، كل عنصر بالمفاتيح styleAr (وصف الأسلوب البصري), iconHint (اسم أيقونة/رمز بسيط تصف الشعار مثل 'ورقة نخيل' أو 'قطرة ماء', بالإنجليزية وبكلمة أو كلمتين فقط تصف شكلاً بصرياً بسيطاً), fontStyleAr (وصف نوع الخط المناسب). لا تكتب أي نص خارج كائن الـ JSON."
+        : "You are an Omani brand identity designer. Based on the business data, propose a complete visual identity. Reply strictly as JSON with keys: brandStyle (a word or two describing the style), brandVoice (one sentence on the marketing tone), colors: an object with keys primary, secondary, accent (each value an object {hex, name} with genuinely harmonious colors and valid hex codes), concepts: an array of 3 different logo concepts, each with keys style (visual style description), iconHint (a one-two word name of a simple icon/symbol for the logo, e.g. 'palm leaf' or 'water drop'), fontStyle (description of a suitable font style). No text outside the JSON object.";
+      const raw = await callModelOnce(system, contextText, cfg, 1800);
+      res.json({ result: safeParseJson(raw) });
+    } catch (e) {
+      res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });
+    }
+  });
+
+  router.post("/content", async (req, res) => {
+    try {
+      const { profile, lang } = req.body || {};
+      if (!profile || !profile.idea) return res.status(400).json({ error: "بيانات المشروع مطلوبة" });
+      const useAr = (lang || "ar") === "ar";
+      const contextText = JSON.stringify(profile);
+      const system = useAr
+        ? "أنت كاتب محتوى تسويقي عُماني. بناءً على بيانات المشروع، اكتب محتوى جاهز للنشر مباشرة. أعد الجواب حصراً كـ JSON بالمفاتيح: instagramBio (أقل من ١٥٠ حرفاً مع إيموجي مناسبة), productDescription (فقرة قصيرة لوصف منتج/خدمة رئيسية), aboutUs (فقرة عن قصة المشروع), whatsappGreeting (رسالة ترحيب لعملاء واتساب بزنس). لغة عربية بسيطة عُمانية دافئة. لا تكتب أي نص خارج كائن الـ JSON."
+        : "You are an Omani marketing copywriter. Based on the business data, write ready-to-publish content. Reply strictly as JSON with keys: instagramBio (under 150 characters with fitting emoji), productDescription (a short paragraph describing a flagship product/service), aboutUs (a paragraph about the business's story), whatsappGreeting (a WhatsApp Business welcome message). Warm, simple, plain language. No text outside the JSON object.";
+      const raw = await callModelOnce(system, contextText, cfg, 1400);
+      res.json({ result: safeParseJson(raw) });
+    } catch (e) {
+      res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });
+    }
+  });
+
+  router.post("/marketing-strategy", async (req, res) => {
+    try {
+      const { profile, lang } = req.body || {};
+      if (!profile || !profile.idea) return res.status(400).json({ error: "بيانات المشروع مطلوبة" });
+      const useAr = (lang || "ar") === "ar";
+      const contextText = JSON.stringify(profile);
+      const system = useAr
+        ? "أنت مستشار تسويق عُماني. بناءً على بيانات المشروع، اقترح استراتيجية تسويق مبدئية. أعد الجواب حصراً كـ JSON بالمفاتيح: platforms (مصفوفة منصات مقترحة), budgetSuggestionOmr (نطاق ميزانية شهرية مقترحة كنص مثل '500-1000'), contentIdeas (مصفوفة من ٦-٨ أفكار محتوى محددة لهذا المشروع تحديداً). لا تكتب أي نص خارج كائن الـ JSON."
+        : "You are an Omani marketing advisor. Based on the business data, propose an initial marketing strategy. Reply strictly as JSON with keys: platforms (array of suggested platforms), budgetSuggestionOmr (a suggested monthly budget range as text like '500-1000'), contentIdeas (array of 6-8 content ideas specific to this exact business). No text outside the JSON object.";
+      const raw = await callModelOnce(system, contextText, cfg, 900);
       res.json({ result: safeParseJson(raw) });
     } catch (e) {
       res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });
@@ -209,7 +303,7 @@ function createAssistantRouter(cfg) {
       const system = useAr
         ? "بناءً على بيانات المشروع ووصف المشكلة المُعطاة، جهّز ملخص حالة منظّم ليرسله المستخدم لموظف ريادة بدل إعادة شرح كل شيء من الصفر. أعد الجواب حصراً كـ JSON بالمفاتيح: business (وصف مختصر للمشروع), issue (المشكلة بجملة واحدة), infoCollected (مصفوفة نقاط عن ما هو معروف عن المشروع), documents (مصفوفة أسماء مستندات ذات صلة إن وُجدت), questionsForStaff (مصفوفة أسئلة محددة يحتاج الموظف الإجابة عليها). لا تكتب أي نص خارج كائن الـ JSON."
         : "Based on the given business data and issue description, prepare a structured case summary for the user to send a Riyada staff member instead of re-explaining everything. Reply strictly as JSON with keys: business (short business description), issue (one-sentence issue), infoCollected (array of known facts about the business), documents (array of relevant document names, if any), questionsForStaff (array of specific questions staff need to answer). No text outside the JSON object.";
-      const raw = await callModelOnce(system, contextText, cfg, 900);
+      const raw = await callModelOnce(system, contextText, cfg, 1300);
       res.json({ result: safeParseJson(raw) });
     } catch (e) {
       res.status(e.status || 500).json({ error: e.message || "خطأ داخلي" });

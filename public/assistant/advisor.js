@@ -6,33 +6,44 @@
 // ============================================================================
 
 // ------------------------------- Evaluate My Idea ------------------------------
+// لا يوجد صندوق نص هنا — الفكرة تُقرأ حصراً من state.idea التي استخرجتها
+// المحادثة الرئيسية، بدل سؤال المستخدم عن فكرته مرة ثانية في مكان منفصل.
 AiViews.idea = function (container) {
+  if (!state.idea) {
+    container.innerHTML = `<h2 class="ai-view-title">💡 ${ta("navIdea")}</h2>
+      <div class="ai-empty">${LANG === "ar" ? "احكيلي عن فكرة مشروعك في المحادثة الرئيسية أولاً، وبعدها أقدر أقيّمها لك هنا." : "Tell me about your business idea in the main chat first, then I can evaluate it here."}</div>
+      <button class="ai-btn primary" onclick="switchAiView('start')">${ta("navStart")}</button>`;
+    return;
+  }
   container.innerHTML = `<h2 class="ai-view-title">💡 ${ta("navIdea")}</h2>
-    <p class="ai-view-sub">${LANG === "ar" ? "اكتب فكرتك بجملة أو جملتين، وبنقيّمها بواقعية (مو ضمان نجاح)." : "Describe your idea in a sentence or two — we'll evaluate it realistically (not a success guarantee)."}</p>
+    <p class="ai-view-sub">${LANG === "ar" ? "بنقيّم فكرتك بواقعية (مو ضمان نجاح) بناءً على وصفك لها في المحادثة." : "We'll evaluate your idea realistically (not a success guarantee) based on what you told the chat."}</p>
     <div class="ai-card">
-      <textarea class="ai-textarea" id="aiIdeaText" placeholder="${LANG === "ar" ? "مثال: أبي أبيع منتجات عناية بالبشرة يدوية الصنع أونلاين" : "Example: I want to sell handmade skincare products online"}">${escapeHtml(state.idea || "")}</textarea>
+      <div style="font-size:13.5px;color:var(--text);line-height:1.7;">${escapeHtml(state.idea)}</div>
       <button class="ai-btn primary" style="margin-top:10px;" onclick="runIdeaEvaluation()">${LANG === "ar" ? "قيّم الفكرة" : "Evaluate idea"}</button>
     </div>
     <div id="aiIdeaResult"></div>`;
 };
 async function runIdeaEvaluation() {
-  const text = (document.getElementById("aiIdeaText").value || "").trim();
+  const text = state.idea || "";
   if (!text) return;
   const box = document.getElementById("aiIdeaResult");
   box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
   try {
     const { result } = await AssistantAPI.evaluateIdea(text, LANG);
     if (result.raw) { box.innerHTML = `<div class="ai-card" style="white-space:pre-wrap;">${escapeHtml(result.raw)}</div>`; return; }
-    const sections = [
-      ["targetCustomers", LANG === "ar" ? "العملاء المستهدفون" : "Target customers"],
-      ["demand", LANG === "ar" ? "الطلب المحتمل" : "Potential demand"],
-      ["competition", LANG === "ar" ? "المنافسة" : "Competition"],
-      ["costs", LANG === "ar" ? "التكاليف المتوقعة" : "Expected costs"],
-    ];
-    box.innerHTML = sections.map(([k, label]) => result[k] ? `<div class="ai-section"><div class="sec-title">${label}</div><div style="font-size:13px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result[k])}</div></div>` : "").join("") +
-      listSection(result.requirements, LANG === "ar" ? "متطلبات أساسية" : "Basic requirements") +
-      listSection(result.risks, LANG === "ar" ? "مخاطر محتملة" : "Potential risks") +
-      listSection(result.questions, LANG === "ar" ? "أسئلة عليك الإجابة عنها قبل البدء" : "Questions to answer before starting");
+    const quad = (arr, label, cls) => (Array.isArray(arr) && arr.length) ? `
+      <div class="ai-card" style="margin-bottom:8px;">
+        <div class="sec-title ${cls}">${label}</div>
+        <ul class="ai-reason-list">${arr.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+      </div>` : "";
+    box.innerHTML = `<h3 style="margin:4px 0 8px;">📊 SWOT</h3>` +
+      quad(result.strengths, LANG === "ar" ? "✅ نقاط القوة" : "✅ Strengths", "good") +
+      quad(result.weaknesses, LANG === "ar" ? "⚠️ نقاط الضعف" : "⚠️ Weaknesses", "warn") +
+      quad(result.opportunities, LANG === "ar" ? "🚀 الفرص" : "🚀 Opportunities", "good") +
+      quad(result.threats, LANG === "ar" ? "🔴 التهديدات" : "🔴 Threats", "bad") +
+      (result.targetMarket ? `<div class="ai-section"><div class="sec-title">🎯 ${LANG === "ar" ? "السوق المستهدف" : "Target Market"}</div><div style="font-size:13px;color:var(--text-dim);line-height:1.7;">${escapeHtml(result.targetMarket)}</div></div>` : "") +
+      listSection(result.validationQuestions, LANG === "ar" ? "⚠️ أسئلة عليك الإجابة عنها للتحقق" : "⚠️ Questions to Validate") +
+      listSection(result.nextSteps, LANG === "ar" ? "📋 الخطوات القادمة" : "📋 Next Steps");
   } catch (e) { box.innerHTML = `<div class="ai-error">${ta("errorGeneric")}</div>`; }
 }
 function listSection(arr, label) {
@@ -142,22 +153,21 @@ async function runFinancialCalc() {
 }
 
 // ------------------------------- Explain This -------------------------------
+// بدون صندوق نص منفصل — المحادثة الرئيسية أصلاً قادرة على شرح أي مصطلح تسألها
+// عنه، فنوجّه المستخدم إليها بدل تكرار نفس القدرة في صندوق نص ثانٍ.
 AiViews.explain = function (container) {
   container.innerHTML = `<h2 class="ai-view-title">❓ ${ta("navExplain")}</h2>
-    <p class="ai-view-sub">${LANG === "ar" ? "الصق أي مصطلح أو جملة حكومية معقّدة، وبنشرحها بعربي بسيط." : "Paste any complicated government/business term or sentence for a plain-language explanation."}</p>
-    <div class="ai-card">
-      <textarea class="ai-textarea" id="aiExplainText" placeholder="${LANG === "ar" ? "مثال: السجل التجاري" : "Example: Commercial registration"}"></textarea>
-      <button class="ai-btn primary" style="margin-top:10px;" onclick="runExplain()">${LANG === "ar" ? "اشرح" : "Explain"}</button>
-    </div>
-    <div id="aiExplainResult"></div>`;
+    <p class="ai-view-sub">${LANG === "ar" ? "اكتب أي مصطلح أو جملة حكومية معقّدة في المحادثة الرئيسية، وبنشرحها بعربي بسيط هناك." : "Type any complicated government/business term or sentence in the main chat, and we'll explain it there in plain language."}</p>
+    <button class="ai-btn primary" onclick="askInChat('${LANG === "ar" ? "اشرح لي: " : "Explain to me: "}')">${LANG === "ar" ? "💬 اسأل في المحادثة" : "💬 Ask in the chat"}</button>`;
 };
-async function runExplain() {
-  const term = (document.getElementById("aiExplainText").value || "").trim();
-  if (!term) return;
-  const box = document.getElementById("aiExplainResult");
-  box.innerHTML = `<div class="ai-loading"><span class="dot"></span>${ta("loading")}</div>`;
-  try {
-    const { explanation } = await AssistantAPI.explainTerm(term, LANG);
-    box.innerHTML = `<div class="ai-card" style="white-space:pre-wrap;line-height:1.8;font-size:13.5px;">${escapeHtml(explanation)}</div>`;
-  } catch (e) { box.innerHTML = `<div class="ai-error">${ta("errorGeneric")}</div>`; }
+// يُستخدم من أكثر من ميزة (اشرح هذا، لوحة التحكم) لتحويل المستخدم للمحادثة
+// الحقيقية بدل بناء صندوق نص موازٍ في كل ميزة على حدة.
+function askInChat(prefill) {
+  closeAssistant();
+  const composer = document.getElementById("textInput");
+  if (composer) {
+    composer.value = prefill || "";
+    composer.focus();
+    if (composer.setSelectionRange) composer.setSelectionRange(composer.value.length, composer.value.length);
+  }
 }
