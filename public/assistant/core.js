@@ -24,8 +24,8 @@ const AI_UI = {
     navExplain: "اشرح هذا", navGov: "الجهات الحكومية", navHuman: "تواصل مع إنسان", navVoice: "المساعد الصوتي",
     navNames: "اسم المشروع", navBrand: "الهوية والشعار", navSuppliers: "الموردون",
     navCompetitors: "المنافسون والموقع", navMarketing: "التسويق", navContent: "المحتوى",
-    navSimulation: "محاكاة مالية", navCashflow: "التدفق النقدي", navRestocking: "إعادة التخزين",
-    navPricing: "التسعير الديناميكي", navNetwork: "شبكة رواد الأعمال", navFreelancers: "المستقلون",
+    navRestocking: "إعادة التخزين", navPricing: "التسعير الديناميكي",
+    navFreelancers: "المستقلون", navCashflow: "محاكاة مالية", navNetwork: "شبكة رواد الأعمال",
     dashGreetingMorning: "صباح الخير 👋", dashGreetingEvening: "مساء الخير 👋",
     dashNoBusiness: "لم تبدأ مشروعك بعد", dashJourney: "مسار مشروعك",
     dashNextAction: "الخطوة التالية", dashRecommended: "مقترح لك",
@@ -47,8 +47,8 @@ const AI_UI = {
     navExplain: "Explain This", navGov: "Government Services", navHuman: "Contact / Human Help", navVoice: "Voice Assistant",
     navNames: "Business Name", navBrand: "Brand & Logo", navSuppliers: "Suppliers",
     navCompetitors: "Competitors & Location", navMarketing: "Marketing", navContent: "Content",
-    navSimulation: "Cash Flow Simulation", navCashflow: "Cash Flow", navRestocking: "Predictive Restocking",
-    navPricing: "Dynamic Pricing", navNetwork: "Entrepreneur Network", navFreelancers: "Freelancers",
+    navRestocking: "Predictive Restocking", navPricing: "Dynamic Pricing",
+    navFreelancers: "Freelancers", navCashflow: "Cash Flow Simulation", navNetwork: "Entrepreneur Network",
     dashGreetingMorning: "Good morning 👋", dashGreetingEvening: "Good evening 👋",
     dashNoBusiness: "You haven't started your business yet", dashJourney: "Business journey",
     dashNextAction: "Next action", dashRecommended: "Recommended",
@@ -84,12 +84,11 @@ const NAV_ITEMS = [
   { id: "competitors", icon: "📍", key: "navCompetitors" },
   { id: "marketing", icon: "📣", key: "navMarketing" },
   { id: "content", icon: "📝", key: "navContent" },
-  { id: "simulation", icon: "📈", key: "navSimulation" },
-  { id: "cashflow", icon: "💰", key: "navCashflow" },
   { id: "restocking", icon: "📦", key: "navRestocking" },
   { id: "pricing", icon: "🎯", key: "navPricing" },
+  { id: "freelancers", icon: "🧑‍💻", key: "navFreelancers" },
+  { id: "cashflow", icon: "📈", key: "navCashflow" },
   { id: "network", icon: "🤝", key: "navNetwork" },
-  { id: "freelancers", icon: "🤝", key: "navFreelancers" },
 ];
 
 let aiCurrentView = "dashboard";
@@ -116,7 +115,7 @@ function ensureAssistantState() {
       businessName: "", roadmapDone: {}, documents: {}, applications: [],
       reminders: [], businessPlan: {}, ideaEvaluations: [], financialInputs: {},
       profileAnswers: {}, generatedNames: [], brandIdentity: null, generatedContent: null,
-      cashflowLog: [], dismissedRestockAlerts: {}, marketingStrategy: null,
+      dismissedRestockAlerts: {}, marketingStrategy: null,
     };
   }
   return state.assistant;

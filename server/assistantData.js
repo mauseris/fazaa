@@ -236,7 +236,7 @@ function buildRoadmap(sectorKey) {
 // ---------------------------------------------------------------------------
 const SERVICES = [
   {
-    id: "riyada-consulting",
+    id: "riyada-consulting", fundingProgram: true,
     nameAr: "استشارات ريادة المجانية", nameEn: "Riyada free consulting",
     stages: ["idea", "registered", "operating"], sectors: "any",
     whyAr: "متاحة لأي رائد أعمال عُماني بغض النظر عن مرحلة مشروعه.", whyEn: "Available to any Omani entrepreneur regardless of business stage.",
@@ -263,7 +263,7 @@ const SERVICES = [
     url: GOV_BODIES.occi.url,
   },
   {
-    id: "odb-interest-free",
+    id: "odb-interest-free", fundingProgram: true,
     nameAr: "قرض بدون فائدة — بنك التنمية العُماني", nameEn: "Interest-free loan — Oman Development Bank",
     stages: ["registered", "operating"], sectors: "any", maxFunding: 15000,
     whyAr: "احتياجك التمويلي ضمن سقف القرض بدون فائدة (حتى 15,000 ر.ع).", whyEn: "Your funding need fits the interest-free loan ceiling (up to 15,000 OMR).",
@@ -272,7 +272,7 @@ const SERVICES = [
     url: GOV_BODIES.odb.url,
   },
   {
-    id: "odb-development-loan",
+    id: "odb-development-loan", fundingProgram: true,
     nameAr: "قرض تنموي بفائدة 3% — بنك التنمية العُماني", nameEn: "3% development loan — Oman Development Bank",
     stages: ["registered", "operating"], sectors: "any", minFunding: 15000,
     whyAr: "احتياجك التمويلي أكبر من سقف القرض بدون فائدة.", whyEn: "Your funding need exceeds the interest-free loan ceiling.",
@@ -306,6 +306,69 @@ const SERVICES = [
     requiredAr: ["وصف النشاط", "الموقع المقترح"], requiredEn: ["Activity description", "Proposed location"],
     nextAr: "تواصل مع الوزارة لمعرفة برامج الدعم المتاحة", nextEn: "Contact the ministry to learn about available support programs",
     url: GOV_BODIES.mht.url,
+  },
+  {
+    id: "youth-business-support", fundingProgram: true,
+    nameAr: "برنامج دعم مشاريع الشباب", nameEn: "Youth Business Support Program",
+    stages: ["idea", "registered"], sectors: "any", maxFunding: 15000,
+    whyAr: "مخصص لرواد الأعمال الشباب (18-35 سنة) في المراحل المبكرة.", whyEn: "Aimed at young entrepreneurs (18-35) in early stages.",
+    requiredAr: ["إثبات العمر (18-35)", "خطة عمل", "الجنسية العُمانية"], requiredEn: ["Proof of age (18-35)", "A business plan", "Omani citizenship"],
+    nextAr: "قدّم طلبك عبر هيئة ريادة", nextEn: "Apply via Riyada",
+    url: GOV_BODIES.riyada.url,
+  },
+  {
+    id: "women-entrepreneurship-fund", fundingProgram: true,
+    nameAr: "صندوق ريادة الأعمال النسائية", nameEn: "Women Entrepreneurship Fund",
+    stages: ["idea", "registered"], sectors: "any", maxFunding: 20000,
+    whyAr: "دعم مخصص لأصحاب المشاريع من النساء العُمانيات.", whyEn: "Dedicated support for Omani women-owned businesses.",
+    requiredAr: ["ملكية نسائية للمشروع", "خطة عمل", "الجنسية العُمانية"], requiredEn: ["Women-owned business", "A business plan", "Omani citizenship"],
+    nextAr: "قدّم طلبك عبر هيئة ريادة", nextEn: "Apply via Riyada",
+    url: GOV_BODIES.riyada.url,
+  },
+  {
+    id: "digital-business-accelerator", fundingProgram: true,
+    nameAr: "مسرّع الأعمال الرقمية", nameEn: "Digital Business Accelerator",
+    stages: ["idea", "registered"], sectors: ["tech", "ecommerce"], maxFunding: 10000,
+    whyAr: "منحة لدعم المشاريع الرقمية ذات حضور إلكتروني وإمكانية نمو.", whyEn: "A grant supporting digital businesses with an online presence and growth potential.",
+    requiredAr: ["نشاط رقمي أو متجر إلكتروني", "حضور رقمي فعلي"], requiredEn: ["A digital/online business", "An actual digital presence"],
+    nextAr: "قدّم طلبك عبر هيئة ريادة", nextEn: "Apply via Riyada",
+    url: GOV_BODIES.riyada.url,
+  },
+  {
+    id: "export-development-fund", fundingProgram: true,
+    nameAr: "صندوق تنمية الصادرات", nameEn: "Export Development Fund",
+    stages: ["registered", "operating"], sectors: "any", minFunding: 15000, maxFunding: 40000,
+    whyAr: "لدعم المشاريع القادرة على التصدير خارج عُمان.", whyEn: "Supports businesses with export capacity outside Oman.",
+    requiredAr: ["قدرة تصديرية", "السجل التجاري", "خطة عمل"], requiredEn: ["Export capacity", "Commercial registration", "A business plan"],
+    nextAr: "قدّم طلب التمويل عبر بنك التنمية العُماني", nextEn: "Submit a financing application via Oman Development Bank",
+    url: GOV_BODIES.odb.url,
+  },
+  {
+    id: "innovation-grant", fundingProgram: true,
+    nameAr: "برنامج منح الابتكار", nameEn: "Innovation Grant Program",
+    stages: ["idea", "registered"], sectors: "any", maxFunding: 15000,
+    whyAr: "منحة (وليست قرضاً) للأفكار المبتكرة القابلة للبحث والتطوير.", whyEn: "A grant (not a loan) for innovative, R&D-capable ideas.",
+    requiredAr: ["فكرة مبتكرة موثّقة", "وصف تقني للفكرة"], requiredEn: ["A documented innovative idea", "A technical description of the idea"],
+    nextAr: "قدّم طلبك عبر هيئة ريادة", nextEn: "Apply via Riyada",
+    url: GOV_BODIES.riyada.url,
+  },
+  {
+    id: "tanfidh-startup-fund", fundingProgram: true,
+    nameAr: "صندوق تنفيذ لدعم الشركات الناشئة", nameEn: "Tanfidh Startup Fund",
+    stages: ["idea", "registered"], sectors: "any", maxFunding: 30000,
+    whyAr: "تمويل ميسّر للشركات الناشئة العُمانية حديثة التأسيس.", whyEn: "Concessional financing for newly-established Omani startups.",
+    requiredAr: ["مشروع ناشئ", "دراسة جدوى", "ملكية عُمانية"], requiredEn: ["An early-stage business", "A feasibility study", "Omani ownership"],
+    nextAr: "قدّم طلب التمويل عبر بنك التنمية العُماني", nextEn: "Submit a financing application via Oman Development Bank",
+    url: GOV_BODIES.odb.url,
+  },
+  {
+    id: "vision2040-strategic-fund", fundingProgram: true,
+    nameAr: "صندوق رؤية عُمان 2040 الاستراتيجي", nameEn: "Oman Vision 2040 Strategic Fund",
+    stages: ["registered", "operating"], sectors: ["manufact", "agro", "tech"], minFunding: 40000,
+    whyAr: "تمويل أكبر للمشاريع في القطاعات الاستراتيجية طويلة الأمد.", whyEn: "Larger financing for businesses in long-term strategic sectors.",
+    requiredAr: ["قطاع استراتيجي", "ملكية عُمانية", "خطة طويلة الأمد"], requiredEn: ["A strategic sector", "Omani ownership", "A long-term plan"],
+    nextAr: "قدّم طلب التمويل عبر بنك التنمية العُماني", nextEn: "Submit a financing application via Oman Development Bank",
+    url: GOV_BODIES.odb.url,
   },
 ];
 
@@ -342,8 +405,8 @@ function matchServices(profile = {}, lang = "ar") {
 }
 
 // برامج التمويل (Funding Matcher) — تعيد استخدام نفس منطق SERVICES مع فلترة على
-// البرامج التمويلية فقط (odb-*), موسّعة لاحقاً بسهولة عبر إضافة عناصر جديدة.
-const FUNDING_PROGRAMS = SERVICES.filter((s) => s.id.startsWith("odb-") || s.id === "riyada-consulting");
+// العناصر المُعلَّمة صراحة كبرنامج تمويل (fundingProgram: true).
+const FUNDING_PROGRAMS = SERVICES.filter((s) => s.fundingProgram === true);
 
 function matchFunding(profile = {}, lang = "ar") {
   return FUNDING_PROGRAMS
@@ -593,6 +656,97 @@ function computeFinancials(inputs = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// محاكاة التدفق النقدي قبل الإطلاق (Pre-Launch Cash Flow Simulation) — حساب
+// حتمي بحت لستة أشهر، مع سيناريوهات "ماذا لو" وتوصيات مبنية على قواعد بسيطة.
+// نقطة التعادل تُعرَّف هنا بأول شهر يكون فيه صافي التدفق موجباً (وليس الرصيد
+// التراكمي) — التعريف المالي القياسي.
+// ---------------------------------------------------------------------------
+function simulateCashFlowMonths(base) {
+  const growth = base.monthlyGrowthPct / 100;
+  const months = [];
+  let balance = base.startingCash - base.startupCosts;
+  for (let m = 1; m <= 6; m++) {
+    const revenue = Math.round(base.month1Revenue * Math.pow(1 + growth, m - 1));
+    const totalCosts = base.inventoryCost + base.marketingCost + base.deliveryCost + base.otherCost;
+    const netFlow = revenue - totalCosts;
+    balance = Math.round(balance + netFlow);
+    months.push({ month: m, revenue, inventoryCost: base.inventoryCost, marketingCost: base.marketingCost, deliveryCost: base.deliveryCost, otherCost: base.otherCost, totalCosts, netFlow, balance });
+  }
+  return months;
+}
+
+function scenarioSummary(base, growthPct) {
+  const months = simulateCashFlowMonths({ ...base, monthlyGrowthPct: growthPct });
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  return {
+    breakEvenMonth: firstProfitable ? firstProfitable.month : null,
+    month6Balance: months[5].balance,
+    month6NetFlow: months[5].netFlow,
+  };
+}
+
+function computeCashFlowSimulation(inputs = {}) {
+  const num = (v, def = 0) => (typeof v === "number" && isFinite(v) ? v : def);
+  const base = {
+    startingCash: num(inputs.startingCash),
+    startupCosts: num(inputs.startupCosts),
+    month1Revenue: num(inputs.month1Revenue),
+    monthlyGrowthPct: num(inputs.monthlyGrowthPct, 10),
+    inventoryCost: num(inputs.inventoryCost),
+    marketingCost: num(inputs.marketingCost),
+    deliveryCost: num(inputs.deliveryCost),
+    otherCost: num(inputs.otherCost),
+  };
+
+  const months = simulateCashFlowMonths(base);
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  const breakEvenMonth = firstProfitable ? firstProfitable.month : null;
+  const lowestBalanceMonth = months.reduce((min, mo) => (mo.balance < min.balance ? mo : min), months[0]);
+
+  const recommendations = [];
+  const month1 = months[0];
+  if (month1.netFlow < 0) {
+    const cut = Math.round(base.marketingCost * 0.2);
+    if (cut > 0) {
+      recommendations.push({
+        ar: `خفض تكاليف التسويق بنسبة 20% في الشهر الأول (توفير ${cut} ر.ع) يقلّل الخسارة إلى ${month1.netFlow + cut} ر.ع.`,
+        en: `Cutting marketing costs by 20% in month 1 (saves ${cut} OMR) reduces the loss to ${month1.netFlow + cut} OMR.`,
+      });
+    }
+  }
+  if (base.startupCosts > base.startingCash * 0.5) {
+    recommendations.push({
+      ar: "التكاليف الأولية مرتفعة نسبة لرصيدك الحالي — فكّر بتأجيل شراء المعدات غير الضرورية للشهر الثالث أو الرابع.",
+      en: "Startup costs are high relative to your current cash — consider deferring non-essential equipment purchases to month 3 or 4.",
+    });
+  }
+  recommendations.push({
+    ar: "التفاوض مع الموردين لتمديد فترة السداد 30 يوماً إضافياً يحسّن السيولة دون تغيير الأرقام الفعلية.",
+    en: "Negotiating an extra 30-day payment term with suppliers improves liquidity without changing the underlying numbers.",
+  });
+  if (lowestBalanceMonth.balance < 0) {
+    recommendations.push({
+      ar: `⚠️ خطر نفاد السيولة في الشهر ${lowestBalanceMonth.month} (الرصيد المتوقع: ${lowestBalanceMonth.balance} ر.ع) — تحتاج تمويلاً إضافياً أو تقليل التكاليف قبل ذلك.`,
+      en: `⚠️ Cash-out risk in month ${lowestBalanceMonth.month} (projected balance: ${lowestBalanceMonth.balance} OMR) — you'll need extra funding or lower costs before then.`,
+    });
+  }
+
+  return {
+    months,
+    breakEvenMonth,
+    lowestBalanceMonth: lowestBalanceMonth.month,
+    lowestBalance: lowestBalanceMonth.balance,
+    recommendations,
+    scenarios: {
+      optimistic: scenarioSummary(base, base.monthlyGrowthPct + 20),
+      realistic: scenarioSummary(base, base.monthlyGrowthPct),
+      pessimistic: scenarioSummary(base, Math.max(base.monthlyGrowthPct - 20, -50)),
+    },
+    note: { ar: "محاكاة تقديرية مبنية على افتراضاتك — ليست ضماناً لنتيجة فعلية.", en: "An illustrative simulation based on your assumptions — not a guarantee of actual results." },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // فئات المنتجات (Suppliers & Products) — كتالوج تجريبي حسب القطاع، يُستخدم
 // لعرض فئات منتجات جاهزة بدل أن يكتبها المستخدم يدوياً.
 // ---------------------------------------------------------------------------
@@ -603,6 +757,9 @@ const PRODUCT_CATEGORIES_BY_SECTOR = {
     { id: "moisturizers", ar: "مرطبات", en: "Moisturizers" }, { id: "serums", ar: "سيرومات", en: "Serums" },
     { id: "exfoliators", ar: "مقشرات", en: "Exfoliators" }, { id: "eye-care", ar: "العناية بالعين", en: "Eye Care" },
     { id: "natural-oils", ar: "زيوت طبيعية", en: "Natural Oils" }, { id: "gift-sets", ar: "مجموعات هدايا", en: "Gift Sets" },
+    { id: "lip-care", ar: "العناية بالشفاه", en: "Lip Care" }, { id: "accessories", ar: "إكسسوارات تجميل", en: "Accessories" },
+    { id: "mens-skincare", ar: "العناية بالبشرة للرجال", en: "Men's Skincare" }, { id: "organic-skincare", ar: "عناية عضوية معتمدة", en: "Organic Skincare" },
+    { id: "spa-products", ar: "منتجات سبا", en: "Spa Products" },
   ],
   food: [
     { id: "main-dishes", ar: "الأطباق الرئيسية", en: "Main Dishes" }, { id: "appetizers", ar: "مقبلات", en: "Appetizers" },
@@ -669,6 +826,54 @@ const SUPPLIERS = [
     productsAr: ["زيوت طبيعية", "مستخلصات عشبية"], productsEn: ["Natural Oils", "Herbal Extracts"],
     priceMin: 2, priceMax: 6, moq: 30, deliveryDays: "2-3", shippingCost: 10, city: "nizwa",
     contact: "info@omaniherbal.com", website: "www.omaniherbal.com" },
+  { id: "sup-beauty-4", sectors: ["beauty"], nameAr: "العناية بالبشرة الوادي للتصنيع", nameEn: "Al Wadi Skincare Manufacturing",
+    productsAr: ["كريمات الوجه", "مرطبات", "واقي شمس"], productsEn: ["Face Creams", "Moisturizers", "Sunscreen"],
+    priceMin: 5, priceMax: 12, moq: 200, deliveryDays: "7-10", shippingCost: 25, city: "rustaq",
+    contact: "contact@alwadiskincare.com", website: "www.alwadiskincare.com" },
+  { id: "sup-beauty-5", sectors: ["beauty"], nameAr: "إمدادات الجمال العضوي", nameEn: "Organic Beauty Supply",
+    productsAr: ["منظفات عضوية", "سيرومات طبيعية", "أقنعة وجه"], productsEn: ["Organic Cleansers", "Natural Serums", "Face Masks"],
+    priceMin: 6, priceMax: 15, moq: 75, deliveryDays: "4-6", shippingCost: 18, city: "muscat",
+    contact: "info@organicbeauty.ae", website: "www.organicbeauty.ae" },
+  { id: "sup-beauty-6", sectors: ["beauty"], nameAr: "مستحضرات السلطنة الطبيعية", nameEn: "Sultanate Natural Cosmetics",
+    productsAr: ["لوشن الجسم", "كريمات اليد", "مرطب الشفاه"], productsEn: ["Body Lotions", "Hand Creams", "Lip Balms"],
+    priceMin: 2.5, priceMax: 7, moq: 60, deliveryDays: "3-4", shippingCost: 12, city: "sohar",
+    contact: "sales@sultanatecosmetics.com", website: "www.sultanatecosmetics.com" },
+  { id: "sup-beauty-7", sectors: ["beauty"], nameAr: "الخليج للتجميل بالجملة", nameEn: "GCC Beauty Wholesale",
+    productsAr: ["عطور", "زيوت الجسم", "زيوت عطرية"], productsEn: ["Perfumes", "Body Oils", "Fragrance Oils"],
+    priceMin: 4, priceMax: 18, moq: 25, deliveryDays: "2-4", shippingCost: 15, city: "muscat",
+    contact: "info@gccbeauty.om", website: "www.gccbeauty.om" },
+  { id: "sup-beauty-8", sectors: ["beauty"], nameAr: "جوهر الطبيعة", nameEn: "Nature's Essence FZE",
+    productsAr: ["زيوت أساسية", "زيوت ناقلة", "زبدات طبيعية"], productsEn: ["Essential Oils", "Carrier Oils", "Butters"],
+    priceMin: 3, priceMax: 9, moq: 40, deliveryDays: "5-8", shippingCost: 22, city: "muscat",
+    contact: "orders@natureessence.ae", website: "www.natureessence.ae" },
+  { id: "sup-beauty-9", sectors: ["beauty"], nameAr: "منتجات صلالة العشبية", nameEn: "Salalah Herbal Products",
+    productsAr: ["منتجات اللبان", "صابون طبيعي", "شاي عشبي"], productsEn: ["Frankincense Products", "Natural Soaps", "Herbal Teas"],
+    priceMin: 2, priceMax: 8, moq: 50, deliveryDays: "2-5", shippingCost: 14, city: "salalah",
+    contact: "info@salalahherbal.om", website: "www.salalahherbal.om" },
+  { id: "sup-beauty-10", sectors: ["beauty"], nameAr: "حلول الشرق الأوسط للعناية بالبشرة", nameEn: "Middle East Skincare Solutions",
+    productsAr: ["سيرومات مضادة للشيخوخة", "كريمات العين", "تونر"], productsEn: ["Anti-aging Serums", "Eye Creams", "Toners"],
+    priceMin: 7, priceMax: 20, moq: 30, deliveryDays: "6-9", shippingCost: 20, city: "muscat",
+    contact: "sales@meskincare.com", website: "www.meskincare.com" },
+  { id: "sup-beauty-11", sectors: ["beauty", "retail", "ecommerce"], nameAr: "حلول التغليف العُمانية", nameEn: "Oman Packaging Solutions",
+    productsAr: ["عبوات زجاجية", "زجاجات بلاستيكية", "مضخات توزيع"], productsEn: ["Glass Jars", "Plastic Bottles", "Pump Dispensers"],
+    priceMin: 0.5, priceMax: 3, moq: 100, deliveryDays: "3-6", shippingCost: 10, city: "muscat",
+    contact: "info@omanpackaging.om", website: "www.omanpackaging.om" },
+  { id: "sup-beauty-12", sectors: ["beauty"], nameAr: "مصنع مستحضرات التجميل العربي", nameEn: "Arabian Cosmetics Factory",
+    productsAr: ["كريم أساس", "كونسيلر", "بودرة", "أحمر خدود"], productsEn: ["Foundation", "Concealer", "Powder", "Blush"],
+    priceMin: 4, priceMax: 14, moq: 100, deliveryDays: "7-14", shippingCost: 30, city: "muscat",
+    contact: "info@arabiancosmetics.com", website: "www.arabiancosmetics.com" },
+  { id: "sup-beauty-13", sectors: ["beauty"], nameAr: "مركز مكونات التجميل", nameEn: "Beauty Ingredients Hub",
+    productsAr: ["مكونات فعالة", "مواد حافظة", "مستحلبات"], productsEn: ["Active Ingredients", "Preservatives", "Emulsifiers"],
+    priceMin: 1, priceMax: 8, moq: 20, deliveryDays: "4-7", shippingCost: 18, city: "muscat",
+    contact: "ingredients@beautyhub.om", website: "www.beautyhub.om" },
+  { id: "sup-beauty-14", sectors: ["beauty"], nameAr: "تجارة الأساسيات الطبيعية", nameEn: "Natural Essentials Trading",
+    productsAr: ["جل الصبار", "زيت جوز الهند", "زبدة الشيا"], productsEn: ["Aloe Vera Gel", "Coconut Oil", "Shea Butter"],
+    priceMin: 2, priceMax: 6, moq: 50, deliveryDays: "3-5", shippingCost: 12, city: "sohar",
+    contact: "info@naturalessentials.om", website: "www.naturalessentials.om" },
+  { id: "sup-beauty-15", sectors: ["beauty"], nameAr: "الخليج لمستحضرات التجميل الفاخرة", nameEn: "Gulf Premium Cosmetics",
+    productsAr: ["كريمات وجه فاخرة", "منتجات مطعمة بالذهب"], productsEn: ["Luxury Face Creams", "Gold Infused Products"],
+    priceMin: 10, priceMax: 30, moq: 10, deliveryDays: "5-8", shippingCost: 25, city: "muscat",
+    contact: "premium@gulfcosmetics.ae", website: "www.gulfcosmetics.ae" },
   { id: "sup-food-1", sectors: ["food"], nameAr: "شركة التوريدات الغذائية العُمانية", nameEn: "Oman Food Supplies Co.",
     productsAr: ["مواد خام", "مشروبات"], productsEn: ["Raw Ingredients", "Beverages"],
     priceMin: 1, priceMax: 5, moq: 100, deliveryDays: "2-4", shippingCost: 12, city: "muscat",
@@ -707,6 +912,15 @@ const COMPETITORS = [
   { id: "comp-beauty-1", sectors: ["beauty"], city: "muscat", nameAr: "نضرة بيوتي", nameEn: "Nudra Beauty", neighborhoodAr: "الخوير", neighborhoodEn: "Al Khuwair", distanceKm: 2.5, businessType: "physical+online", priceRange: "mid", rating: 4.2, reviews: 150, social: "@nudrabeauty", followers: "12K", website: "www.nudrabeauty.com", strengthsAr: "موقع جيد وحضور قوي في السوشال ميديا", strengthsEn: "Good location, strong social media presence", weaknessAr: "تشكيلة منتجات محدودة وأسعار أعلى", weaknessEn: "Limited product range, higher prices" },
   { id: "comp-beauty-2", sectors: ["beauty"], city: "muscat", nameAr: "جلو سكين كير", nameEn: "Glow Skincare", neighborhoodAr: "القرم", neighborhoodEn: "Qurum", distanceKm: 3.8, businessType: "online", priceRange: "premium", rating: 4.0, reviews: 95, social: "@glowskincare.om", followers: "8.5K", website: "www.glowskincare.om", strengthsAr: "تغليف مميز وهوية بصرية قوية", strengthsEn: "Premium packaging and strong visual identity", weaknessAr: "أسعار مرتفعة نسبياً", weaknessEn: "Relatively high prices" },
   { id: "comp-beauty-3", sectors: ["beauty"], city: "muscat", nameAr: "بيور بيوتي", nameEn: "Pure Beauty", neighborhoodAr: "مدينة السلطان قابوس", neighborhoodEn: "Madinat Sultan Qaboos", distanceKm: 4.2, businessType: "physical", priceRange: "budget", rating: 3.8, reviews: 60, social: "@purebeauty.om", followers: "4K", website: null, strengthsAr: "أسعار منافسة", strengthsEn: "Competitive pricing", weaknessAr: "حضور رقمي ضعيف", weaknessEn: "Weak digital presence" },
+  { id: "comp-beauty-4", sectors: ["beauty"], city: "muscat", nameAr: "العناية العُمانية بالبشرة", nameEn: "Omani Skincare", neighborhoodAr: "العذيبة", neighborhoodEn: "Azaiba", distanceKm: 5.1, businessType: "physical+online", priceRange: "mid", rating: 4.4, reviews: 185, social: "@omanskincare", followers: "9K", website: "www.omanskincare.com", strengthsAr: "منتجات محلية وسمعة جيدة", strengthsEn: "Local products, good reputation", weaknessAr: "تسويق محدود وهوية تقليدية", weaknessEn: "Limited marketing, old-fashioned branding" },
+  { id: "comp-beauty-5", sectors: ["beauty"], city: "muscat", nameAr: "روز بيوتي", nameEn: "Rose Beauty", neighborhoodAr: "الغبرة", neighborhoodEn: "Al Ghubra", distanceKm: 6.3, businessType: "online", priceRange: "luxury", rating: 4.8, reviews: 75, social: "@rosebeauty", followers: "6K", website: "www.rosebeauty.om", strengthsAr: "مكانة فاخرة وجودة عالية", strengthsEn: "Luxury positioning, high quality", weaknessAr: "غالية جداً وقاعدة عملاء صغيرة", weaknessEn: "Very expensive, small customer base" },
+  { id: "comp-beauty-6", sectors: ["beauty"], city: "muscat", nameAr: "لمسة الطبيعة", nameEn: "Nature's Touch", neighborhoodAr: "السيب", neighborhoodEn: "Seeb", distanceKm: 7.8, businessType: "physical", priceRange: "mid", rating: 4.1, reviews: 132, social: "@naturestouch", followers: "5K", website: "www.naturestouch.om", strengthsAr: "منتجات طبيعية وموقع جيد", strengthsEn: "Natural products, good location", weaknessAr: "محل صغير وتسويق محدود", weaknessEn: "Small store, limited marketing" },
+  { id: "comp-beauty-7", sectors: ["beauty"], city: "muscat", nameAr: "صنسيت بيوتي", nameEn: "Sunset Beauty", neighborhoodAr: "بوشر", neighborhoodEn: "Bowsher", distanceKm: 4.5, businessType: "physical+online", priceRange: "budget", rating: 3.5, reviews: 250, social: "@sunsetbeauty", followers: "18K", website: "www.sunsetbeauty.om", strengthsAr: "أسعار رخيصة جداً وسوق واسع", strengthsEn: "Very cheap, mass market", weaknessAr: "جودة منخفضة وخدمة عملاء ضعيفة", weaknessEn: "Low quality, poor customer service" },
+  { id: "comp-beauty-8", sectors: ["beauty"], city: "muscat", nameAr: "أوربان سكين كير", nameEn: "Urban Skincare", neighborhoodAr: "الخوير", neighborhoodEn: "Al Khuwair", distanceKm: 1.8, businessType: "online", priceRange: "premium", rating: 4.3, reviews: 67, social: "@urbanskincare", followers: "7K", website: "www.urbanskincare.om", strengthsAr: "هوية عصرية وتسويق جيد", strengthsEn: "Modern branding, good marketing", weaknessAr: "أسعار مرتفعة وتشكيلة محدودة", weaknessEn: "Expensive, limited product range" },
+  { id: "comp-beauty-9", sectors: ["beauty"], city: "muscat", nameAr: "ديزرت بيوتي", nameEn: "Desert Beauty", neighborhoodAr: "العنصب", neighborhoodEn: "Ansab", distanceKm: 9.2, businessType: "physical", priceRange: "budget", rating: 3.2, reviews: 180, social: "@desertbeauty", followers: "9K", website: "www.desertbeauty.om", strengthsAr: "رخيصة وموقع سهل الوصول", strengthsEn: "Cheap, accessible location", weaknessAr: "جودة منخفضة وهوية ضعيفة", weaknessEn: "Low quality, poor branding" },
+  { id: "comp-beauty-10", sectors: ["beauty"], city: "muscat", nameAr: "فريش فيس", nameEn: "Fresh Face", neighborhoodAr: "مدينة السلطان قابوس", neighborhoodEn: "Madinat Al Sultan Qaboos", distanceKm: 3.5, businessType: "physical+online", priceRange: "mid", rating: 4.0, reviews: 95, social: "@freshface", followers: "6.5K", website: "www.freshface.om", strengthsAr: "منتجات جيدة ومحل جميل", strengthsEn: "Good products, nice store", weaknessAr: "حضور محدود في السوشال ميديا", weaknessEn: "Small social media presence, limited influencers" },
+  { id: "comp-beauty-11", sectors: ["beauty"], city: "sohar", nameAr: "كثبان عُمان للجمال", nameEn: "Omani Dunes Beauty", neighborhoodAr: "صحار", neighborhoodEn: "Sohar", distanceKm: 12.5, businessType: "online", priceRange: "mid", rating: 4.5, reviews: 45, social: "@omandunesbeauty", followers: "5K", website: "www.omandunesbeauty.com", strengthsAr: "منتجات عُمانية أصيلة وصديقة للبيئة", strengthsEn: "Authentic Omani products, eco-friendly", weaknessAr: "بعيد جغرافياً وتوصيل محدود", weaknessEn: "Location far, limited delivery" },
+  { id: "comp-beauty-12", sectors: ["beauty"], city: "muscat", nameAr: "جلامور كوزمتكس", nameEn: "Glamour Cosmetics", neighborhoodAr: "القرم", neighborhoodEn: "Qurum", distanceKm: 4.0, businessType: "physical", priceRange: "luxury", rating: 4.7, reviews: 210, social: "@glamourcosmetics", followers: "22K", website: "www.glamourcosmetics.om", strengthsAr: "منتجات راقية وقاعدة عملاء موالية", strengthsEn: "High-end products, loyal customer base", weaknessAr: "غالية جداً وفئة مستهدفة ضيقة", weaknessEn: "Very expensive, exclusive target" },
   { id: "comp-food-1", sectors: ["food"], city: "muscat", nameAr: "مطعم الذواقة", nameEn: "Al Dhawaqa Restaurant", neighborhoodAr: "الخوير", neighborhoodEn: "Al Khuwair", distanceKm: 1.8, businessType: "physical", priceRange: "mid", rating: 4.3, reviews: 320, social: "@aldhawaqa", followers: "20K", website: "www.aldhawaqa.om", strengthsAr: "موقع مركزي وقاعدة عملاء واسعة", strengthsEn: "Central location, large customer base", weaknessAr: "أوقات انتظار طويلة في الذروة", weaknessEn: "Long wait times during peak hours" },
   { id: "comp-food-2", sectors: ["food"], city: "muscat", nameAr: "كافيه المدينة", nameEn: "City Café", neighborhoodAr: "القرم", neighborhoodEn: "Qurum", distanceKm: 3.1, businessType: "physical", priceRange: "premium", rating: 4.5, reviews: 210, social: "@citycafe.om", followers: "15K", website: null, strengthsAr: "أجواء مميزة وجودة قهوة عالية", strengthsEn: "Great ambiance, high coffee quality", weaknessAr: "أسعار مرتفعة", weaknessEn: "High prices" },
   { id: "comp-retail-1", sectors: ["retail", "ecommerce"], city: "muscat", nameAr: "متجر الأناقة", nameEn: "Elegance Store", neighborhoodAr: "روي", neighborhoodEn: "Ruwi", distanceKm: 5.0, businessType: "physical+online", priceRange: "mid", rating: 4.0, reviews: 140, social: "@elegance.om", followers: "10K", website: "www.elegance.om", strengthsAr: "تشكيلة متنوعة", strengthsEn: "Wide variety of options", weaknessAr: "توصيل بطيء أحياناً", weaknessEn: "Sometimes slow delivery" },
@@ -714,7 +928,7 @@ const COMPETITORS = [
 function matchCompetitors(sector, city, lang = "ar") {
   let list = COMPETITORS.filter((c) => !sector || c.sectors.includes(sector));
   if (city) list = list.filter((c) => c.city === city).concat(list.filter((c) => c.city !== city));
-  return list.slice(0, 4).map((c) => ({
+  return list.slice(0, 12).map((c) => ({
     id: c.id, name: lang === "ar" ? c.nameAr : c.nameEn, neighborhood: lang === "ar" ? c.neighborhoodAr : c.neighborhoodEn,
     distanceKm: c.distanceKm, businessType: c.businessType, priceRange: c.priceRange, rating: c.rating, reviews: c.reviews,
     social: c.social, followers: c.followers, website: c.website,
@@ -728,6 +942,16 @@ function matchCompetitors(sector, city, lang = "ar") {
 const RENTALS = [
   { id: "rent-muscat-1", city: "muscat", nameAr: "مساحة تجارية - الخوير", nameEn: "Al Khuwair Commercial Space", sizeSqm: 80, rent: 400, distanceM: 200, suitableAr: ["تجزئة", "مكتب", "معرض"], suitableEn: ["Retail", "Office", "Showroom"], contact: "property@omanrealestate.com", source: "Oman Real Estate" },
   { id: "rent-muscat-2", city: "muscat", nameAr: "مركز القرم التجاري", nameEn: "Qurum Business Center", sizeSqm: 120, rent: 650, distanceM: 1200, suitableAr: ["مكتب", "تجزئة", "صالون تجميل"], suitableEn: ["Office", "Retail", "Beauty Salon"], contact: "info@qurumcenter.com", source: "Commercial Properties Oman" },
+  { id: "rent-muscat-3", city: "muscat", nameAr: "مساحة تجارية - مدينة السلطان قابوس", nameEn: "Madinat Sultan Qaboos Retail Space", sizeSqm: 95, rent: 550, distanceM: 1800, suitableAr: ["تجزئة", "بوتيك", "محل تجميل"], suitableEn: ["Retail", "Boutique", "Beauty Shop"], contact: "commercial@msq.om", source: "MSQ Commercial" },
+  { id: "rent-muscat-4", city: "muscat", nameAr: "مجمع الغبرة التجاري", nameEn: "Al Ghubra Commercial Complex", sizeSqm: 150, rent: 750, distanceM: 3500, suitableAr: ["تجزئة", "مكتب", "معرض"], suitableEn: ["Retail", "Office", "Showroom"], contact: "leasing@alghubra.om", source: "Al Ghubra Properties" },
+  { id: "rent-muscat-5", city: "muscat", nameAr: "وحدة تجزئة - العذيبة", nameEn: "Azaiba Retail Unit", sizeSqm: 70, rent: 350, distanceM: 4000, suitableAr: ["تجزئة", "مشروع صغير", "مركز خدمات"], suitableEn: ["Retail", "Small Business", "Service Center"], contact: "info@azaibaproperties.om", source: "Azaiba Properties" },
+  { id: "rent-muscat-6", city: "muscat", nameAr: "مجمع السيب للأعمال", nameEn: "Seeb Business Park", sizeSqm: 200, rent: 900, distanceM: 5500, suitableAr: ["مكتب", "مستودع", "معرض"], suitableEn: ["Office", "Warehouse", "Showroom"], contact: "leasing@seebpark.om", source: "Seeb Properties" },
+  { id: "rent-muscat-7", city: "muscat", nameAr: "مركز بوشر التجاري", nameEn: "Bowsher Commercial Center", sizeSqm: 85, rent: 420, distanceM: 2800, suitableAr: ["تجزئة", "صالون تجميل", "عيادة"], suitableEn: ["Retail", "Beauty Salon", "Clinic"], contact: "info@bowshercommercial.om", source: "Bowsher Commercial" },
+  { id: "rent-muscat-8", city: "muscat", nameAr: "مساحة تجزئة - العنصب", nameEn: "Ansab Retail Space", sizeSqm: 60, rent: 280, distanceM: 6200, suitableAr: ["تجزئة", "مشروع صغير"], suitableEn: ["Retail", "Small Business"], contact: "rent@ansab.om", source: "Ansab Properties" },
+  { id: "rent-muscat-9", city: "muscat", nameAr: "مجمع الموالح التجاري", nameEn: "Al Mawaleh Commercial Complex", sizeSqm: 175, rent: 800, distanceM: 7000, suitableAr: ["تجزئة", "مكتب", "مطعم", "معرض"], suitableEn: ["Retail", "Office", "Restaurant", "Showroom"], contact: "leasing@almawaleh.om", source: "Al Mawaleh Properties" },
+  { id: "rent-muscat-10", city: "muscat", nameAr: "وحدات تجزئة - الشاطئ", nameEn: "Al Shati Retail Units", sizeSqm: 110, rent: 580, distanceM: 2500, suitableAr: ["تجزئة", "بوتيك", "كافيه", "صالون تجميل"], suitableEn: ["Retail", "Boutique", "Cafe", "Beauty Salon"], contact: "info@alshati.om", source: "Al Shati Properties" },
+  { id: "rent-muscat-11", city: "muscat", nameAr: "مساحة تجارية - الغبرة الشمالية", nameEn: "Ghubra North Commercial Space", sizeSqm: 130, rent: 620, distanceM: 4800, suitableAr: ["تجزئة", "مكتب", "معرض"], suitableEn: ["Retail", "Office", "Showroom"], contact: "leasing@ghubra-north.om", source: "Ghubra North Properties" },
+  { id: "rent-muscat-12", city: "muscat", nameAr: "مركز المعبيلة للأعمال", nameEn: "Mabelah Business Center", sizeSqm: 250, rent: 1050, distanceM: 8500, suitableAr: ["مستودع", "مكتب", "معرض", "توزيع"], suitableEn: ["Warehouse", "Office", "Showroom", "Distribution"], contact: "leasing@mabelah.om", source: "Mabelah Properties" },
   { id: "rent-sohar-1", city: "sohar", nameAr: "معرض تجاري - صحار", nameEn: "Sohar Retail Unit", sizeSqm: 60, rent: 220, distanceM: 500, suitableAr: ["تجزئة", "مخزن صغير"], suitableEn: ["Retail", "Small Storage"], contact: "leasing@soharproperties.om", source: "Sohar Properties" },
   { id: "rent-nizwa-1", city: "nizwa", nameAr: "محل تجاري - نزوى", nameEn: "Nizwa Shop Unit", sizeSqm: 45, rent: 160, distanceM: 300, suitableAr: ["تجزئة", "ورشة صغيرة"], suitableEn: ["Retail", "Small Workshop"], contact: "info@nizwarealestate.om", source: "Nizwa Real Estate" },
   { id: "rent-salalah-1", city: "salalah", nameAr: "وحدة تجارية - صلالة", nameEn: "Salalah Commercial Unit", sizeSqm: 70, rent: 240, distanceM: 400, suitableAr: ["تجزئة", "مطعم صغير"], suitableEn: ["Retail", "Small Restaurant"], contact: "leasing@salalahproperties.om", source: "Salalah Properties" },
@@ -748,6 +972,18 @@ const INFLUENCERS = [
   { id: "inf-beauty-1", sectors: ["beauty"], name: "ندى البلوشي", platforms: ["Instagram", "TikTok"], followers: "120K", audienceAr: "نساء شابات (عُمان + الخليج)", audienceEn: "Young women (Oman + GCC)", engagementRate: 4.2, contentAr: "تجميل، عناية بالبشرة، أسلوب حياة", contentEn: "Beauty, Skincare, Lifestyle", city: "muscat", contact: "nada@influencer.om", social: "@nada_beauty", priceMin: 80, priceMax: 150, campaignAr: "مراجعات منتجات، تعليمية، سحوبات", campaignEn: "Product reviews, tutorials, giveaways" },
   { id: "inf-beauty-2", sectors: ["beauty"], name: "سارة الريامي", platforms: ["TikTok", "Snapchat"], followers: "85K", audienceAr: "مراهقات ونساء شابات (عُمان)", audienceEn: "Teenagers, young women (Oman)", engagementRate: 5.8, contentAr: "مكياج، عناية بالبشرة", contentEn: "Makeup, Skincare, Hauls", city: "seeb", contact: "sara@influencer.om", social: "@sara_skincare", priceMin: 50, priceMax: 100, campaignAr: "فتح الصناديق، يوم في حياتي، عرض المنتج", campaignEn: "Unboxing, day-in-the-life, product demos" },
   { id: "inf-beauty-3", sectors: ["beauty"], name: "مريم الحارثي", platforms: ["YouTube", "Instagram"], followers: "65K", audienceAr: "نساء (25-45)، مهتمات بالتجميل", audienceEn: "Women (25-45), beauty enthusiasts", engagementRate: 3.5, contentAr: "مراجعات معمّقة، تعليمية", contentEn: "In-depth reviews, tutorials, natural beauty", city: "muscat", contact: "maryam@influencer.om", social: "@maryam_naturalbeauty", priceMin: 120, priceMax: 200, campaignAr: "مراجعات مفصّلة، تحليل المكونات", campaignEn: "Detailed reviews, ingredient analysis" },
+  { id: "inf-beauty-4", sectors: ["beauty"], name: "ليلى الكندية", platforms: ["Instagram", "TikTok"], followers: "45K", audienceAr: "نساء شابات (عُمان)", audienceEn: "Young women (Oman)", engagementRate: 4.8, contentAr: "أسلوب حياة، تجميل، موضة", contentEn: "Lifestyle, Beauty, Fashion", city: "salalah", contact: "laila@influencer.om", social: "@laila_beauty", priceMin: 30, priceMax: 60, campaignAr: "منشورات ستايل، تعاون مع العلامة", campaignEn: "Style posts, brand collab" },
+  { id: "inf-beauty-5", sectors: ["beauty"], name: "أحمد الهنائي", platforms: ["Instagram", "YouTube"], followers: "30K", audienceAr: "رجال ونساء (الخليج)", audienceEn: "Men, women (GCC)", engagementRate: 2.9, contentAr: "العناية بالبشرة للرجال، العناية الشخصية", contentEn: "Skincare for men, Grooming", city: "muscat", contact: "ahmed@influencer.om", social: "@ahmed_grooming", priceMin: 40, priceMax: 80, campaignAr: "مراجعة منتج، روتين يومي", campaignEn: "Product review, daily routine" },
+  { id: "inf-beauty-6", sectors: ["beauty"], name: "ريم الشيدية", platforms: ["TikTok", "Snapchat"], followers: "95K", audienceAr: "مراهقات ونساء شابات", audienceEn: "Teen girls, young women", engagementRate: 6.2, contentAr: "تعليمات مكياج، حيل تجميل", contentEn: "Makeup tutorials, Beauty hacks", city: "muscat", contact: "reem@influencer.om", social: "@reem_makeup", priceMin: 60, priceMax: 120, campaignAr: "فيديو تعليمي، تحدي مكياج", campaignEn: "Tutorial video, makeup challenge" },
+  { id: "inf-beauty-7", sectors: ["beauty"], name: "هدى الرواحية", platforms: ["Instagram", "YouTube"], followers: "55K", audienceAr: "نساء (عُمان، الإمارات)", audienceEn: "Women (Oman, UAE)", engagementRate: 3.8, contentAr: "جمال طبيعي، عافية، أسلوب حياة", contentEn: "Natural beauty, wellness, lifestyle", city: "seeb", contact: "huda@influencer.om", social: "@huda_natural", priceMin: 70, priceMax: 130, campaignAr: "روتين طبيعي، مراجعة صادقة", campaignEn: "Natural routine, honest review" },
+  { id: "inf-beauty-8", sectors: ["beauty"], name: "خالد البلوشي", platforms: ["Instagram", "TikTok"], followers: "25K", audienceAr: "رجال ونساء (عُمان)", audienceEn: "Men, women (Oman)", engagementRate: 3.2, contentAr: "عناية الرجال بالبشرة، عطور", contentEn: "Men's skincare, Fragrance", city: "muscat", contact: "khalid@influencer.om", social: "@khalid_scents", priceMin: 25, priceMax: 50, campaignAr: "مراجعة عطر، روتين صباحي", campaignEn: "Fragrance review, morning routine" },
+  { id: "inf-beauty-9", sectors: ["beauty"], name: "منى القاسمي", platforms: ["YouTube", "Instagram"], followers: "80K", audienceAr: "نساء (الخليج، الشرق الأوسط)", audienceEn: "Women (GCC, Middle East)", engagementRate: 4.5, contentAr: "مراجعات تجميل، روتين العناية بالبشرة", contentEn: "Beauty reviews, Skincare routines", city: "muscat", contact: "mona@influencer.ae", social: "@mona_beauty", priceMin: 150, priceMax: 250, campaignAr: "مراجعة شاملة، فيديو روتين", campaignEn: "Full review, routine video" },
+  { id: "inf-beauty-10", sectors: ["beauty"], name: "نورة الجابرية", platforms: ["Instagram", "TikTok"], followers: "38K", audienceAr: "نساء شابات (عُمان)", audienceEn: "Young women (Oman)", engagementRate: 5.1, contentAr: "تجميل، أسلوب حياة، موضة", contentEn: "Beauty, Lifestyle, Fashion", city: "nizwa", contact: "noura@influencer.om", social: "@noura_lifestyle", priceMin: 35, priceMax: 70, campaignAr: "قصة يومية، منشور تعريفي", campaignEn: "Daily story, intro post" },
+  { id: "inf-beauty-11", sectors: ["beauty"], name: "سلطان العامري", platforms: ["Instagram", "YouTube"], followers: "20K", audienceAr: "رجال (عُمان، الخليج)", audienceEn: "Men (Oman, GCC)", engagementRate: 2.5, contentAr: "عناية الرجال، اللحية", contentEn: "Men's grooming, Beard care", city: "muscat", contact: "sultan@influencer.om", social: "@sultan_grooming", priceMin: 20, priceMax: 40, campaignAr: "روتين لحية، مراجعة منتج", campaignEn: "Beard routine, product review" },
+  { id: "inf-beauty-12", sectors: ["beauty"], name: "فاطمة المزروعية", platforms: ["TikTok", "Snapchat"], followers: "120K", audienceAr: "مراهقون وشباب (عُمان)", audienceEn: "Teens, young adults (Oman)", engagementRate: 7.0, contentAr: "مكياج، عناية بالبشرة", contentEn: "Makeup, Skincare, Hauls", city: "muscat", contact: "fatima@influencer.om", social: "@fatima_glow", priceMin: 70, priceMax: 140, campaignAr: "فتح صناديق، تحدي مكياج", campaignEn: "Unboxing, makeup challenge" },
+  { id: "inf-beauty-13", sectors: ["beauty"], name: "عمر الحسني", platforms: ["Instagram", "TikTok"], followers: "15K", audienceAr: "رجال ونساء (عُمان)", audienceEn: "Men, women (Oman)", engagementRate: 3.0, contentAr: "صحة، عافية، عناية بالبشرة", contentEn: "Health, wellness, skincare", city: "seeb", contact: "omar@influencer.om", social: "@omar_health", priceMin: 15, priceMax: 30, campaignAr: "منشور صحي، مراجعة منتج", campaignEn: "Wellness post, product review" },
+  { id: "inf-beauty-14", sectors: ["beauty"], name: "ليان السعيدية", platforms: ["YouTube", "Instagram"], followers: "70K", audienceAr: "نساء (عُمان، الإمارات، السعودية)", audienceEn: "Women (Oman, UAE, KSA)", engagementRate: 4.0, contentAr: "تجميل فاخر، عناية بالبشرة راقية", contentEn: "Luxury beauty, High-end skincare", city: "muscat", contact: "layan@influencer.ae", social: "@layan_luxury", priceMin: 180, priceMax: 300, campaignAr: "مراجعة فاخرة، تعاون حصري", campaignEn: "Luxury review, exclusive collab" },
+  { id: "inf-beauty-15", sectors: ["beauty"], name: "راشد البوسعيدي", platforms: ["Instagram", "TikTok"], followers: "42K", audienceAr: "شباب (عُمان)", audienceEn: "Young adults (Oman)", engagementRate: 4.6, contentAr: "ستايل الرجال، عناية شخصية", contentEn: "Men's style, grooming, skincare", city: "muscat", contact: "rashid@influencer.om", social: "@rashid_style", priceMin: 45, priceMax: 90, campaignAr: "منشور ستايل، روتين يومي", campaignEn: "Style post, daily routine" },
   { id: "inf-food-1", sectors: ["food"], name: "خالد الشحي", platforms: ["Instagram", "TikTok"], followers: "95K", audienceAr: "محبو الطعام (عُمان)", audienceEn: "Foodies (Oman)", engagementRate: 4.8, contentAr: "مراجعات مطاعم، وصفات", contentEn: "Restaurant reviews, recipes", city: "muscat", contact: "khalid@influencer.om", social: "@khalid_eats", priceMin: 70, priceMax: 130, campaignAr: "زيارة وتصوير، مراجعة صادقة", campaignEn: "On-site shoot, honest review" },
   { id: "inf-food-2", sectors: ["food"], name: "منى الهنائية", platforms: ["Instagram"], followers: "40K", audienceAr: "عائلات (عُمان)", audienceEn: "Families (Oman)", engagementRate: 3.9, contentAr: "طبخ منزلي، عروض عائلية", contentEn: "Home cooking, family deals", city: "muscat", contact: "muna@influencer.om", social: "@muna_kitchen", priceMin: 40, priceMax: 90, campaignAr: "منشورات ستوريز، تجربة عائلية", campaignEn: "Story posts, family experience" },
   { id: "inf-retail-1", sectors: ["retail", "ecommerce"], name: "علي البوسعيدي", platforms: ["Instagram", "TikTok"], followers: "75K", audienceAr: "شباب مهتمون بالموضة (عُمان)", audienceEn: "Fashion-conscious youth (Oman)", engagementRate: 4.1, contentAr: "إطلالات، تجارب تسوّق", contentEn: "Outfit ideas, shopping hauls", city: "muscat", contact: "ali@influencer.om", social: "@ali_style", priceMin: 60, priceMax: 120, campaignAr: "إطلالة كاملة، كود خصم", campaignEn: "Full outfit feature, discount code" },
@@ -764,25 +1000,94 @@ function matchInfluencers(sector, lang = "ar") {
 }
 
 // ---------------------------------------------------------------------------
-// محاكاة التدفق النقدي (Cash Flow Simulation) — إسقاط ١٢ شهراً حتمي (بدون
-// عشوائية) مبني على مخرجات الحاسبة المالية، مع نمو مبيعات تدريجي بسيط لتقريب
-// واقع مشروع ناشئ بدل خط مسطح غير واقعي.
+// محاكاة التدفق النقدي قبل الإطلاق (Pre-Launch Cash Flow Simulation) — حساب
+// حتمي بحت لستة أشهر، مع سيناريوهات "ماذا لو" وتوصيات مبنية على قواعد بسيطة.
+// نقطة التعادل تُعرَّف هنا بأول شهر يكون فيه صافي التدفق موجباً (وليس الرصيد
+// التراكمي) — التعريف المالي القياسي.
 // ---------------------------------------------------------------------------
-function simulateCashFlow(financials = {}, months = 12) {
-  const startupCost = Number(financials.totalStartupCost) || 0;
-  const monthlyExpenses = Number(financials.monthlyExpenses) || 0;
-  const baseRevenue = Number(financials.estimatedRevenue) || 0;
-  const growthRate = 0.03; // نمو شهري تقديري ٣٪ — تبسيط توضيحي وليس تنبؤاً مضموناً
-  let balance = -startupCost;
-  const rows = [];
-  for (let m = 1; m <= months; m++) {
-    const revenue = Math.round(baseRevenue * Math.pow(1 + growthRate, m - 1));
-    const profit = revenue - monthlyExpenses;
-    balance += profit;
-    rows.push({ month: m, revenue, expenses: monthlyExpenses, profit, balance: Math.round(balance) });
+function simulateCashFlowMonths(base) {
+  const growth = base.monthlyGrowthPct / 100;
+  const months = [];
+  let balance = base.startingCash - base.startupCosts;
+  for (let m = 1; m <= 6; m++) {
+    const revenue = Math.round(base.month1Revenue * Math.pow(1 + growth, m - 1));
+    const totalCosts = base.inventoryCost + base.marketingCost + base.deliveryCost + base.otherCost;
+    const netFlow = revenue - totalCosts;
+    balance = Math.round(balance + netFlow);
+    months.push({ month: m, revenue, inventoryCost: base.inventoryCost, marketingCost: base.marketingCost, deliveryCost: base.deliveryCost, otherCost: base.otherCost, totalCosts, netFlow, balance });
   }
-  const breakEvenMonth = rows.find((r) => r.balance >= 0)?.month || null;
-  return { startupCost, months: rows, breakEvenMonth, note: { ar: "محاكاة تقديرية بنمو مبيعات ثابت ٣٪ شهرياً — ليست ضماناً لأداء فعلي.", en: "An illustrative simulation assuming a flat 3% monthly sales growth — not a guarantee of actual performance." } };
+  return months;
+}
+
+function scenarioSummary(base, growthPct) {
+  const months = simulateCashFlowMonths({ ...base, monthlyGrowthPct: growthPct });
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  return {
+    breakEvenMonth: firstProfitable ? firstProfitable.month : null,
+    month6Balance: months[5].balance,
+    month6NetFlow: months[5].netFlow,
+  };
+}
+
+function computeCashFlowSimulation(inputs = {}) {
+  const num = (v, def = 0) => (typeof v === "number" && isFinite(v) ? v : def);
+  const base = {
+    startingCash: num(inputs.startingCash),
+    startupCosts: num(inputs.startupCosts),
+    month1Revenue: num(inputs.month1Revenue),
+    monthlyGrowthPct: num(inputs.monthlyGrowthPct, 10),
+    inventoryCost: num(inputs.inventoryCost),
+    marketingCost: num(inputs.marketingCost),
+    deliveryCost: num(inputs.deliveryCost),
+    otherCost: num(inputs.otherCost),
+  };
+
+  const months = simulateCashFlowMonths(base);
+  const firstProfitable = months.find((mo) => mo.netFlow > 0);
+  const breakEvenMonth = firstProfitable ? firstProfitable.month : null;
+  const lowestBalanceMonth = months.reduce((min, mo) => (mo.balance < min.balance ? mo : min), months[0]);
+
+  const recommendations = [];
+  const month1 = months[0];
+  if (month1.netFlow < 0) {
+    const cut = Math.round(base.marketingCost * 0.2);
+    if (cut > 0) {
+      recommendations.push({
+        ar: `خفض تكاليف التسويق بنسبة 20% في الشهر الأول (توفير ${cut} ر.ع) يقلّل الخسارة إلى ${month1.netFlow + cut} ر.ع.`,
+        en: `Cutting marketing costs by 20% in month 1 (saves ${cut} OMR) reduces the loss to ${month1.netFlow + cut} OMR.`,
+      });
+    }
+  }
+  if (base.startupCosts > base.startingCash * 0.5) {
+    recommendations.push({
+      ar: "التكاليف الأولية مرتفعة نسبة لرصيدك الحالي — فكّر بتأجيل شراء المعدات غير الضرورية للشهر الثالث أو الرابع.",
+      en: "Startup costs are high relative to your current cash — consider deferring non-essential equipment purchases to month 3 or 4.",
+    });
+  }
+  recommendations.push({
+    ar: "التفاوض مع الموردين لتمديد فترة السداد 30 يوماً إضافياً يحسّن السيولة دون تغيير الأرقام الفعلية.",
+    en: "Negotiating an extra 30-day payment term with suppliers improves liquidity without changing the underlying numbers.",
+  });
+  if (lowestBalanceMonth.balance < 0) {
+    recommendations.push({
+      ar: `⚠️ خطر نفاد السيولة في الشهر ${lowestBalanceMonth.month} (الرصيد المتوقع: ${lowestBalanceMonth.balance} ر.ع) — تحتاج تمويلاً إضافياً أو تقليل التكاليف قبل ذلك.`,
+      en: `⚠️ Cash-out risk in month ${lowestBalanceMonth.month} (projected balance: ${lowestBalanceMonth.balance} OMR) — you'll need extra funding or lower costs before then.`,
+    });
+  }
+
+  return {
+    months,
+    breakEvenMonth,
+    lowestBalanceMonth: lowestBalanceMonth.month,
+    lowestBalance: lowestBalanceMonth.balance,
+    recommendations,
+    scenarios: {
+      optimistic: scenarioSummary(base, base.monthlyGrowthPct + 20),
+      realistic: scenarioSummary(base, base.monthlyGrowthPct),
+      pessimistic: scenarioSummary(base, Math.max(base.monthlyGrowthPct - 20, -50)),
+    },
+    note: { ar: "محاكاة تقديرية مبنية على افتراضاتك — ليست ضماناً لنتيجة فعلية.", en: "An illustrative simulation based on your assumptions — not a guarantee of actual results." },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -828,40 +1133,91 @@ function getRestockingAlerts(sector, lang = "ar") {
 }
 
 // ---------------------------------------------------------------------------
-// شبكة رواد الأعمال (Entrepreneur Network) — دليل تجريبي (mock) لرواد أعمال
-// آخرين في نفس القطاع للتواصل وتبادل الخبرات.
+// المستقلون (Freelancers) — كتالوج تجريبي (mock)، عام لكل القطاعات (تصميم،
+// تسويق، تصوير، تطوير، محتوى، تمويل...) وليس خاصاً بقطاع واحد.
 // ---------------------------------------------------------------------------
-const ENTREPRENEURS = [
-  { id: "ent-1", sectors: ["beauty", "retail"], name: "هدى السعدية", business: "أروجا للعناية الطبيعية", city: "muscat", yearsActive: 2, lookingForAr: "شراكات توريد مشتركة", lookingForEn: "Shared supplier partnerships", contact: "huda@aroja.om", social: "@aroja.om" },
-  { id: "ent-2", sectors: ["food", "services"], name: "سالم الغيلاني", business: "مطبخ بيتنا", city: "muscat", yearsActive: 3, lookingForAr: "تبادل خبرات تسويق محلي", lookingForEn: "Local marketing knowledge-sharing", contact: "salim@baytna.om", social: "@baytna.kitchen" },
-  { id: "ent-3", sectors: ["tech", "ecommerce"], name: "ريم البلوشية", business: "سوق سوق (منصة تسوق)", city: "muscat", yearsActive: 1, lookingForAr: "التعاون على حلول شحن مشتركة", lookingForEn: "Collaborating on shared shipping solutions", contact: "reem@souqsouq.om", social: "@souqsouq" },
-  { id: "ent-4", sectors: ["services", "education"], name: "ياسر الرواحي", business: "أكاديمية المهارات", city: "sohar", yearsActive: 4, lookingForAr: "تبادل عملاء وإحالات", lookingForEn: "Client referral exchange", contact: "yasser@skillsacademy.om", social: "@skillsacademy.om" },
+const FREELANCERS = [
+  { id: "fl-1", name: "أحمد المسلمي", nameEn: "Ahmed Al Musallami", categoryAr: "تصميم الشعارات والهوية البصرية", categoryEn: "Logo Design, Brand Identity", experienceYears: 8, city: "muscat", rating: 4.8, reviews: 87, skillsAr: ["تصميم شعارات", "هوية بصرية", "تصميم للسوشال ميديا", "تصميم التغليف"], skillsEn: ["Logo Design", "Brand Identity", "Social Media Graphics", "Packaging Design"], priceMin: 15, priceMax: 25, contact: "ahmad.design@email.com", social: "@ahmad_creations" },
+  { id: "fl-2", name: "سارة الخروصية", nameEn: "Sara Al Kharusi", categoryAr: "التسويق الرقمي وإدارة السوشال ميديا", categoryEn: "Digital Marketing, Social Media", experienceYears: 5, city: "seeb", rating: 4.9, reviews: 124, skillsAr: ["إدارة سوشال ميديا", "استراتيجية محتوى", "التسويق بالمؤثرين", "إعلانات رقمية"], skillsEn: ["Social Media Management", "Content Strategy", "Influencer Marketing", "Digital Advertising"], priceMin: 12, priceMax: 20, contact: "sara.marketing@email.com", social: "@sara_digital" },
+  { id: "fl-3", name: "محمد العجمي", nameEn: "Mohammed Al Ajmi", categoryAr: "التصوير الفوتوغرافي وإنتاج الفيديو", categoryEn: "Photography, Video Production", experienceYears: 6, city: "muscat", rating: 4.7, reviews: 65, skillsAr: ["تصوير منتجات", "إنتاج فيديو", "تصوير عارضين", "تصوير سينمائي للمنتجات"], skillsEn: ["Product Photography", "Video Production", "Model Photography", "Product Cinematography"], priceMin: 20, priceMax: 35, contact: "mohammed.photo@email.com", social: "@mohammed_visuals" },
+  { id: "fl-4", name: "ناديا الريامية", nameEn: "Nadia Al Riyami", categoryAr: "كتابة المحتوى والصياغة الإعلانية", categoryEn: "Content Writing, Copywriting", experienceYears: 4, city: "muscat", rating: 4.6, reviews: 43, skillsAr: ["صياغة إعلانية", "كتابة محتوى", "كتابة SEO", "كتابة مدونات"], skillsEn: ["Copywriting", "Content Writing", "SEO Writing", "Blog Writing"], priceMin: 10, priceMax: 18, contact: "nadia.writing@email.com", social: "@nadia_content" },
+  { id: "fl-5", name: "سعود الحبسي", nameEn: "Saud Al Habsi", categoryAr: "تطوير المواقع والمتاجر الإلكترونية", categoryEn: "Web Development, E-commerce", experienceYears: 7, city: "salalah", rating: 4.8, reviews: 56, skillsAr: ["تطوير مواقع", "متاجر إلكترونية", "Shopify", "WordPress"], skillsEn: ["Website Development", "E-commerce", "Shopify", "WordPress"], priceMin: 18, priceMax: 30, contact: "saud.dev@email.com", social: "@saud_web" },
+  { id: "fl-6", name: "هدى الرواحية", nameEn: "Huda Al Rawahi", categoryAr: "تصميم جرافيك ورسوم توضيحية", categoryEn: "Graphic Design, Illustration", experienceYears: 3, city: "muscat", rating: 4.4, reviews: 28, skillsAr: ["تصميم جرافيك", "رسوم توضيحية", "هوية بصرية", "تصميم سوشال ميديا"], skillsEn: ["Graphic Design", "Illustration", "Branding", "Social Media Design"], priceMin: 8, priceMax: 15, contact: "huda.design@email.com", social: "@huda_art" },
+  { id: "fl-7", name: "عبدالله اللواتي", nameEn: "Abdullah Al Lawati", categoryAr: "إدارة حسابات التواصل الاجتماعي", categoryEn: "Social Media Management", experienceYears: 5, city: "seeb", rating: 4.5, reviews: 39, skillsAr: ["إدارة سوشال ميديا", "إنشاء محتوى", "إدارة المجتمع"], skillsEn: ["Social Media Management", "Content Creation", "Community Management"], priceMin: 12, priceMax: 22, contact: "abdullah.social@email.com", social: "@abdullah_social" },
+  { id: "fl-8", name: "منى الكندية", nameEn: "Mona Al Kindi", categoryAr: "التصميم الداخلي وتصميم المحلات", categoryEn: "Interior Design, Retail Design", experienceYears: 6, city: "muscat", rating: 4.9, reviews: 47, skillsAr: ["تصميم داخلي", "تصميم محلات", "تصور ثلاثي الأبعاد", "تخطيط المساحات"], skillsEn: ["Interior Design", "Retail Design", "3D Visualization", "Space Planning"], priceMin: 20, priceMax: 40, contact: "mona.design@email.com", social: "@mona_interiors" },
+  { id: "fl-9", name: "خالد الماجني", nameEn: "Khalid Al Majani", categoryAr: "الإعلانات الرقمية المدفوعة", categoryEn: "Digital Advertising, PPC", experienceYears: 4, city: "muscat", rating: 4.3, reviews: 34, skillsAr: ["إعلانات جوجل", "إعلانات فيسبوك", "إعلانات تيك توك", "تحليلات"], skillsEn: ["Google Ads", "Facebook Ads", "TikTok Ads", "Analytics"], priceMin: 15, priceMax: 25, contact: "khalid.ads@email.com", social: "@khalid_ads" },
+  { id: "fl-10", name: "رنا الشعيلية", nameEn: "Rana Al Shuaili", categoryAr: "العلاقات العامة والإعلامية", categoryEn: "Public Relations, Media Relations", experienceYears: 7, city: "muscat", rating: 4.7, reviews: 52, skillsAr: ["علاقات عامة", "علاقات إعلامية", "إدارة الفعاليات", "إدارة الأزمات"], skillsEn: ["Public Relations", "Media Relations", "Event Management", "Crisis Communication"], priceMin: 22, priceMax: 40, contact: "rana.pr@email.com", social: "@rana_pr" },
+  { id: "fl-11", name: "سلطان الحارثي", nameEn: "Sultan Al Harthy", categoryAr: "استراتيجية العلامة التجارية والاستشارات", categoryEn: "Brand Strategy, Consulting", experienceYears: 10, city: "muscat", rating: 4.9, reviews: 78, skillsAr: ["استراتيجية العلامة", "استشارات أعمال", "أبحاث السوق"], skillsEn: ["Brand Strategy", "Business Consulting", "Market Research"], priceMin: 30, priceMax: 60, contact: "sultan.consult@email.com", social: "@sultan_strategy" },
+  { id: "fl-12", name: "ليلى الزكوانية", nameEn: "Layla Al Zakwani", categoryAr: "تصميم الأزياء والمنتجات", categoryEn: "Fashion Design, Product Design", experienceYears: 5, city: "seeb", rating: 4.6, reviews: 31, skillsAr: ["تصميم منتجات", "تصميم أزياء", "تصميم إكسسوارات"], skillsEn: ["Product Design", "Fashion Design", "Accessories Design"], priceMin: 18, priceMax: 30, contact: "layla.design@email.com", social: "@layla_fashion" },
+  { id: "fl-13", name: "راشد البلوشي", nameEn: "Rashid Al Balushi", categoryAr: "المحاسبة والشؤون المالية", categoryEn: "Finance, Accounting", experienceYears: 8, city: "muscat", rating: 4.8, reviews: 49, skillsAr: ["محاسبة", "مسك دفاتر", "تخطيط مالي", "استشارات ضريبية"], skillsEn: ["Accounting", "Bookkeeping", "Financial Planning", "Tax Advisory"], priceMin: 20, priceMax: 35, contact: "rashid.account@email.com", social: "@rashid_finance" },
+  { id: "fl-14", name: "نورة الهنائية", nameEn: "Noora Al Hinai", categoryAr: "الترجمة والتوطين اللغوي", categoryEn: "Translation, Localization", experienceYears: 6, city: "muscat", rating: 4.5, reviews: 37, skillsAr: ["ترجمة", "توطين", "مراجعة لغوية", "استشارات ثقافية"], skillsEn: ["Translation", "Localization", "Proofreading", "Cultural Consulting"], priceMin: 10, priceMax: 18, contact: "noora.translate@email.com", social: "@noora_translate" },
+  { id: "fl-15", name: "يوسف البلوشي", nameEn: "Yousuf Al Bulushi", categoryAr: "تطوير الأعمال والمبيعات", categoryEn: "Business Development, Sales", experienceYears: 9, city: "salalah", rating: 4.4, reviews: 42, skillsAr: ["تطوير الأعمال", "استراتيجية المبيعات", "تطوير الشراكات"], skillsEn: ["Business Development", "Sales Strategy", "Partnership Development"], priceMin: 25, priceMax: 45, contact: "yousuf.biz@email.com", social: "@yousuf_bizdev" },
 ];
-function matchEntrepreneurs(sector, lang = "ar") {
-  const list = ENTREPRENEURS.filter((e) => !sector || e.sectors.includes(sector));
-  return (list.length ? list : ENTREPRENEURS).map((e) => ({
-    id: e.id, name: e.name, business: e.business, city: e.city, yearsActive: e.yearsActive,
-    lookingFor: lang === "ar" ? e.lookingForAr : e.lookingForEn, contact: e.contact, social: e.social,
+function matchFreelancers(category, lang = "ar") {
+  const list = category ? FREELANCERS.filter((f) => (lang === "ar" ? f.categoryAr : f.categoryEn).includes(category)) : FREELANCERS;
+  return (list.length ? list : FREELANCERS).map((f) => ({
+    id: f.id, name: lang === "ar" ? f.name : (f.nameEn || f.name), category: lang === "ar" ? f.categoryAr : f.categoryEn,
+    experienceYears: f.experienceYears, city: f.city, rating: f.rating, reviews: f.reviews,
+    skills: lang === "ar" ? f.skillsAr : f.skillsEn, priceMin: f.priceMin, priceMax: f.priceMax,
+    contact: f.contact, social: f.social,
   }));
 }
 
 // ---------------------------------------------------------------------------
-// المستقلون (Freelancer Connection) — دليل تجريبي (mock) لمستقلين تخدم
-// المشاريع الناشئة (تصميم، برمجة، تسويق، محاسبة).
+// شبكة رواد الأعمال (Entrepreneur Network) — كتالوج تجريبي (mock)، أغلبه في
+// قطاع العناية بالبشرة/التجميل مع أمثلة من قطاعات أخرى (تجارة إلكترونية،
+// تسويق، تصوير) للمطابقة العامة. "تواصل" يعرض معلومات الاتصال المتاحة فقط —
+// لا يوجد نظام رسائل حقيقي، بنفس منطق بقية الكتالوجات التجريبية بالمشروع.
 // ---------------------------------------------------------------------------
-const FREELANCERS = [
-  { id: "fl-1", skill: "design", nameAr: "تصميم جرافيك وهوية بصرية", nameEn: "Graphic Design & Branding", name: "منى الحوسنية", rateMin: 15, rateMax: 40, unit: "hour", rating: 4.8, city: "muscat", contact: "mona.design@freelance.om" },
-  { id: "fl-2", skill: "dev", nameAr: "تطوير مواقع ومتاجر إلكترونية", nameEn: "Web & E-commerce Development", name: "عبدالله الفارسي", rateMin: 20, rateMax: 60, unit: "hour", rating: 4.6, city: "muscat", contact: "abdullah.dev@freelance.om" },
-  { id: "fl-3", skill: "marketing", nameAr: "إدارة حسابات السوشال ميديا", nameEn: "Social Media Management", name: "لولوة الكندية", rateMin: 150, rateMax: 400, unit: "month", rating: 4.7, city: "muscat", contact: "lulwa.social@freelance.om" },
-  { id: "fl-4", skill: "accounting", nameAr: "محاسبة وإقرارات ضريبية", nameEn: "Accounting & Tax Filing", name: "خالد المعمري", rateMin: 100, rateMax: 300, unit: "month", rating: 4.9, city: "muscat", contact: "khalid.acc@freelance.om" },
-  { id: "fl-5", skill: "legal", nameAr: "استشارات قانونية للشركات الناشئة", nameEn: "Startup Legal Consulting", name: "شيخة الهنائية", rateMin: 30, rateMax: 80, unit: "hour", rating: 4.5, city: "muscat", contact: "sheikha.legal@freelance.om" },
+const ENTREPRENEURS = [
+  { id: "e1", name: "سارة العريمي", sectors: ["beauty"], businessAr: "منتجات عناية بالبشرة طبيعية", businessEn: "Natural skincare products", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ 8 أشهر", stageEn: "Operating (8 months)", operating: true, specialtyAr: "عناية طبيعية/عضوية", specialtyEn: "Natural/Organic Skincare", monthlyRevenueAr: "1,200-2,000 ر.ع", monthlyRevenueEn: "1,200-2,000 OMR", customers: 500, followers: 2000, rating: 4.8, skillsAr: ["تسويق رقمي", "اختيار الموردين", "إدارة المخزون", "خدمة العملاء"], skillsEn: ["Digital Marketing", "Supplier Selection", "Inventory Management", "Customer Service"], lookingForAr: ["مستثمرين", "شراكات محلية", "نصائح تصدير"], lookingForEn: ["Investors", "Local Partnerships", "Export Advice"], experienceAr: "5 سنوات تسويق، إدارة أعمال", experienceEn: "5 years marketing, Business Management", availableForMentoring: true, contact: "sara@email.com", social: "@sara_skincare" },
+  { id: "e2", name: "خالد البلوشي", sectors: ["ecommerce", "beauty"], businessAr: "متجر إلكتروني لمنتجات العناية", businessEn: "Online store for skincare products", cityAr: "صلالة", cityEn: "Salalah", stageAr: "يخطط للإطلاق خلال شهر", stageEn: "Planning (launching in 1 month)", operating: false, specialtyAr: "عناية طبيعية", specialtyEn: "Natural Skincare", monthlyRevenueAr: "0 ر.ع (قبل الإطلاق)", monthlyRevenueEn: "0 OMR (Pre-launch)", customers: 0, followers: 0, rating: 0, skillsAr: ["تطوير مواقع", "اختيار المنتجات"], skillsEn: ["Web Development", "Product Selection"], lookingForAr: ["بيانات موردين", "نصائح تسويق", "نصائح تغليف"], lookingForEn: ["Supplier Info", "Marketing Tips", "Packaging Advice"], experienceAr: "3 سنوات تجارة إلكترونية", experienceEn: "3 years e-commerce", availableForMentoring: false, contact: "khalid@email.com", social: "@khalid_skincare" },
+  { id: "e3", name: "نورة الحارثية", sectors: ["beauty"], businessAr: "منتجات عضوية للبشرة", businessEn: "Organic skincare products", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "عناية عضوية", specialtyEn: "Organic Skincare", monthlyRevenueAr: "5,000-8,000 ر.ع", monthlyRevenueEn: "5,000-8,000 OMR", customers: 1500, followers: 10000, rating: 4.9, skillsAr: ["نمو الأعمال", "إدارة الفريق", "التصدير", "بناء العلامة"], skillsEn: ["Business Growth", "Team Management", "Export", "Branding"], lookingForAr: ["توسع دولي", "تطوير منتجات جديدة"], lookingForEn: ["International Expansion", "New Product Development"], experienceAr: "7 سنوات في صناعة التجميل", experienceEn: "7 years beauty industry", availableForMentoring: true, contact: "noura@email.com", social: "@noura_organic" },
+  { id: "e4", name: "أحمد الراشدي", sectors: ["ecommerce"], businessAr: "متجر إلكتروني", businessEn: "Online store", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "تجارة إلكترونية", specialtyEn: "E-commerce", monthlyRevenueAr: "3,000-4,000 ر.ع", monthlyRevenueEn: "3,000-4,000 OMR", customers: 800, followers: 5000, rating: 4.7, skillsAr: ["إنشاء المواقع", "SEO", "استراتيجية المبيعات", "تسويق رقمي"], skillsEn: ["Website Creation", "SEO", "Sales Strategy", "Digital Marketing"], lookingForAr: ["شركاء تسويق", "توسيع الأعمال"], lookingForEn: ["Marketing Partners", "Business Scaling"], experienceAr: "4 سنوات تجارة إلكترونية", experienceEn: "4 years e-commerce", availableForMentoring: true, contact: "ahmed@email.com", social: "@ahmed_ecommerce" },
+  { id: "e5", name: "نورة العبرية", sectors: ["beauty"], businessAr: "مشروع عناية بالبشرة", businessEn: "Skincare business", cityAr: "الخوير", cityEn: "Al Khuwair", stageAr: "تخطط (مرحلة بحث)", stageEn: "Planning (researching)", operating: false, specialtyAr: "عناية طبيعية", specialtyEn: "Natural Skincare", monthlyRevenueAr: "0 ر.ع (قبل الإطلاق)", monthlyRevenueEn: "0 OMR (Pre-launch)", customers: 0, followers: 0, rating: 0, skillsAr: ["أبحاث السوق", "تطوير المنتجات"], skillsEn: ["Market Research", "Product Development"], lookingForAr: ["استراتيجية تسويق", "اختيار الموردين"], lookingForEn: ["Marketing Strategy", "Supplier Selection"], experienceAr: "سنتان في صناعة التجميل", experienceEn: "2 years beauty industry", availableForMentoring: false, contact: "noura_ab@email.com", social: "@noura_ab_skincare" },
+  { id: "e6", name: "عبدالله الحسيني", sectors: ["retail", "beauty"], businessAr: "متجر منتجات طبيعية", businessEn: "Natural products store", cityAr: "السيب", cityEn: "Seeb", stageAr: "تعمل منذ سنة", stageEn: "Operating (1 year)", operating: true, specialtyAr: "منتجات طبيعية", specialtyEn: "Natural Products", monthlyRevenueAr: "1,500-2,500 ر.ع", monthlyRevenueEn: "1,500-2,500 OMR", customers: 300, followers: 1500, rating: 4.5, skillsAr: ["توريد المنتجات", "إدارة التجزئة"], skillsEn: ["Product Sourcing", "Retail Management"], lookingForAr: ["التوسع أونلاين", "تسويق رقمي"], lookingForEn: ["Online Expansion", "Digital Marketing"], experienceAr: "5 سنوات تجزئة", experienceEn: "5 years retail", availableForMentoring: true, contact: "abdullah@email.com", social: "@abdullah_natural" },
+  { id: "e7", name: "مريم القاسمية", sectors: ["beauty"], businessAr: "مشروع تجميل طبيعي", businessEn: "Natural beauty business", cityAr: "بركاء", cityEn: "Barka", stageAr: "تعمل منذ 6 أشهر", stageEn: "Operating (6 months)", operating: true, specialtyAr: "تجميل طبيعي", specialtyEn: "Natural Beauty", monthlyRevenueAr: "800-1,200 ر.ع", monthlyRevenueEn: "800-1,200 OMR", customers: 150, followers: 800, rating: 4.3, skillsAr: ["سوشال ميديا", "تسويق المنتجات"], skillsEn: ["Social Media", "Product Marketing"], lookingForAr: ["نمو الأعمال", "التواصل مع رياديين"], lookingForEn: ["Business Growth", "Networking"], experienceAr: "3 سنوات علاج تجميلي", experienceEn: "3 years beauty therapy", availableForMentoring: true, contact: "maryam@email.com", social: "@maryam_naturalbeauty" },
+  { id: "e8", name: "سعيد الرواحي", sectors: ["beauty", "agro"], businessAr: "مشروع زيوت طبيعية", businessEn: "Natural oils business", cityAr: "نزوى", cityEn: "Nizwa", stageAr: "تعمل منذ 9 أشهر", stageEn: "Operating (9 months)", operating: true, specialtyAr: "زيوت طبيعية", specialtyEn: "Natural Oils", monthlyRevenueAr: "1,000-1,800 ر.ع", monthlyRevenueEn: "1,000-1,800 OMR", customers: 200, followers: 1000, rating: 4.6, skillsAr: ["تطوير المنتجات", "التوريد المحلي"], skillsEn: ["Product Development", "Local Sourcing"], lookingForAr: ["فرص تصدير", "حضور إلكتروني"], lookingForEn: ["Export Opportunities", "Online Presence"], experienceAr: "10 سنوات زراعة", experienceEn: "10 years agriculture", availableForMentoring: true, contact: "said@email.com", social: "@said_naturaloils" },
+  { id: "e9", name: "فاطمة المسكرية", sectors: ["beauty"], businessAr: "مشروع منتجات بشرة عضوية", businessEn: "Organic skincare business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تخطط (مرحلة الفكرة)", stageEn: "Planning (idea stage)", operating: false, specialtyAr: "عناية عضوية", specialtyEn: "Organic Skincare", monthlyRevenueAr: "0 ر.ع (فكرة)", monthlyRevenueEn: "0 OMR (Idea)", customers: 0, followers: 0, rating: 0, skillsAr: ["معرفة بالمنتج"], skillsEn: ["Product Knowledge"], lookingForAr: ["إرشاد", "بيانات موردين", "تأسيس المشروع"], lookingForEn: ["Mentorship", "Supplier Info", "Business Setup"], experienceAr: "بدون خبرة سابقة", experienceEn: "None", availableForMentoring: false, contact: "fatima@email.com", social: "@fatima_organic" },
+  { id: "e10", name: "حمد العوفي", sectors: ["beauty"], businessAr: "متجر عناية بالبشرة للرجال", businessEn: "Men's skincare store", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ 5 أشهر", stageEn: "Operating (5 months)", operating: true, specialtyAr: "عناية رجالية", specialtyEn: "Men's Skincare", monthlyRevenueAr: "600-1,000 ر.ع", monthlyRevenueEn: "600-1,000 OMR", customers: 100, followers: 500, rating: 4.2, skillsAr: ["عناية رجالية", "سوشال ميديا"], skillsEn: ["Men's Grooming", "Social Media"], lookingForAr: ["نصائح تسويق", "استراتيجية نمو"], lookingForEn: ["Marketing Tips", "Growth Strategy"], experienceAr: "سنتان في صناعة التجميل", experienceEn: "2 years beauty industry", availableForMentoring: true, contact: "hamad@email.com", social: "@hamad_menscare" },
+  { id: "e11", name: "ليلى البلوشية", sectors: ["manufact", "beauty"], businessAr: "مشروع تغليف مستدام", businessEn: "Sustainable packaging business", cityAr: "الخوير", cityEn: "Al Khuwair", stageAr: "تعمل منذ سنة", stageEn: "Operating (1 year)", operating: true, specialtyAr: "تغليف مستدام", specialtyEn: "Sustainable Packaging", monthlyRevenueAr: "2,000-3,500 ر.ع", monthlyRevenueEn: "2,000-3,500 OMR", customers: 400, followers: 2000, rating: 4.8, skillsAr: ["حلول مستدامة", "تطوير الأعمال"], skillsEn: ["Sustainable Solutions", "Business Development"], lookingForAr: ["شراكات", "رأس مال للنمو"], lookingForEn: ["Partnerships", "Growth Capital"], experienceAr: "4 سنوات استدامة", experienceEn: "4 years sustainability", availableForMentoring: true, contact: "laila@email.com", social: "@laila_packaging" },
+  { id: "e12", name: "يوسف الهاشمي", sectors: ["services"], businessAr: "مشروع تسويق رقمي", businessEn: "Digital marketing business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تعمل منذ سنتين", stageEn: "Operating (2 years)", operating: true, specialtyAr: "تسويق رقمي", specialtyEn: "Digital Marketing", monthlyRevenueAr: "5,000-7,000 ر.ع", monthlyRevenueEn: "5,000-7,000 OMR", customers: 300, followers: 5000, rating: 4.7, skillsAr: ["استراتيجية تسويق", "تسويق بالمؤثرين", "إنشاء محتوى"], skillsEn: ["Marketing Strategy", "Influencer Marketing", "Content Creation"], lookingForAr: ["شراكات", "عملاء جدد"], lookingForEn: ["Partnerships", "New Clients"], experienceAr: "8 سنوات تسويق", experienceEn: "8 years marketing", availableForMentoring: true, contact: "yousuf@email.com", social: "@yousuf_digital" },
+  { id: "e13", name: "شيماء الكيومية", sectors: ["services"], businessAr: "مشروع تصوير منتجات", businessEn: "Product photography business", cityAr: "السيب", cityEn: "Seeb", stageAr: "تعمل منذ 7 أشهر", stageEn: "Operating (7 months)", operating: true, specialtyAr: "تصوير منتجات", specialtyEn: "Product Photography", monthlyRevenueAr: "800-1,500 ر.ع", monthlyRevenueEn: "800-1,500 OMR", customers: 120, followers: 1200, rating: 4.5, skillsAr: ["تصوير فوتوغرافي", "إنتاج فيديو"], skillsEn: ["Photography", "Video Production"], lookingForAr: ["عملاء أكثر", "شراكات"], lookingForEn: ["More Clients", "Partnerships"], experienceAr: "5 سنوات تصوير", experienceEn: "5 years photography", availableForMentoring: true, contact: "shaima@email.com", social: "@shaima_photography" },
+  { id: "e14", name: "طارق السالمي", sectors: ["ecommerce"], businessAr: "مشروع تجارة إلكترونية", businessEn: "E-commerce business", cityAr: "صحار", cityEn: "Sohar", stageAr: "تعمل منذ سنة ونصف", stageEn: "Operating (1.5 years)", operating: true, specialtyAr: "تجارة إلكترونية", specialtyEn: "E-commerce", monthlyRevenueAr: "2,500-4,000 ر.ع", monthlyRevenueEn: "2,500-4,000 OMR", customers: 600, followers: 3000, rating: 4.4, skillsAr: ["إدارة تجارة إلكترونية", "لوجستيات"], skillsEn: ["E-commerce Management", "Logistics"], lookingForAr: ["توسع", "أتمتة"], lookingForEn: ["Expansion", "Automation"], experienceAr: "6 سنوات لوجستيات", experienceEn: "6 years logistics", availableForMentoring: true, contact: "tariq@email.com", social: "@tariq_ecommerce" },
+  { id: "e15", name: "أمل الريامية", sectors: ["beauty"], businessAr: "مشروع عناية طبيعية للأطفال", businessEn: "Children's natural skincare business", cityAr: "مسقط", cityEn: "Muscat", stageAr: "تخطط (منذ 6 أشهر)", stageEn: "Planning (6 months)", operating: false, specialtyAr: "عناية طبيعية للأطفال", specialtyEn: "Children's Natural Care", monthlyRevenueAr: "0 ر.ع (تخطيط)", monthlyRevenueEn: "0 OMR (Planning)", customers: 0, followers: 200, rating: 0, skillsAr: ["أبحاث المنتجات", "خبرة الأمومة"], skillsEn: ["Product Research", "Parenting Expertise"], lookingForAr: ["تطوير منتجات", "بيانات موردين"], lookingForEn: ["Product Development", "Supplier Info"], experienceAr: "3 سنوات تطوير منتجات", experienceEn: "3 years product development", availableForMentoring: false, contact: "amal@email.com", social: "@amal_kidskincare" },
 ];
-function matchFreelancers(skill, lang = "ar") {
-  const list = FREELANCERS.filter((f) => !skill || f.skill === skill);
-  return (list.length ? list : FREELANCERS).map((f) => ({
-    id: f.id, category: lang === "ar" ? f.nameAr : f.nameEn, name: f.name, rateMin: f.rateMin, rateMax: f.rateMax,
-    unit: f.unit, rating: f.rating, city: f.city, contact: f.contact,
-  }));
+
+function matchEntrepreneurs(sector, cityLabel, lang = "ar") {
+  const scored = ENTREPRENEURS.map((e) => {
+    let score = 1;
+    if (sector && e.sectors.includes(sector)) score += 3;
+    if (cityLabel && (lang === "ar" ? e.cityAr : e.cityEn).includes(cityLabel)) score += 2;
+    return { ...e, score };
+  }).sort((a, b) => b.score - a.score);
+  return scored.slice(0, 10).map((e) => entrepreneurView(e, lang));
+}
+
+function entrepreneurView(e, lang) {
+  return {
+    id: e.id, name: e.name, business: lang === "ar" ? e.businessAr : e.businessEn,
+    city: lang === "ar" ? e.cityAr : e.cityEn, stage: lang === "ar" ? e.stageAr : e.stageEn, operating: e.operating,
+    specialty: lang === "ar" ? e.specialtyAr : e.specialtyEn, monthlyRevenue: lang === "ar" ? e.monthlyRevenueAr : e.monthlyRevenueEn,
+    customers: e.customers, followers: e.followers, rating: e.rating,
+    skills: lang === "ar" ? e.skillsAr : e.skillsEn, lookingFor: lang === "ar" ? e.lookingForAr : e.lookingForEn,
+    experience: lang === "ar" ? e.experienceAr : e.experienceEn, availableForMentoring: e.availableForMentoring,
+    contact: e.contact, social: e.social,
+  };
+}
+
+function getMentors(lang = "ar") {
+  return ENTREPRENEURS.filter((e) => e.availableForMentoring).map((e) => entrepreneurView(e, lang));
+}
+
+function getSuccessStories(lang = "ar") {
+  return ENTREPRENEURS.filter((e) => e.operating && e.rating >= 4.6)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 4)
+    .map((e) => entrepreneurView(e, lang));
 }
 
 module.exports = {
@@ -875,5 +1231,6 @@ module.exports = {
   seedApplications,
   computeFinancials,
   getProductCategories, matchSuppliers, matchCompetitors, matchRentals, matchInfluencers,
-  simulateCashFlow, suggestPricing, getRestockingAlerts, matchEntrepreneurs, matchFreelancers,
+  suggestPricing, getRestockingAlerts, computeCashFlowSimulation,
+  matchEntrepreneurs, getMentors, getSuccessStories, matchFreelancers,
 };

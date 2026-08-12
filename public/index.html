@@ -24,6 +24,8 @@
   --gold-soft:#e8d4b8;
   --teal:#93a2b8;
   --coral:#e8735c;
+  --thrush:#5c7fa3;    /* بلشون الصخور الأزرق — طائر عُماني أصيل يسكن الوديان والحصون */
+  --thrush-soft:#8fb0cf;
   --text:#f3f0e6;
   --text-dim:#a7b0d6;
   --text-faint:#6c76a3;
@@ -41,9 +43,19 @@ body{
     radial-gradient(1200px 600px at 15% -10%, #1a2454 0%, transparent 60%),
     radial-gradient(900px 500px at 110% 10%, #16204a 0%, transparent 55%),
     var(--navy-950);
+  background-size:130% 130%;
   color:var(--text);
   font-family:'Tajawal', 'Segoe UI', Tahoma, sans-serif;
   min-height:100vh;
+  animation:desertDrift 26s ease-in-out infinite alternate;
+}
+/* حركة خلفية بطيئة جداً وخفيفة جداً — توحي بوهج الصحراء البعيد دون أي تشتيت */
+@keyframes desertDrift{
+  from{ background-position:0% 0%, 0% 0%, 0 0; }
+  to{ background-position:4% 3%, -3% -2%, 0 0; }
+}
+@media (prefers-reduced-motion: reduce){
+  body{ animation:none; }
 }
 .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:.02em;}
 .display{font-family:'Cairo', 'Tajawal', sans-serif;}
@@ -60,10 +72,17 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 @keyframes msgIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 .msg{animation:msgIn .28s ease both;}
 
+/* شريط زخرفي على شكل شرفات حصن عُماني (fortress crenellations) فوق خط أساس
+   بلون طائر البلشون (thrush) — يستبدل الشريط القطري البسيط بهوية أوضح. */
 .pattern-accent{
-  height:3px; width:100%;
-  background:repeating-linear-gradient(135deg, var(--gold) 0 10px, var(--coral) 10px 20px, transparent 20px 30px, transparent 30px 40px);
-  opacity:.55;
+  height:10px; width:100%;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath fill='%23e8735c' d='M0 8 L0 3 L6 3 L6 0 L14 0 L14 3 L20 3 L20 0 L28 0 L28 3 L34 3 L34 0 L40 0 L40 8 Z'/%3E%3C/svg%3E"),
+    linear-gradient(var(--thrush), var(--thrush));
+  background-size:40px 8px, 100% 3px;
+  background-position:top left, bottom;
+  background-repeat:repeat-x, no-repeat;
+  opacity:.68;
 }
 
 /* ---------- top bar ---------- */
@@ -94,9 +113,9 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 .btn-reset{
   font-size:12px; padding:7px 14px; border-radius:8px; cursor:pointer;
   border:1px solid var(--line); background:transparent; color:var(--text-dim);
-  font-family:'Tajawal';
+  font-family:'Tajawal'; transition:.2s cubic-bezier(.4,0,.2,1);
 }
-.btn-reset:hover{border-color:var(--coral); color:var(--coral);}
+.btn-reset:hover{border-color:var(--coral); color:var(--coral); transform:translateY(-1px); box-shadow:var(--shadow-sm);}
 
 /* ---------- top nav (categorized feature bar) ---------- */
 .top-nav-bar{
@@ -196,6 +215,8 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
   --gold-soft:#f2e6c8;
   --coral:#b1552a;     /* terracotta/rust — CTA pop, echoes the dark outline's warmth */
   --teal:#6d6a3a;      /* palm-leaf khaki-olive crescent, deepened slightly for contrast on cream */
+  --thrush:#3f5a72;    /* بلشون الصخور الأزرق */
+  --thrush-soft:#6f8ba3;
   --navy-950:#fbefdf;  /* cream background */
   --navy-900:#f0e4cb;
   --navy-800:#e8d9b6;
@@ -217,6 +238,7 @@ body.palm-theme{
     radial-gradient(1200px 600px at 15% -10%, #f2e6c8 0%, transparent 60%),
     radial-gradient(900px 500px at 110% 10%, #e4d3ae 0%, transparent 55%),
     var(--navy-950);
+  background-size:130% 130%;
 }
 .palm-theme .topbar{ background:linear-gradient(180deg, rgba(232,217,182,.7), transparent); }
 .palm-theme .composer{ background:linear-gradient(0deg, rgba(232,217,182,.6), transparent); }
@@ -227,15 +249,13 @@ body.palm-theme{
   background-size:230px 190px;
 }
 .palm-theme .pattern-accent{
-  height:9px; opacity:.9;
+  height:10px; opacity:.95;
   background-image:
-    linear-gradient(135deg, var(--gold) 25%, transparent 25%),
-    linear-gradient(225deg, var(--gold) 25%, transparent 25%),
-    linear-gradient(315deg, var(--teal) 25%, transparent 25%),
-    linear-gradient(45deg,  var(--teal) 25%, transparent 25%);
-  background-position: 9px 0, 9px 0, 0 0, 0 0;
-  background-size: 18px 18px;
-  background-repeat: repeat-x;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath fill='%23b1552a' d='M0 8 L0 3 L6 3 L6 0 L14 0 L14 3 L20 3 L20 0 L28 0 L28 3 L34 3 L34 0 L40 0 L40 8 Z'/%3E%3C/svg%3E"),
+    linear-gradient(var(--thrush), var(--thrush));
+  background-size:40px 8px, 100% 3px;
+  background-position:top left, bottom;
+  background-repeat:repeat-x, no-repeat;
 }
 
 /* ---------- layout ---------- */
@@ -282,7 +302,7 @@ html[dir="rtl"] .app > aside.rail{
 .jp-title{font-family:'Cairo'; font-weight:800; font-size:13.5px; letter-spacing:.02em;}
 .jp-subtitle{font-size:12px; color:var(--text-dim); margin-top:2px;}
 .jp-progress-track{width:100%; height:8px; border-radius:999px; background:var(--navy-900); overflow:hidden; margin-top:10px;}
-.jp-progress-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--gold), var(--teal)); transition:width .35s ease;}
+.jp-progress-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--gold), var(--teal)); transition:width .35s ease; position:relative; overflow:hidden;}
 .jp-progress-label{display:flex; justify-content:space-between; font-size:11px; color:var(--text-faint); margin-top:6px;}
 .jp-stage{border:1px solid var(--line); border-radius:12px; background:var(--navy-800); overflow:hidden;}
 .jp-stage.locked{opacity:.55;}
@@ -296,9 +316,10 @@ html[dir="rtl"] .app > aside.rail{
 .jp-stage-title{font-family:'Cairo'; font-weight:700; font-size:12.5px; flex:1;}
 .jp-stage-count{font-size:10.5px; color:var(--text-faint); font-family:'IBM Plex Mono';}
 .jp-tasks{padding:0 12px 12px 12px; display:flex; flex-direction:column; gap:2px; animation:msgIn .2s ease both;}
-.jp-task{border-radius:8px; transition:.15s;}
-.jp-task-row{display:flex; align-items:flex-start; gap:8px; padding:7px 6px; cursor:pointer; border-radius:8px;}
-.jp-task-row:hover{background:var(--navy-900);}
+.jp-task{border-radius:8px; transition:.2s cubic-bezier(.4,0,.2,1);}
+.jp-task-row{display:flex; align-items:flex-start; gap:8px; padding:7px 6px; cursor:pointer; border-radius:8px; transition:.2s cubic-bezier(.4,0,.2,1);}
+.jp-task-row:hover{background:var(--navy-900); transform:translateX(-2px);}
+html[dir="rtl"] .jp-task-row:hover{transform:translateX(2px);}
 .jp-check{
   width:16px; height:16px; border-radius:5px; border:1px solid var(--line); flex:none; margin-top:2px;
   display:flex; align-items:center; justify-content:center; font-size:11px; background:var(--navy-900);
@@ -396,6 +417,7 @@ main.chatcol{
   background:color-mix(in srgb, var(--teal) 10%, transparent); border:1px solid color-mix(in srgb, var(--teal) 30%, transparent); color:var(--teal);
 }
 @keyframes blink{0%,80%,100%{opacity:.25} 40%{opacity:1}}
+@keyframes waveLoad{ 0%,100%{transform:scale(.7); opacity:.45;} 50%{transform:scale(1.2); opacity:1;} }
 
 .live-status{
   display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--text-faint);
@@ -422,7 +444,7 @@ main.chatcol{
 .chips{display:flex; flex-wrap:wrap; gap:8px; padding:0 22px 14px 22px;}
 .chip{
   padding:9px 15px; border-radius:10px; border:1px solid var(--line); background:var(--navy-800);
-  color:var(--text); font-size:13.5px; cursor:pointer; font-family:'Tajawal'; transition:.15s;
+  color:var(--text); font-size:13.5px; cursor:pointer; font-family:'Tajawal'; transition:.2s cubic-bezier(.4,0,.2,1);
 }
 .chip:hover{border-color:var(--gold); color:var(--text); background:color-mix(in srgb, var(--gold) 20%, var(--navy-800)); transform:translateY(-1px); box-shadow:var(--shadow-sm);}
 .chip.slider-wrap{cursor:default; display:flex; flex-direction:column; gap:6px; width:100%; padding:12px 16px;}
@@ -517,10 +539,17 @@ aside.rail{
 .slider-labels{display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-faint);}
 
 .gauge-track{width:100%; height:9px; border-radius:999px; background:var(--navy-900); overflow:hidden; margin:10px 0 8px 0;}
-.gauge-fill{height:100%; border-radius:999px; transition:width .3s;}
+.gauge-fill{height:100%; border-radius:999px; transition:width .3s; position:relative; overflow:hidden;}
 .gauge-fill.good{background:linear-gradient(90deg,#2fa370,var(--good));}
 .gauge-fill.warn{background:linear-gradient(90deg,#b3860f,var(--warn));}
 .gauge-fill.bad{background:linear-gradient(90deg,#a33d2f,var(--coral));}
+.gauge-fill::after, .jp-progress-fill::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(100deg, transparent 35%, rgba(255,255,255,.4) 50%, transparent 65%);
+  transform:translateX(-100%); animation:shimmerSweep 2.4s ease-in-out infinite;
+}
+@keyframes shimmerSweep{ to{ transform:translateX(100%); } }
+@media (prefers-reduced-motion: reduce){ .gauge-fill::after, .jp-progress-fill::after{ animation:none; display:none; } }
 .verdict-badge{
   font-family:'Cairo'; font-weight:700; font-size:12.5px; padding:8px 12px; border-radius:9px;
   display:flex; align-items:center; gap:8px; margin-top:2px;
@@ -528,6 +557,7 @@ aside.rail{
 .verdict-badge.good{background:color-mix(in srgb, var(--good) 14%, transparent); border:1px solid color-mix(in srgb, var(--good) 40%, transparent); color:var(--good);}
 .verdict-badge.warn{background:color-mix(in srgb, var(--warn) 14%, transparent); border:1px solid color-mix(in srgb, var(--warn) 40%, transparent); color:var(--warn);}
 .verdict-badge.bad{background:color-mix(in srgb, var(--coral) 14%, transparent); border:1px solid color-mix(in srgb, var(--coral) 40%, transparent); color:var(--coral);}
+.verdict-badge.info{background:color-mix(in srgb, var(--thrush) 14%, transparent); border:1px solid color-mix(in srgb, var(--thrush) 40%, transparent); color:var(--thrush);}
 .fund-hint{margin-top:10px; font-size:11.5px; color:var(--text-dim); line-height:1.7; padding:9px 11px; background:var(--navy-900); border-radius:9px; border:1px solid var(--line);}
 .fund-hint b{color:var(--gold-soft);}
 
@@ -900,7 +930,7 @@ const NAV_CATEGORIES = [
     { id:'idea', icon:'📊', ar:'تحليل الفكرة', en:'Idea Analysis', slug:'analysis' },
     { id:'feasibility', icon:'📋', ar:'دراسة الجدوى', en:'Feasibility Study', slug:'feasibility', action:'report' },
     { id:'journey', icon:'🗺️', ar:'رحلتي', en:'My Journey', slug:'journey', action:'journey' },
-    { id:'simulation', icon:'📈', ar:'محاكاة مالية', en:'Cash Flow Simulation', slug:'simulation' },
+    { id:'cashflow', icon:'📈', ar:'محاكاة مالية', en:'Cash Flow Simulation', slug:'simulation' },
   ]},
   { id:'design', icon:'🎨', ar:'التصميم والهوية', en:'Design & Branding', color:'#9C27B0', slug:'design', items:[
     { id:'names', icon:'🏷️', ar:'اسم المشروع', en:'Business Name', slug:'name' },
@@ -915,7 +945,6 @@ const NAV_CATEGORIES = [
   { id:'finance', icon:'💰', ar:'المالية والتمويل', en:'Finance & Funding', color:'#4CAF50', slug:'finance', items:[
     { id:'financial', icon:'🧮', ar:'المالية', en:'Financial', slug:'calculator' },
     { id:'funding', icon:'💰', ar:'التمويل', en:'Funding', slug:'funding' },
-    { id:'cashflow', icon:'💰', ar:'التدفق النقدي', en:'Cash Flow', slug:'cashflow' },
   ]},
   { id:'operations', icon:'🏪', ar:'العمليات والموردين', en:'Operations & Suppliers', color:'#F44336', slug:'operations', items:[
     { id:'suppliers', icon:'🏪', ar:'الموردون', en:'Suppliers', slug:'suppliers' },
@@ -2892,12 +2921,11 @@ function restoreUI(){
 <script src="/assistant/competitors.js"></script>
 <script src="/assistant/marketing.js"></script>
 <script src="/assistant/content.js"></script>
-<script src="/assistant/simulation.js"></script>
-<script src="/assistant/cashflow.js"></script>
 <script src="/assistant/restocking.js"></script>
 <script src="/assistant/pricing.js"></script>
-<script src="/assistant/network.js"></script>
 <script src="/assistant/freelancers.js"></script>
+<script src="/assistant/cashflow.js"></script>
+<script src="/assistant/network.js"></script>
 <script>
   // يُنفَّذ بعد تحميل كل ملفات المساعد الذكي (openAssistant/switchAiView)، حتى
   // تعمل الروابط المباشرة (deep links) لأي مسار مثل /planning/assistant فعلياً

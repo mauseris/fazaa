@@ -40,7 +40,7 @@ function mockMapHtml(competitors) {
 }
 
 function competitorCardHtml(c) {
-  const priceLabel = { budget: LANG === "ar" ? "اقتصادي" : "Budget", mid: LANG === "ar" ? "متوسط" : "Mid-range", premium: LANG === "ar" ? "فاخر" : "Premium" }[c.priceRange] || c.priceRange;
+  const priceLabel = { budget: LANG === "ar" ? "اقتصادي" : "Budget", mid: LANG === "ar" ? "متوسط" : "Mid-range", premium: LANG === "ar" ? "فاخر" : "Premium", luxury: LANG === "ar" ? "فاخر جداً" : "Luxury" }[c.priceRange] || c.priceRange;
   return `<div class="ai-match-card">
     <div class="title">${escapeHtml(c.name)} <span style="font-weight:400;font-size:11.5px;color:var(--text-faint);">— ${escapeHtml(c.neighborhood)} (${c.distanceKm}km)</span></div>
     <div style="font-size:12px;color:var(--text-faint);margin:4px 0;">

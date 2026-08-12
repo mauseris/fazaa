@@ -174,11 +174,6 @@ function createAssistantRouter(cfg) {
     res.json({ influencers: data.matchInfluencers(sector || null, lang || "ar") });
   });
 
-  router.post("/cashflow-simulation", (req, res) => {
-    const { financials, months } = req.body || {};
-    res.json(data.simulateCashFlow(financials || {}, months || 12));
-  });
-
   router.post("/pricing-suggestion", (req, res) => {
     const { unitCost, sector, lang } = req.body || {};
     res.json(data.suggestPricing(unitCost || 0, sector || null, lang || "ar"));
@@ -189,14 +184,26 @@ function createAssistantRouter(cfg) {
     res.json({ alerts: data.getRestockingAlerts(sector || null, lang || "ar") });
   });
 
-  router.post("/entrepreneurs", (req, res) => {
-    const { sector, lang } = req.body || {};
-    res.json({ entrepreneurs: data.matchEntrepreneurs(sector || null, lang || "ar") });
+  router.post("/freelancers", (req, res) => {
+    const { category, lang } = req.body || {};
+    res.json({ freelancers: data.matchFreelancers(category || null, lang || "ar") });
   });
 
-  router.post("/freelancers", (req, res) => {
-    const { skill, lang } = req.body || {};
-    res.json({ freelancers: data.matchFreelancers(skill || null, lang || "ar") });
+  router.post("/cashflow-simulation", (req, res) => {
+    res.json(data.computeCashFlowSimulation((req.body || {}).inputs || {}));
+  });
+
+  router.post("/entrepreneurs", (req, res) => {
+    const { sector, city, lang } = req.body || {};
+    res.json({ entrepreneurs: data.matchEntrepreneurs(sector || null, city || null, lang || "ar") });
+  });
+
+  router.get("/mentors", (req, res) => {
+    res.json({ mentors: data.getMentors(req.query.lang || "ar") });
+  });
+
+  router.get("/success-stories", (req, res) => {
+    res.json({ stories: data.getSuccessStories(req.query.lang || "ar") });
   });
 
   // ---- توليدي، يستدعي النموذج مرة واحدة (بدون حلقة أدوات) ----
