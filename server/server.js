@@ -85,15 +85,16 @@ app.post("/api/chat", async (req, res) => {
       : (message ? [{ role: "user", content: message }] : null);
 
     if (!messages) return res.status(400).json({ error: "message أو messages مطلوب" });
-    if (!usingGateway && !usingDirectAnthropic && !usingHuggingFace) {
-      return res.status(500).json({ error: "لا يوجد اتصال مضبوط بأي نموذج على السيرفر (راجع server/.env)" });
-    }
 
+    // Prefer external models when configured; otherwise use a lightweight
+    // local synchronous fallback for development and smoke-testing.
     const result = usingGateway
       ? await runOpenAiAgentLoop(system, messages)
       : usingDirectAnthropic
         ? await runAnthropicAgentLoop(system, messages)
-        : await runHuggingFaceAgentLoop(system, messages);
+        : usingHuggingFace
+          ? await runHuggingFaceAgentLoop(system, messages)
+          : await runLocalFallback(system, messages);
 
     res.json(result);
   } catch (e) {
@@ -115,9 +116,6 @@ app.post("/api/chat/stream", async (req, res) => {
     : (message ? [{ role: "user", content: message }] : null);
 
   if (!messages) return res.status(400).json({ error: "message أو messages مطلوب" });
-  if (!usingGateway && !usingDirectAnthropic && !usingHuggingFace) {
-    return res.status(500).json({ error: "لا يوجد اتصال مضبوط بأي نموذج على السيرفر (راجع server/.env)" });
-  }
 
   res.writeHead(200, {
     "Content-Type": "text/event-stream; charset=utf-8",
@@ -252,6 +250,7 @@ async function runAnthropicAgentLoop(system, userMessages, onEvent) {
   throw new Error("تجاوز الوكيل الحد الأقصى لجولات استدعاء الأدوات");
 }
 
+<<<<<<< HEAD
 // ---------------------------------------------------------------------------
 // حلقة الوكيل عبر Hugging Face Inference Providers (مسار تطوير محلي/تعليمي ثالث)
 // نفس صيغة OpenAI المتوافقة (router.huggingface.co)، لكن دعم tool calling غير مضمون
@@ -363,6 +362,38 @@ async function runHuggingFaceAgentLoop(system, userMessages, onEvent) {
     return { text, tools: toolLog };
   }
   throw new Error("تجاوز الوكيل الحد الأقصى لجولات استدعاء الأدوات");
+=======
+// Lightweight local fallback that uses the tools and RAG synchronously to craft
+// a deterministic reply when no external LLM is configured. This is intended
+// for development and smoke-testing only.
+async function runLocalFallback(system, userMessages) {
+  const user = (userMessages && userMessages.length) ? userMessages[userMessages.length-1].content : '';
+  const toolsUsed = [];
+  // Simple keyword-based routing: if user mentions 'riyada' or 'what is riyada', use RAG
+  if (/riyada|رفد|support|what is riyada/i.test(user)) {
+    const results = await rag.search(user, { k: 2 });
+    toolsUsed.push({ name: 'search_knowledge', args: { query: user }, result: results });
+    const summary = results.map(r => r.text).join('\n\n');
+    return { text: `Local RAG summary:\n\n${summary}`, tools: toolsUsed };
+  }
+
+  // If user asks for cost, call calculate_cost tool with safe defaults
+  if (/cost|calculate|تكلفة|تكاليف/i.test(user)) {
+    const args = { sector: 'tech', city: 'muscat', teamSize: 'solo', budgetLevel: 50 };
+    const cost = await require('./tools').calculateCost(args);
+    toolsUsed.push({ name: 'calculate_cost', args, result: cost });
+    return { text: `Estimated cost (demo): ${cost.total} OMR — breakdown: registration ${cost.registration}, equipment ${cost.equipment}.`, tools: toolsUsed };
+  }
+
+  // Default helpful reply using RAG if possible
+  const results = await rag.search(user, { k: 2 });
+  if (results && results.length) {
+    toolsUsed.push({ name: 'search_knowledge', args: { query: user }, result: results });
+    return { text: results.map(r => r.text).join('\n\n'), tools: toolsUsed };
+  }
+
+  return { text: "Local fallback: I don't have a live LLM configured. Provide GATEWAY_API_KEY or ANTHROPIC_API_KEY to enable full agent responses.", tools: toolsUsed };
+>>>>>>> a255ddd (UI: use uploaded logo as chat avatar and switch with theme; update prompts to introduce agent as Rayid/رائد; add logo assets and docs)
 }
 
 /**

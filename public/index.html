@@ -199,6 +199,7 @@ main.chatcol{
 }
 .msg.agent .avatar{background:linear-gradient(135deg,var(--gold),var(--coral)); color:#1a1204;}
 .msg.user .avatar{background:var(--navy-700); border:1px solid var(--line);}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
 .bubble{
   padding:12px 15px; border-radius:14px; font-size:14.5px; line-height:1.85;
 }
@@ -431,58 +432,58 @@ aside.rail{
 
 <div class="topbar">
   <div class="brand">
-    <div class="mark"><img id="logoImg" alt="logo" style="display:none"><span class="mark-fallback">ف</span></div>
-    <div>
-      <div class="name">فزعة <span style="color:var(--text-faint); font-weight:500; font-size:13px;" data-t="brandSub">— وكيل ريادة الذكي</span></div>
-      <div class="tag" data-t="brandTag">من الفكرة إلى السجل التجاري، خطوة بخطوة</div>
+<<<<<<< HEAD
+    <div class="mark">
+      <img id="logoLight" class="logo-light" src="/logo-light.svg" alt="logo light" style="display:none">
+      <img id="logoDark" class="logo-dark" src="/logo-dark.svg" alt="logo dark" style="display:none">
+      <span class="mark-fallback">ف</span>
     </div>
-  </div>
-  <div class="top-actions">
-    <button class="btn-reset" id="langToggle" onclick="toggleLang()" style="font-family:'IBM Plex Mono';">EN / عربي</button>
-    <button class="btn-reset" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌴</button>
-    <div class="pill"><span class="dot"></span> <span data-t="connectedPill">متصل — بيانات تجريبية (Mock)</span></div>
-    <button class="btn-reset" data-t="newSession" onclick="resetSession()">جلسة جديدة ↺</button>
-  </div>
-</div>
-<div class="pattern-accent"></div>
+=======
+    function checkLogo(){
+      const light = document.getElementById('logoLight');
+      const dark = document.getElementById('logoDark');
+      const fallback = document.querySelector('.mark-fallback');
+      if(!light && !dark) return;
+      // probe candidate filenames (svg then png) and show/hide based on theme preference
+      let anyLoaded = false;
+      const probeCandidates = (el, candidates, cb) => {
+        if(!el) return cb(false);
+        let i = 0;
+        const tryNext = () => {
+          if(i >= candidates.length) return cb(false);
+          const path = candidates[i++];
+          const p = new Image();
+          p.onload = () => { el.src = path; cb(true); };
+          p.onerror = () => { tryNext(); };
+          p.src = path + '?ts=' + Date.now();
+        };
+        tryNext();
+      };
 
-<div class="app">
-  <main class="chatcol">
-    <div class="stage-strip" id="stageStrip"></div>
-    <div id="resumeBanner"></div>
-    <div class="messages" id="messages"></div>
-    <div class="chips" id="chips"></div>
-    <div class="voice-status" id="voiceStatus"></div>
-    <div class="composer">
-      <input id="textInput" type="text" data-t-ph="composerPh" placeholder="اكتب سؤالك أو فكرتك هنا…" onkeydown="if(event.key==='Enter')sendFree()">
-      <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="تسجيل صوتي"><span class="mic-ic">🎤</span></button>
-      <button onclick="sendFree()" id="sendBtn">↩</button>
-    </div>
-  </main>
+      // prefer uploaded raster images first so user-supplied JPG/PNG take precedence
+      probeCandidates(light, ['/logo-light.jpg','/logo-light.png','/logo-light.webp','/logo-light.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
+      probeCandidates(dark, ['/logo-dark.jpg','/logo-dark.png','/logo-dark.webp','/logo-dark.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
 
-  <aside class="rail">
-    <div class="card">
-      <h3><span class="ic">📍</span> <span data-t="statusHeader">حالة المشروع</span></h3>
-      <span class="badge-stage" id="stageBadge">صياغة الفكرة</span>
-      <div class="logo-preview" id="logoPreview" style="display:none;">
-        <svg width="46" height="46" viewBox="0 0 46 46" id="logoSvg"></svg>
-        <div>
-          <div class="logo-name" id="logoName"></div>
-          <div class="logo-sub" data-t="logoSub">شعار مبدئي تلقائي — مؤقت</div>
-        </div>
-      </div>
-    </div>
+      function updateVisibility(){
+        const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+        if(light) light.style.display = preferLight && light.src ? 'block' : 'none';
+        if(dark) dark.style.display = !preferLight && dark.src ? 'block' : 'none';
+        if(fallback) fallback.style.display = anyLoaded ? 'none' : 'inline-block';
+        // also update message avatars to match
+        setMessageAvatars();
+      }
 
-    <div class="card" id="costCard" style="display:none;">
-      <h3><span class="ic">💰</span> <span data-t="costHeader">حاسبة التكلفة التقديرية</span></h3>
-      <div class="donut-wrap">
-        <svg width="104" height="104" viewBox="0 0 104 104" id="donutSvg"></svg>
-        <div class="legend" id="legend"></div>
-      </div>
-      <div class="total-line">
-        <span class="lbl" data-t="totalLbl">إجمالي التأسيس التقديري</span>
-        <span class="val mono" id="totalVal">— ر.ع</span>
-      </div>
+      // respond to OS theme changes
+      if(window.matchMedia){
+        try{
+          window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateVisibility);
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateVisibility);
+        }catch(e){ /* some older browsers use addListener */
+          try{ window.matchMedia('(prefers-color-scheme: light)').addListener(updateVisibility); }catch(e){}
+          try{ window.matchMedia('(prefers-color-scheme: dark)').addListener(updateVisibility); }catch(e){}
+        }
+      }
+    }
       <div class="slider-row">
         <div class="row-between"><span data-t="scenarioLbl">سيناريو الميزانية</span><b id="budgetLbl">متوسط</b></div>
         <input type="range" id="budgetSlider" min="0" max="100" value="50" oninput="onBudgetChange()">
@@ -881,9 +882,14 @@ function addMessage(role, html, opts={}){
   if(wrap){
     wrap.querySelector('.bubble').innerHTML = `${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}`;
   } else {
+    // choose initial avatar src according to current theme preference
+    const preferLightNow = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    const curLightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
+    const curDarkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
+    const chosenSrc = preferLightNow ? curLightSrc : curDarkSrc;
     wrap = el(`
       <div class="msg ${role}">
-        <div class="avatar">${role==='agent' ? '🧭' : '🙂'}</div>
+        <div class="avatar">${role==='agent' ? `<img class="msgLogo" src="${chosenSrc}" alt="agent logo">` : '🙂'}</div>
         <div class="bubble">${html}${opts.src ? `<span class="src">📚 ${opts.src}</span>` : ''}</div>
       </div>`);
     document.getElementById('messages').appendChild(wrap);
@@ -895,6 +901,15 @@ function addMessage(role, html, opts={}){
     if(state.chatHistory.length > 20) state.chatHistory = state.chatHistory.slice(-20);
   }
   if(!opts.skipSave) saveState();
+}
+
+function setMessageAvatars(){
+  const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  const lightSrc = document.getElementById('logoLight')?.src || '/logo-light.jpg';
+  const darkSrc = document.getElementById('logoDark')?.src || '/logo-dark.jpg';
+  document.querySelectorAll('.msg.agent .avatar img.msgLogo').forEach(img=>{
+    try{ img.src = preferLight ? lightSrc : darkSrc; }catch(e){}
+  });
 }
 
 function hideTyping(){
@@ -1465,8 +1480,8 @@ function boot(fresh){
   if(fresh){
     setTimeout(()=>{
       const greet = LANG==='ar'
-        ? `<p>مرحباً بك 👋 أنا <b>فزعة</b>، وكيلك الذكي لتحويل فكرة مشروعك في عُمان إلى مشروع مسجّل رسمياً.</p><p>خلّني أفهم فكرتك أولاً — إيش فكرة مشروعك؟ اكتبها بجملة أو جملتين وأنا أتولى الباقي.</p>`
-        : `<p>Welcome 👋 I'm <b>Fazaa</b>, your AI agent for turning a business idea in Oman into an officially registered venture.</p><p>Let's start with your idea — what's your business idea? Describe it in a sentence or two and I'll handle the rest.</p>`;
+        ? `<p>مرحباً بك 👋 أنا <b>رائد</b>، وكيلك الذكي لتحويل فكرة مشروعك في عُمان إلى مشروع مسجّل رسمياً.</p><p>خلّني أفهم فكرتك أولاً — إيش فكرة مشروعك؟ اكتبها بجملة أو جملتين وأنا أتولى الباقي.</p>`
+          : `<p>Welcome 👋 I'm <b>Rayid</b>, your AI agent for turning a business idea in Oman into an officially registered venture.</p><p>Let's start with your idea — what's your business idea? Describe it in a sentence or two and I'll handle the rest.</p>`;
       addMessage('agent', greet);
       clearChips();
     }, 300);
@@ -1488,8 +1503,8 @@ async function handleIdea(text){
   renderStageStrip(); refreshBadge();
 
   const sys = rl==='ar'
-    ? `أنت وكيل عُماني اسمه "فزعة" يساعد رواد أعمال مبتدئين في عُمان. رحّب بفكرة المستخدم بجملتين فقط بالعربية الفصحى البسيطة (لهجة خليجية مقبولة)، بدون رموز تعبيرية كثيرة، ثم اسأله عن قطاع نشاطه. لا تذكر أرقاماً أو تكاليف الآن.`
-    : `You are an Omani AI agent named "Fazaa" helping first-time entrepreneurs in Oman. Welcome the user's idea in two sentences only, in clear professional English, then ask about their business sector. Do not mention any numbers or costs yet.`;
+    ? `أنت وكيل عُماني اسمه "رائد" يساعد رواد أعمال مبتدئين في عُمان. رحّب بفكرة المستخدم بجملتين فقط بالعربية الفصحى البسيطة (لهجة خليجية مقبولة)، بدون رموز تعبيرية كثيرة، ثم اسأله عن قطاع نشاطه. لا تذكر أرقاماً أو تكاليف الآن.`
+    : `You are an Omani AI agent named "Rayid" helping first-time entrepreneurs in Oman. Welcome the user's idea in two sentences only, in clear professional English, then ask about their business sector. Do not mention any numbers or costs yet.`;
   const streamed = await askLLMStream(sys, rl==='ar'?`فكرة المستخدم: "${text}"`:`User's idea: "${text}"`, {history: historyForCall(), replyLang: rl});
   hideTyping();
 
@@ -1565,8 +1580,8 @@ async function chooseBudget(range, opts={}){
   const snippets = retrieve(L(SECTORS[state.sector]) + " " + state.idea);
   const isAr = LANG==='ar';
   const sys = isAr
-    ? `أنت وكيل عُماني اسمه "فزعة". لخّص للمستخدم دراسة جدوى أولية مختصرة (٤-٥ أسطر) بالعربية، بناءً على: الفكرة="${state.idea}"، القطاع="${L(SECTORS[state.sector])}"، المدينة="${L(CITIES[state.city])}"، حجم الفريق="${L(TEAM_SIZES[state.team])}"، التكلفة التقديرية الإجمالية للتأسيس="${costs.total} ريال عُماني"، الميزانية المتاحة لدى المستخدم="${state.userBudget} ريال عُماني"، القرار المالي="${f.verdict}". اذكر أن الأرقام تقديرية ومبنية على بيانات تجريبية، واذكر القرار المالي بوضوح ولطف. لا تخترع أرقاماً أخرى. اربط ملاحظة قصيرة بالمعلومة التالية إن كانت مناسبة: "${snippets.map(s=>s.text).join(' | ')}"`
-    : `You are an Omani AI agent named "Fazaa". Summarize a concise initial feasibility study (4-5 lines) in English, based on: idea="${state.idea}", sector="${L(SECTORS[state.sector])}", city="${L(CITIES[state.city])}", team size="${L(TEAM_SIZES[state.team])}", total estimated setup cost="${costs.total} OMR", user's available budget="${state.userBudget} OMR", financial decision="${f.verdict}". Mention the numbers are estimates from demo data, and state the financial decision clearly and kindly. Don't invent other numbers. Weave in a brief note from this info if relevant: "${snippets.map(s=>s.text).join(' | ')}"`;
+    ? `أنت وكيل عُماني اسمه "رائد". لخّص للمستخدم دراسة جدوى أولية مختصرة (٤-٥ أسطر) بالعربية، بناءً على: الفكرة="${state.idea}"، القطاع="${L(SECTORS[state.sector])}"، المدينة="${L(CITIES[state.city])}"، حجم الفريق="${L(TEAM_SIZES[state.team])}"، التكلفة التقديرية الإجمالية للتأسيس="${costs.total} ريال عُماني"، الميزانية المتاحة لدى المستخدم="${state.userBudget} ريال عُماني"، القرار المالي="${f.verdict}". اذكر أن الأرقام تقديرية ومبنية على بيانات تجريبية، واذكر القرار المالي بوضوح ولطف. لا تخترع أرقاماً أخرى. اربط ملاحظة قصيرة بالمعلومة التالية إن كانت مناسبة: "${snippets.map(s=>s.text).join(' | ')}"`
+    : `You are an Omani AI agent named "Rayid". Summarize a concise initial feasibility study (4-5 lines) in English, based on: idea="${state.idea}", sector="${L(SECTORS[state.sector])}", city="${L(CITIES[state.city])}", team size="${L(TEAM_SIZES[state.team])}", total estimated setup cost="${costs.total} OMR", user's available budget="${state.userBudget} OMR", financial decision="${f.verdict}". Mention the numbers are estimates from demo data, and state the financial decision clearly and kindly. Don't invent other numbers. Weave in a brief note from this info if relevant: "${snippets.map(s=>s.text).join(' | ')}"`;
   const streamed = await askLLMStream(sys, LANG==="ar"?"أعطني ملخص دراسة الجدوى والقرار المالي الآن.":"Give me the feasibility summary and financial decision now.", {history: historyForCall()});
   hideTyping();
 
@@ -1652,8 +1667,8 @@ async function sendFree(){
   const snippets = retrieve(text, rl);
   const contextStr = snippets.map(s=>s.text).join(" | ");
   const sys = rlAr
-    ? `أنت وكيل عُماني اسمه "فزعة" يساعد رائد أعمال في مشروع من نوع "${state.sector?L(SECTORS[state.sector]):'غير محدد'}". أجب بإيجاز (٣-٤ أسطر) بالعربية على سؤاله. إن توفرت معلومات ذات صلة استخدمها: "${contextStr || 'لا يوجد'}". إن لم تكن متأكداً من معلومة رسمية دقيقة، انصح بمراجعة الجهة الرسمية مباشرة صراحة بدل اختلاق رقم.`
-    : `You are an Omani AI agent named "Fazaa" helping an entrepreneur with a "${state.sector?L(SECTORS[state.sector]):'unspecified'}" project. Answer concisely (3-4 lines) in English. If relevant info is available, use it: "${contextStr || 'none'}". If you're unsure of an exact official fact, explicitly recommend checking the official body directly instead of inventing a number.`;
+    ? `أنت وكيل عُماني اسمه "رائد" يساعد رائد أعمال في مشروع من نوع "${state.sector?L(SECTORS[state.sector]):'غير محدد'}". أجب بإيجاز (٣-٤ أسطر) بالعربية على سؤاله. إن توفرت معلومات ذات صلة استخدمها: "${contextStr || 'لا يوجد'}". إن لم تكن متأكداً من معلومة رسمية دقيقة، انصح بمراجعة الجهة الرسمية مباشرة صراحة بدل اختلاق رقم.`
+    : `You are an Omani AI agent named "Rayid" helping an entrepreneur with a "${state.sector?L(SECTORS[state.sector]):'unspecified'}" project. Answer concisely (3-4 lines) in English. If relevant info is available, use it: "${contextStr || 'none'}". If you're unsure of an exact official fact, explicitly recommend checking the official body directly instead of inventing a number.`;
   const streamed = await askLLMStream(sys, text, {history: historyForCall(), replyLang: rl});
   hideTyping();
 
@@ -1829,7 +1844,7 @@ function buildReportHTML(){
   if(isAr){
     return `
       <h1>تقرير دراسة الجدوى الأولية</h1>
-      <div class="rsub">مُولَّد بواسطة وكيل "فزعة" · ${dateStr} · تحدي AI Agent MVP Challenge</div>
+      <div class="rsub">مُولَّد بواسطة وكيل "رائد" · ${dateStr} · تحدي AI Agent MVP Challenge</div>
 
       <h2>١. ملخص تنفيذي</h2>
       <p>${state.idea || '—'}</p>
@@ -1864,7 +1879,7 @@ function buildReportHTML(){
 
   return `
     <h1>Preliminary Feasibility Report</h1>
-    <div class="rsub">Generated by "Fazaa" agent · ${dateStr} · AI Agent MVP Challenge</div>
+    <div class="rsub">Generated by "Rayid" agent · ${dateStr} · AI Agent MVP Challenge</div>
 
     <h2>1. Executive summary</h2>
     <p>${state.idea || '—'}</p>
@@ -1991,6 +2006,8 @@ function toggleTheme(){
   applyTheme();
   checkLogo();
   if(state.idea) renderLogo(state.idea.split(/\s+/).slice(0,2).join(" "));
+  // ensure logo visibility updates immediately when theme changes
+  try{ if(typeof checkLogo === 'function') checkLogo(); }catch(e){console.warn('checkLogo error', e);} 
   if(["review","done"].includes(state.step)){
     const costs = calcCosts();
     if(costs) drawDonut(costs);
@@ -2001,6 +2018,7 @@ function toggleTheme(){
 // /logo-dark.png (used on the navy default theme) — so the mark always has contrast against
 // its background. Falls back to the "ف" letter mark if the matching file isn't present.
 function checkLogo(){
+<<<<<<< HEAD
   const img = document.getElementById('logoImg'); const fallback = document.querySelector('.mark-fallback');
   if(!img) return;
   const isPalm = document.body.classList.contains('palm-theme');
@@ -2009,6 +2027,51 @@ function checkLogo(){
   probe.onload = ()=>{ img.src = path; img.style.display='block'; if(fallback) fallback.style.display='none'; };
   probe.onerror = ()=>{ img.style.display='none'; img.removeAttribute('src'); if(fallback) fallback.style.display='inline-block'; };
   probe.src = path + '?ts=' + Date.now();
+=======
+  const light = document.getElementById('logoLight');
+  const dark = document.getElementById('logoDark');
+  const fallback = document.querySelector('.mark-fallback');
+  if(!light && !dark) return;
+  // probe candidate filenames (svg then png) and show/hide based on theme preference
+  let anyLoaded = false;
+  const probeCandidates = (el, candidates, cb) => {
+    if(!el) return cb(false);
+    let i = 0;
+    const tryNext = () => {
+      if(i >= candidates.length) return cb(false);
+      const path = candidates[i++];
+      const p = new Image();
+      p.onload = () => { el.src = path; cb(true); };
+      p.onerror = () => { tryNext(); };
+      p.src = path + '?ts=' + Date.now();
+    };
+    tryNext();
+  };
+
+  // prefer uploaded raster images first so user-supplied JPG/PNG take precedence
+  probeCandidates(light, ['/logo-light.jpg','/logo-light.png','/logo-light.webp','/logo-light.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
+  probeCandidates(dark, ['/logo-dark.jpg','/logo-dark.png','/logo-dark.webp','/logo-dark.svg'], (ok) => { if(ok) anyLoaded = true; updateVisibility(); });
+
+  function updateVisibility(){
+    const preferLight = document.body.classList.contains('palm-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    if(light) light.style.display = preferLight && light.src ? 'block' : 'none';
+    if(dark) dark.style.display = !preferLight && dark.src ? 'block' : 'none';
+    if(fallback) fallback.style.display = anyLoaded ? 'none' : 'inline-block';
+    // also update message avatars to match
+    setMessageAvatars();
+  }
+
+  // respond to OS theme changes
+  if(window.matchMedia){
+    try{
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateVisibility);
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateVisibility);
+    }catch(e){ /* some older browsers use addListener */
+      try{ window.matchMedia('(prefers-color-scheme: light)').addListener(updateVisibility); }catch(e){}
+      try{ window.matchMedia('(prefers-color-scheme: dark)').addListener(updateVisibility); }catch(e){}
+    }
+  }
+>>>>>>> a255ddd (UI: use uploaded logo as chat avatar and switch with theme; update prompts to introduce agent as Rayid/رائد; add logo assets and docs)
 }
 
 /* ======================= INIT ======================= */
