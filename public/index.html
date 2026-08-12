@@ -151,10 +151,14 @@ html[lang="en"] .brand .tag, html[lang="en"] .hint, html[lang="en"] .legend, htm
 .nav-cat-btn .caret{font-size:9px; opacity:.7; transition:transform .15s;}
 .nav-cat.open .nav-cat-btn .caret{transform:rotate(180deg);}
 .nav-dropdown{
-  position:absolute; top:calc(100% + 6px); inset-inline-start:0;
+  /* position:fixed (not absolute) وموضعه يُحسب بالجافاسكربت (positionOpenDropdown) —
+     لأن .top-nav الأب له overflow-y:hidden (لازم لتفعيل التمرير الأفقي على الشاشات
+     الضيقة)، وأي عنصر absolute بداخله يُقصّ عمودياً مهما كان display فعلياً block.
+     fixed يُخرج القائمة المنسدلة من هذا القص تماماً. */
+  position:fixed;
   min-width:220px; background:var(--navy-800); border:1px solid var(--line);
   border-radius:10px; box-shadow:var(--shadow); padding:6px;
-  display:none; z-index:50;
+  display:none; z-index:200;
 }
 .nav-cat.open .nav-dropdown{display:block;}
 .nav-dropdown-item{
@@ -976,6 +980,26 @@ function renderTopNav(){
       `).join('');
   }
   renderMobileNav();
+  positionOpenDropdown();
+}
+
+// .nav-dropdown هو position:fixed (راجع تعليق CSS أعلاه) — نحسب موضعه يدوياً من
+// مكان الزر الفعلي بعد كل إعادة رسم، بدل الاعتماد على top/left ثابتة في الـ CSS.
+function positionOpenDropdown(){
+  const openCat = document.querySelector('.nav-cat.open');
+  if(!openCat) return;
+  const btn = openCat.querySelector('.nav-cat-btn');
+  const dropdown = openCat.querySelector('.nav-dropdown');
+  if(!btn || !dropdown) return;
+  const rect = btn.getBoundingClientRect();
+  dropdown.style.top = (rect.bottom + 6) + 'px';
+  if(document.documentElement.dir === 'rtl'){
+    dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+    dropdown.style.left = 'auto';
+  } else {
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.right = 'auto';
+  }
 }
 
 function toggleNavDropdown(catId){
@@ -985,6 +1009,7 @@ function toggleNavDropdown(catId){
 document.addEventListener('click', (e)=>{
   if(openNavCat && !e.target.closest('.nav-cat')){ openNavCat = null; renderTopNav(); }
 });
+window.addEventListener('resize', ()=>{ if(openNavCat) positionOpenDropdown(); });
 
 function renderMobileNav(){
   const body = document.getElementById('mobileNavBody');
