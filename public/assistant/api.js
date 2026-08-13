@@ -34,7 +34,7 @@ const AssistantAPI = (function () {
     generateCaseSummary: (profile, issue, lang) => post("/case-summary", { profile, issue, lang }),
     getProductCategories: (sector) => get(`/product-categories?sector=${encodeURIComponent(sector || "")}`),
     matchSuppliers: (sector, lang) => post("/suppliers", { sector, lang }),
-    matchCompetitors: (sector, city, lang) => post("/competitors", { sector, city, lang }),
+    matchCompetitors: (sector, city, lang, coords) => post("/competitors", { sector, city, lang, lat: coords?.lat, lng: coords?.lng }),
     matchInfluencers: (sector, lang) => post("/influencers", { sector, lang }),
     matchFreelancers: (category, lang) => post("/freelancers", { category, lang }),
     simulateCashFlow: (inputs) => post("/cashflow-simulation", { inputs }),

@@ -172,14 +172,21 @@ function createAssistantRouter(cfg) {
   //      مفتاح، لكن تغطية أقل كثافة للأعمال العُمانية ولا يوفر تقييمات/أوقات عمل.
   //   3) الكتالوج التجريبي المحلي (assistantData.js) — شبكة أمان أخيرة، يعمل دائماً.
   router.post("/competitors", async (req, res) => {
-    const { sector, city, lang } = req.body || {};
+    const { sector, city, lang, lat, lng } = req.body || {};
     const L = lang || "ar";
+    // إحداثيات دقيقة اختارها المستخدم فعلياً على الخريطة (competitors.js) بدل
+    // مركز المدينة التقريبي الافتراضي — تحقق أساسي من الصحة قبل استخدامها في
+    // نداءات خارجية (Google/Overpass).
+    const center = (typeof lat === "number" && typeof lng === "number" &&
+      Number.isFinite(lat) && Number.isFinite(lng) &&
+      lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180)
+      ? { lat, lng } : null;
 
     if (cfg.GOOGLE_MAPS_API_KEY) {
       try {
         const [competitors, rentals] = await Promise.all([
-          places.searchCompetitors(cfg.GOOGLE_MAPS_API_KEY, sector || null, city || null, L),
-          places.searchNearbyAgencies(cfg.GOOGLE_MAPS_API_KEY, city || null, L),
+          places.searchCompetitors(cfg.GOOGLE_MAPS_API_KEY, sector || null, city || null, L, center),
+          places.searchNearbyAgencies(cfg.GOOGLE_MAPS_API_KEY, city || null, L, center),
         ]);
         // competitors === null يعني قطاع بلا معنى جغرافي (مثال: ecommerce) — رجوع تجريبي
         if (competitors !== null) {
@@ -197,8 +204,8 @@ function createAssistantRouter(cfg) {
 
     try {
       const [competitors, agencies] = await Promise.all([
-        osm.searchCompetitors(sector || null, city || null, L),
-        osm.searchNearbyAgencies(city || null, L),
+        osm.searchCompetitors(sector || null, city || null, L, center),
+        osm.searchNearbyAgencies(city || null, L, center),
       ]);
       if (competitors !== null && competitors.length) {
         return res.json({

@@ -83,6 +83,8 @@ function elementToEntry(el, center) {
     name: tags.name,
     neighborhood,
     distanceKm: Math.round(haversineKm(center, loc) * 10) / 10,
+    lat: loc.lat,
+    lng: loc.lng,
     priceRange: null,
     rating: null,
     reviews: null,
@@ -96,12 +98,13 @@ function elementToEntry(el, center) {
 /**
  * يبحث عن منافسين حقيقيين قريبين عبر OpenStreetMap. يرجّع null إن لم يكن
  * القطاع مدعوماً بمعنى جغرافي (مثال: ecommerce) — المتصل يكمل لبقية سلسلة
- * الرجوع التلقائي حينها (مثل places.js تماماً).
+ * الرجوع التلقائي حينها (مثل places.js تماماً). centerOverride اختياري:
+ * إحداثيات دقيقة اختارها المستخدم على الخريطة بدل مركز المدينة الافتراضي.
  */
-async function searchCompetitors(sector, city, lang) {
+async function searchCompetitors(sector, city, lang, centerOverride) {
   const tagPairs = SECTOR_OSM_TAGS[sector];
   if (!tagPairs) return null;
-  const center = CITY_COORDS[city] || CITY_COORDS.muscat;
+  const center = centerOverride || CITY_COORDS[city] || CITY_COORDS.muscat;
 
   const elements = await runOverpassQuery(buildQuery(tagPairs, center.lat, center.lng, 5000));
   return elements
@@ -112,8 +115,8 @@ async function searchCompetitors(sector, city, lang) {
 }
 
 /** يبحث عن وكالات عقارية حقيقية قريبة عبر OpenStreetMap (office=estate_agent). */
-async function searchNearbyAgencies(city, lang) {
-  const center = CITY_COORDS[city] || CITY_COORDS.muscat;
+async function searchNearbyAgencies(city, lang, centerOverride) {
+  const center = centerOverride || CITY_COORDS[city] || CITY_COORDS.muscat;
   const elements = await runOverpassQuery(buildQuery(REAL_ESTATE_TAG, center.lat, center.lng, 5000));
   return elements
     .filter((el) => el.tags && el.tags.name)

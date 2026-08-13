@@ -124,12 +124,14 @@ function withDistance(results, center) {
 /**
  * يبحث عن منافسين حقيقيين قريبين حسب القطاع والمدينة. يرجّع null إن لم يكن
  * القطاع مدعوماً بمعنى جغرافي (مثال: ecommerce) بدل بحث Places لا فائدة منه —
- * المتصل يستخدم الكتالوج التجريبي حينها.
+ * المتصل يستخدم الكتالوج التجريبي حينها. centerOverride اختياري: إحداثيات
+ * دقيقة اختارها المستخدم فعلياً على الخريطة (public/assistant/competitors.js)
+ * بدل مركز المدينة التقريبي الافتراضي.
  */
-async function searchCompetitors(apiKey, sector, city, lang) {
+async function searchCompetitors(apiKey, sector, city, lang, centerOverride) {
   const keyword = SECTOR_KEYWORDS[sector];
   if (!keyword) return null;
-  const center = CITY_COORDS[city] || CITY_COORDS.muscat;
+  const center = centerOverride || CITY_COORDS[city] || CITY_COORDS.muscat;
 
   const raw = await nearbySearch(apiKey, center, {
     radius: 5000,
@@ -144,6 +146,8 @@ async function searchCompetitors(apiKey, sector, city, lang) {
     name: p.name,
     neighborhood: p.vicinity || null,
     distanceKm: Math.round(p._distanceKm * 10) / 10,
+    lat: p.geometry.location.lat,
+    lng: p.geometry.location.lng,
     priceRange: priceRangeFromLevel(p.price_level),
     rating: p.rating ?? null,
     reviews: p.user_ratings_total ?? null,
@@ -155,8 +159,8 @@ async function searchCompetitors(apiKey, sector, city, lang) {
 }
 
 /** يبحث عن وكالات عقارية حقيقية قريبة (بديل صادق عن تلفيق عروض إيجار). */
-async function searchNearbyAgencies(apiKey, city, lang) {
-  const center = CITY_COORDS[city] || CITY_COORDS.muscat;
+async function searchNearbyAgencies(apiKey, city, lang, centerOverride) {
+  const center = centerOverride || CITY_COORDS[city] || CITY_COORDS.muscat;
 
   const raw = await nearbySearch(apiKey, center, {
     radius: 5000,
@@ -171,6 +175,8 @@ async function searchNearbyAgencies(apiKey, city, lang) {
     name: p.name,
     address: p.vicinity || null,
     distanceKm: Math.round(p._distanceKm * 10) / 10,
+    lat: p.geometry.location.lat,
+    lng: p.geometry.location.lng,
     rating: p.rating ?? null,
     reviews: p.user_ratings_total ?? null,
     website: p.website || null,
